@@ -216,6 +216,7 @@ img{
   position: absolute;
   right: 0;
   bottom: 0;
+  padding-left: : 100px;
   width: 295px;
 }
 
@@ -445,6 +446,6 @@ img{
     margin-right: auto;
   }
   .home__img{
-    right: 10%;
+    right: 0%;
   }
 }
