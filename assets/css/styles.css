@@ -58,7 +58,7 @@ body{
   font-size: var(--normal-font-size);
   color: var(--second-color);
 }
-h1,h2,p{
+h2,p{
   margin: 0;
 }
 ul{
