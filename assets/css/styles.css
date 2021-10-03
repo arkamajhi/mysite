@@ -263,6 +263,8 @@ img{
 }
 .skills__text{
   margin-bottom: var(--mb-4);
+  text-align: justify;
+  text-justify: inter-word;
 }
 .skills__data{
   display: flex;
