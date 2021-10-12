@@ -87,7 +87,7 @@ $(document).ready(function()
   var employee = JSON.parse(data);
   //alert(employee[1].name);
 
-  for (var i = 0; i <emp_tot; i++)
+  for (i = 0; i <emp_tot; i++)
   {
     document.getElementById("container").innerHTML +='<div class="cards '+employee[i].role+'">'
       +'<div class="ImageBox">'
