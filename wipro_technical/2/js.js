@@ -91,7 +91,7 @@ $(document).ready(function()
   {
     document.getElementById("container").innerHTML +='<div class="cards '+employee[i].role+'">'
       +'<div class="ImageBox">'
-        +'<img src="images/Images ('+(i+1)+').jpg" alt="">'
+        +'<img src="images/Images ('+(i+1)+').jpg" alt="images/Images ('+(i+1)+').JPG">'
       +'</div>'
       +'<div class="content">'
         +'<div class="details">'
