@@ -40,7 +40,7 @@ function getRndInteger(min, max)
   return Math.floor(Math.random() * (max - min + 1) ) + min;
 }
 
-emp_tot=15;
+emp_tot=31;
 
 
 data = '[';
