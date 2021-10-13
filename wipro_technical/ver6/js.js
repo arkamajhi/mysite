@@ -61,7 +61,9 @@ for(a=0;a<emp_tot;a++)
 console.log(data);
 
 
-
+function remove_requirement(elem){
+    $(elem).parent('div').parent('div').parent('div').parent('div').remove();
+}
 
 
 $(document).ready(function()
@@ -125,10 +127,10 @@ $(document).ready(function()
       +'<div class="overlay">'
         +'<div class="overlay_content">'
           +'<i class="fas fa-user-plus icon"></i>'
-          +'<br><br>Click here'
-          +'<br><br>or<br><br>'
+          +'<br><br>Click here or<br>'
           +'Drag and Drop'
-          +'<br>Employee Profiles'
+          +'<br>Employee Profiles<br><br>'
+          +'<div><button class="icon" onClick="remove_requirement(this)">Send <i class="fas fa-paper-plane"></i></button></div>'
         +'</div>'
       +'</div>'
     +'</div>'
