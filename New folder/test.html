@@ -1,0 +1,339 @@
+<!doctype html>
+<html>
+    <head>
+        <style>
+
+
+            .optionbox {
+                border: 1px solid #cccccc;
+                height: 300px;
+                width: 900px;
+                margin-left: auto;
+                margin-right: auto;
+                margin-top: 30px;
+
+            }
+
+            .option1 {
+                border: 1px solid #cccccc;
+                height: 125px;
+                width: 125px;
+                margin: 20px;
+                float: left;
+                border-radius: 12px;
+                background-color: red;
+            }
+
+            .option2 {
+                border: 1px solid #cccccc;
+                height: 125px;
+                width: 125px;
+                margin: 20px;
+                float: left;
+                border-radius: 12px;
+                background-color: red;
+            }
+            .option3 {
+                border: 1px solid #cccccc;
+                height: 125px;
+                width: 125px;
+                margin: 20px;
+                float: left;
+                border-radius: 12px;
+                background-color: red;
+            }
+            .option4 {
+                border: 1px solid #cccccc;
+                height: 125px;
+                width: 125px;
+                margin: 20px;
+                float: left;
+                border-radius: 12px;
+                background-color: red;
+            }
+            .option5 {
+                border: 1px solid #cccccc;
+                height: 125px;
+                width: 125px;
+                margin: 20px;
+                float: left;
+                border-radius: 12px;
+                background-color: red;
+            }
+			.option6 {
+                border: 1px solid #cccccc;
+                height: 125px;
+                width: 125px;
+                margin: 20px;
+                float: left;
+                border-radius: 12px;
+                background-color: red;
+            }
+            .selectorbox {
+                border: 1px solid #cccccc;
+                height: 200px;
+                width: 900px;
+                margin-left: auto;
+                margin-right: auto;
+                margin-top: 30px;
+
+            }
+
+            .selector1 {
+                border: 1px solid #cccccc;
+                height: 125px;
+                width: 125px;
+                margin: 20px;
+                border-radius: 12px;
+                background-color: #cccccc;
+            }
+
+            .selector2 {
+                border: 1px solid #cccccc;
+                height: 125px;
+                width: 125px;
+                margin: 20px;
+                border-radius: 12px;
+                background-color: #cccccc;
+            }
+
+            .selector3 {
+                border: 1px solid #cccccc;
+                height: 125px;
+                width: 125px;
+                margin: 20px;
+                border-radius: 12px;
+                background-color: #cccccc;
+            }
+
+            .hovered {
+                background-color: #858585;
+            }
+
+            .inner {
+                width: 1400px;
+                height: 170px;
+
+            }
+
+            #labels {
+                margin-left:255px;
+                font-family: arial;
+            }
+
+            .list {
+                list-style: none outside none;
+            }
+			#counter{
+				width:100%;
+				padding:10px;
+				border: 2px solid #aaaaaa;
+				font-family:arial;
+				font-size:15px;
+				background-color:#aaaaaa;
+				color:white;
+				position:absolute;
+			}
+			input {
+				width: 2%;
+			}
+				</style>
+    </head>
+    <body>
+        <div id="content">
+            <div class = "optionbox">
+                <ul class = "list">
+                    <li><div class = "option1" align = "center">
+                        <img value = "1" class = "option1con" src = "card.jpg" width = "80%" height = "80%" style = "margin-top: 13px;"/>
+                        </div></li>
+                    <li><div class = "option2" align = "center">
+                        <img value = "2"class = "option2con"src = "card.jpg" width = "80%" height = "80%" style = "margin-top: 13px;"/>
+                        </div></li>
+                    <li><div class ="option3" align="center">
+                        <img value ="3" class="option3con"src = "card.jpg" width ="80%" height ="80%" style = "margin-top:13px;"/>
+                        </div></li>
+                    <li><div class="option4"align = "center" >
+                        <img value="4" class="option4con" src="card.jpg" width="80%" height="80%" style = "margin-top: 13px;"/>
+                        </div></li>
+                    <li><div class = "option5" align = "center">
+                        <img value = "5"class = "option5con"src = "card.jpg" width = "80%" height = "80%" style = "margin-top: 13px;"/>
+                        </div></li>
+					<li><div class = "option6" align = "center">
+                        <img value = "6"class = "option6con"src = "card.jpg" width = "80%" height = "80%" style = "margin-top: 13px;"/>
+                        </div></li>
+                </ul>
+            </div>
+
+            <div class ="selectorbox">
+                <ul>
+                    <li style="width:160px; float:left; list-style: none outside none;"><div class ="selector1" align = "center">
+                        <div class ="selector1con">
+                        </div>
+                        </div></li>
+                    <li style = "width: 160px; float: left; list-style: none outside none;"><div class="selector2" align="center">
+                        <div class="selector2con">
+                        </div>
+                        </div></li>
+                    <li style="width:160px; float:left; list-style: none outside none;"><div class="selector3" align="center">
+                        <div class="selector3con">
+                        </div>
+                        </div></li>
+
+                        </div></li>
+                </ul>
+
+
+
+     <div id="counter">
+			High/Most or Would Describe: <input type="text" id="result1" >
+			Medium/Middle or Might Describe: <input type="text" id="result2">
+			Low/Least or Would Not Describe: <input type="text" id="result3">
+	</div>
+
+            </div>
+
+        </div>
+
+
+        </div>
+            <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js"></script>
+                <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script>
+
+                    <script type = "text/javascript">
+
+                        $(document).ready(function() {
+                        $('.option1, .option2, .option3, .option4, .option5, .option6').draggable({
+                            cursor: 'move',
+                            snap: '.selector1, .selector2, .selector3',
+                            snapMode: 'inner',
+                            snapTolerance: 30,
+                            stack: '.option1, .option2, .option3',
+                            scroll: false,
+                            revert: function(event, ui) {
+                                //overwrite original position
+                             $(this).data("draggable").originalPosition = {
+                                    top: 0,
+                                    left: 0
+                                };
+                                //return boolean
+                                return !event;
+                            }
+                        });
+
+                        $('.selector1').droppable({
+                            hoverClass: 'hovered',
+                            drop: function (event, ui) {
+							//alert('R');
+							$(this).addClass(ui.draggable.attr("class"));
+                                CountClassesFirstBox($(this));
+                            }
+                        });
+
+
+
+						$('.selector2').droppable({
+                            hoverClass: 'hovered',
+                            drop: function (event, ui) {
+							//alert('M');
+                         $(this).addClass(ui.draggable.attr("class"));
+                                CountClassesSecondBox($(this));
+                            }
+                        });
+
+						$('.selector3').droppable({
+                            hoverClass: 'hovered',
+                            drop: function (event, ui) {
+							//alert('M');
+                         $(this).addClass(ui.draggable.attr("class"));
+                                CountClassesThirdBox($(this));
+                            }
+                        });
+
+
+                        function CountClassesFirstBox($this) {
+                            var classes = $this.attr("class").split(" ");
+							var count1 = 0;
+							var count2 = 0;
+							var count3 = 0;
+                            var t1 = 0;
+							var t2 = 0;
+							var t3 = 0;
+
+ 							for (t1=0; t1<classes.length; t1++)
+                            {
+                                if (classes[t1].substring(0, 6) == "option") {
+                                    count1++;
+                                }
+							}
+							document.getElementById('result1').value = count1;
+                        }
+
+							/*	  function RemoveCountClassesFirstBox($this) {
+											var classes = $this.attr("class").split(" ");
+											var count1 = 0;
+											var count2 = 0;
+											var count3 = 0;
+											var t1 = 0;
+											var t2 = 0;
+											var t3 = 0;
+											var countone = count1;
+											for (t1=0; t1<classes.length; t1++)
+																		{
+												if (classes[t1].substring(0, 6) == "option") {
+													countone--;
+												}
+												else {
+													countone =="";
+												}
+											}
+											alert('m');
+											document.getElementById('result1').value = countone;
+										}
+											*/
+
+
+
+
+						function CountClassesSecondBox($this) {
+                            var classes = $this.attr("class").split(" ");
+							var count1 = 0;
+							var count2 = 0;
+							var count3 = 0;
+                            var t1 = 0;
+							var t2 = 0;
+							var t3 = 0;
+
+							for (t2=0; t2<classes.length; t2++)
+                            {
+                                if (classes[t2].substring(0, 6) == "option") {
+                                    count2++;
+                                }
+
+							}
+							document.getElementById('result2').value = count2;
+                        }
+
+
+							function CountClassesThirdBox($this) {
+                            var classes = $this.attr("class").split(" ");
+							var count1 = 0;
+							var count2 = 0;
+							var count3 = 0;
+                            var t1 = 0;
+							var t2 = 0;
+							var t3 = 0;
+
+							for (t3=0; t3<classes.length; t3++)
+                            {
+                                if (classes[t3].substring(0, 6) == "option") {
+                                    count3++;
+                                }
+							}
+							document.getElementById('result3').value = count3;
+                        }
+
+
+                    });
+        </script>
+    </body>
+</html>
