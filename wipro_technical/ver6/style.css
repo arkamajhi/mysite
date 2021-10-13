@@ -235,6 +235,12 @@ body
   overflow: hidden;
 }
 
+.send_button
+{
+  background: #294d69;
+  padding: 5px;
+}
+
 .container .cards .ImageBox img
 {
   position: absolute;
