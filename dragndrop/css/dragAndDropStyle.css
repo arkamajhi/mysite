@@ -1,0 +1,37 @@
+.title{
+    text-align: center;
+    font-size: 30px;
+    border: 2px solid black;
+    margin: 20px ;
+    padding: 5px;
+    border-radius: 10px;
+    cursor:grab;
+    color: white;
+    background-color: rgb(10, 73, 141);
+}
+#draggableContainer{
+    display: flex;
+    flex-flow: column wrap;
+    align-items: center;
+    box-sizing: border-box;
+    height: 800px;
+    padding: 30px 30px 30px 30px;
+    border: 2px solid black;
+    border-radius: 10px;
+    margin: 20px;
+    background-color: rgb(158, 48, 48);
+}
+.draggableItem{
+    text-align: center;
+    width: 90%;
+    height: 40px;
+    font-size: 30px;
+    border: 2px solid black;
+    margin: 10px ;
+    border-radius: 10px;
+    cursor:grab;
+    color: white;
+    font-weight: 100px;
+    background-color: rgb(10, 73, 141);
+    transition: all 0.5s ease;
+}
