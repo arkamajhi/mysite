@@ -12,7 +12,7 @@ window.addEventListener("load", (function()
     {
         draggableItems[i].addEventListener("dragstart", function(e)
             {
-                //e.dataTransfer.setData("text",e.target.id); // <-- avoid drag and drop problems with old versions of firefox
+                e.dataTransfer.setData("text",e.target.id); // <-- avoid drag and drop problems with old versions of firefox
 
                 selectedElement = document.getElementById(e.target.id);
 
