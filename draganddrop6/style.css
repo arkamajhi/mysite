@@ -21,7 +21,7 @@ main
 
 .container:nth-child(odd)
 {
-  background-color: blue;
+  background-color: pink;
 }
 
 .container:nth-child(even)
