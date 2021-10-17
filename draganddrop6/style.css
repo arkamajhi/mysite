@@ -47,7 +47,7 @@ main
   text-align: center;
 }
 
-container:first-child>.card>h2{color:rgb(0,157,225)}
+container:first-child>.card>h2{color:blue}
 container:last-child>.card>h2{color:coral}
 
 .dragging
