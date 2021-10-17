@@ -17,6 +17,7 @@ for(whiteBox of whiteBoxes)
 {
   whiteBox.addEventListener('dragover',(e)=>{
     e.preventDefault();
+    e.dataTransfer.setData("text",e.target.id);
   });
   whiteBox.addEventListener('dragenter',(e)=>{
     e.target.className+=' dashed';
