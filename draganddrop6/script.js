@@ -23,27 +23,8 @@ containers.forEach(container => {
   });
 });
 
-function evenodd()
-{
-  let factor=Math.round(Math.random()*10);
-  if (factor%2===0) {return true}
-  else {return false}
-}
-
 window.addEventListener('DOMContentLoaded',function(){
   //init();
-
-  /*let one=document.querySelector('.one');
-  let two=document.querySelector('.two');
-
-  cards.forEach(card => {
-    if (evenodd()) {
-      one.appendChild(card)
-    }
-    else {
-      two.appendChild(card)
-    }
-  });*/
 
   cards.forEach(card => {
     (document.querySelector('.a'+(Math.floor(Math.random()*6) + 1))).appendChild(card);
