@@ -21,7 +21,7 @@ main
 
 .container:nth-child(odd)
 {
-  background-color: pink;
+  background-color: blue;
 }
 
 .container:nth-child(even)
@@ -47,7 +47,7 @@ main
   text-align: center;
 }
 
-container:first-child>.card>h2{color:blue}
+container:first-child>.card>h2{color:rgb(0,157,225)}
 container:last-child>.card>h2{color:coral}
 
 .dragging
