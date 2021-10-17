@@ -1,0 +1,27 @@
+#draggableContainer
+{
+  display: flex;
+  flex-flow: column wrap;
+  align-items: center;
+  box-sizing: border-box;
+  height: 800px;
+  padding: 30px;
+  border: 2px solid black;
+  margin-bottom: 5px;
+  background-color: red;
+}
+
+.draggableItem
+{
+  text-align: center;
+  width: 90%;
+  height: 40px;
+  border: 2px solid black;
+  margin: 10px;
+  border-radius: 10px;
+  cursor: grab;
+  color: white;
+  font-weight: 100px;
+  background-color: blue;
+  transition: all 0.5;
+}
