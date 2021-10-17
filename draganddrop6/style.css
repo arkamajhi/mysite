@@ -20,7 +20,7 @@ main
 
 .container:first-child
 {
-  background-color: red);
+  background-color: red;
 }
 
 .container:last-child
