@@ -4,6 +4,7 @@ window.addEventListener("load", (function()
     // 1
     var draggableArea       = document.getElementById("draggableContainer");
     var draggableItems      = document.getElementsByClassName("draggableItem");
+    console.log(draggableItems);
     var selectedElement     = "";
     var selectedElementPosition = 0;
 
@@ -39,7 +40,7 @@ window.addEventListener("load", (function()
 
 
         // Animation 3
-        //ResetElementsTransitions() // <-- we reset the transition here too to avoid space !! HERE our animated drag and drop ends !!
+        ResetElementsTransitions() // <-- we reset the transition here too to avoid space !! HERE our animated drag and drop ends !!
 
     });
 
