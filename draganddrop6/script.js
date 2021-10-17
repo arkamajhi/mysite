@@ -32,16 +32,21 @@ function evenodd()
 
 window.addEventListener('DOMContentLoaded',function(){
 
-  let one=document.querySelector('.one');
-  let two=document.querySelector('.two');
+  //let one=document.querySelector('.one');
+  //let two=document.querySelector('.two');
 
-  cards.forEach(card => {
+  /*cards.forEach(card => {
     if (evenodd()) {
       one.appendChild(card)
     }
     else {
       two.appendChild(card)
     }
+  });*/
+
+  cards.forEach(card => {
+    //console.log("A: "+card);
+    (document.querySelector('.a'+(Math.floor(Math.random() * 6) + 1))).appendChild(card);
   });
 
 })
