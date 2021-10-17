@@ -7,7 +7,6 @@ body {
 {
   display: flex;
   width:100vw;
-  grid-gap: 10px;
 }
 
 .container
@@ -15,21 +14,12 @@ body {
   text-align: center;
   justify-content: center;
   align-items: center;
-  background: white;
+  background: blue;
   width:100vw;
-  border: 1px solid #666;
-  border-radius: .5em;
-  padding: 10px 10px;
-
-}
-.age_heading_div>h2
-{
-  margin-top: 0px;
-  font-size: 1em;
 }
 
 .box {
-
+  padding:0px;
   border: 1px solid #666;
   background-color: #ddd;
   border-radius: .5em;
@@ -41,26 +31,6 @@ body {
   border: 4px dotted #666;
 }
 
-.age_heading_div
-{
-  height: 50px;
-}
-
-.agegroup
-{
-  display: flex;
-  flex-direction: column;
-  grid-gap: 10px;
-  align-items: stretch;
-}
-
 [draggable] {
   user-select: none;
-}
-
-.drag
-{
-  display: flex;
-  flex-direction: row;
-  grid-gap: 10px;
 }
