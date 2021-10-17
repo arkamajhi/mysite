@@ -32,8 +32,8 @@ main
 .card
 {
   cursor: pointer;
-  flex-basis: 200px;
-  padding: 1em;
+  flex-basis: 150px;
+  padding: 0;
   background-color: white;
 }
 .card>p
