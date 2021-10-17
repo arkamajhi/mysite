@@ -5,7 +5,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
   var dragSrcEl = null;
 
   function handleDragStart(e) {
-    console.log("DragStart");
     this.style.opacity = '0.4';
 
     dragSrcEl = this;
@@ -15,7 +14,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
   }
 
   function handleDragOver(e) {
-    console.log("DragOver");
     if (e.preventDefault) {
       e.preventDefault();
     }
@@ -26,17 +24,14 @@ document.addEventListener('DOMContentLoaded', (event) => {
   }
 
   function handleDragEnter(e) {
-    console.log("DragEnter");
     this.classList.add('over');
   }
 
   function handleDragLeave(e) {
-    console.log("DragLeave");
     this.classList.remove('over');
   }
 
   function handleDrop(e) {
-    console.log("Drop");
     if (e.stopPropagation) {
       e.stopPropagation(); // stops the browser from redirecting.
     }
@@ -50,7 +45,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
   }
 
   function handleDragEnd(e) {
-    console.log("DragEnd");
     this.style.opacity = '1';
 
     items.forEach(function (item) {
