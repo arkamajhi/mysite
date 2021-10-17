@@ -31,7 +31,7 @@ function evenodd()
 }
 
 window.addEventListener('DOMContentLoaded',function(){
-  init();
+
   let one=document.querySelector('.one');
   let two=document.querySelector('.two');
 
