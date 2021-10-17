@@ -21,7 +21,7 @@ main
 
 .container:first-child
 {
-  background-color: blue;
+  background-color: pink;
 }
 
 .container:last-child
