@@ -31,7 +31,7 @@ function evenodd()
 }
 
 window.addEventListener('DOMContentLoaded',function(){
-  init();
+  //init();
   let one=document.querySelector('.one');
   let two=document.querySelector('.two');
 
@@ -64,9 +64,9 @@ function touchHandler(event) {
     event.preventDefault();
 }
 
-function init() {
+/*function init() {
     document.addEventListener("touchstart", touchHandler, true);
     document.addEventListener("touchmove", touchHandler, true);
     document.addEventListener("touchend", touchHandler, true);
     document.addEventListener("touchcancel", touchHandler, true);
-}
+}*/
