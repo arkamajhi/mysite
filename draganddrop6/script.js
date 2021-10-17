@@ -32,7 +32,8 @@ function evenodd()
 
 window.addEventListener('DOMContentLoaded',function(){
   //init();
-  let one=document.querySelector('.one');
+
+  /*let one=document.querySelector('.one');
   let two=document.querySelector('.two');
 
   cards.forEach(card => {
@@ -42,6 +43,10 @@ window.addEventListener('DOMContentLoaded',function(){
     else {
       two.appendChild(card)
     }
+  });*/
+
+  cards.forEach(card => {
+    (document.querySelector('.a'+(Math.floor(Math.random()*6) + 1))).appendChild(card);
   });
 
 })
