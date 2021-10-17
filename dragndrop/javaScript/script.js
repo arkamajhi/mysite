@@ -24,7 +24,7 @@ window.addEventListener("load", (function()
     // 3
     draggableArea.addEventListener("dragover", function(e){
 
-        e.preventDefault(); // The preventDefault () method cancels the default action that belongs to the trigger
+        e.preventDefault();
         GetCurrentPositionY(e.clientY) ; // Using a local function to retrieve the vertical position of the mouse from the mouse
 
     });
@@ -32,15 +32,14 @@ window.addEventListener("load", (function()
     // 5
     draggableArea.addEventListener("drop", function(e){
 
-        e.preventDefault(); // The preventDefault () method cancels the default action that belongs to the element déclencheur
-
+        e.preventDefault();
         draggableArea.insertBefore(selectedElement, draggableArea.children[selectedElementPosition]);
 
         // Here stops the drag and drop without animation
 
 
         // Animation 3
-        ResetElementsTransitions() // <-- we reset the transition here too to avoid space !! HERE our animated drag and drop ends !!
+        //ResetElementsTransitions() // <-- we reset the transition here too to avoid space !! HERE our animated drag and drop ends !!
 
     });
 
