@@ -1,31 +1,31 @@
 
-window.addEventListener("load", (function()                  
+window.addEventListener("load", (function()
 {
     // 1
     var draggableArea       = document.getElementById("draggableContainer");
-    var draggableItems      = document.getElementsByClassName("draggableItem"); 
-    var selectedElement     = ""; 
+    var draggableItems      = document.getElementsByClassName("draggableItem");
+    var selectedElement     = "";
     var selectedElementPosition = 0;
 
     // 2
-    for (var i = 0; i < draggableItems.length; i++) 
+    for (var i = 0; i < draggableItems.length; i++)
     {
-        draggableItems[i].addEventListener("dragstart", function(e)  
+        draggableItems[i].addEventListener("dragstart", function(e)
             {
-                e.dataTransfer.setData("text",e.target.id); // <-- éviter des problèmes de drag and drop avec des anciennes versions de firefox
+                //e.dataTransfer.setData("text",e.target.id); // <-- avoid drag and drop problems with old versions of firefox
 
                 selectedElement = document.getElementById(e.target.id);
 
-                setTimeout(function(){ draggableArea.removeChild(selectedElement) }, 0); // TimeOut pour éviter que l'objet séléctionner ne soit immédiatement supprimé avant qu'on est le temps de faire notre grab
+                setTimeout(function(){ draggableArea.removeChild(selectedElement) }, 0); // TimeOut to prevent the selected object from being immediately deleted before it's time to grab
             }
         );
-    } 
+    }
 
     // 3
     draggableArea.addEventListener("dragover", function(e){
-         
+
         e.preventDefault(); // La méthode preventDefault () annule l'action par défaut qui appartient à l'élément déclencheur
-        GetCurrentPositionY(e.clientY) ; // Utilisation d'une fonction locale pour récupérer la position verticale de la souris de la souris
+        GetCurrentPositionY(e.clientY) ; // Using a local function to retrieve the vertical position of the mouse from the mouse
 
     });
 
@@ -36,59 +36,59 @@ window.addEventListener("load", (function()
 
         draggableArea.insertBefore(selectedElement, draggableArea.children[selectedElementPosition]);
 
-        // Ici s'arrete le drag and drop sans animation
+        // Here stops the drag and drop without animation
 
 
         // Animation 3
-        ResetElementsTransitions() // <-- on reset la transition ici aussi pour éviter l'éspace !! ICI s'arrete notre drag and drop animé !!
+        ResetElementsTransitions() // <-- we reset the transition here too to avoid space !! HERE our animated drag and drop ends !!
 
     });
 
     // 4
     function GetCurrentPositionY(MousePositionY)
     {
-        // Récupérer la position EXACTE de chaque élement draggable afin de savoir si on doit placer notre selectedItem en haut ou en bas par rapport à l'élément qu'on est en train de survoler
-        for (var i = 0; i < draggableItems.length; i++) 
+        // Retrieve the EXACT position of each draggable element in order to know if we should place our selectedItem up or down in relation to the element we are hovering over
+        for (var i = 0; i < draggableItems.length; i++)
         {
             var element                 = document.getElementById(draggableItems[i]["id"]);
-            var elementBoundBox         = element.getBoundingClientRect();  
+            var elementBoundBox         = element.getBoundingClientRect();
             var elementBoundBoxTop      = elementBoundBox.top;
             var elementBoundBoxBottom   = elementBoundBox.bottom;
-    
+
             var elementBoundBoxCenter = elementBoundBoxTop + ( (elementBoundBoxBottom - elementBoundBoxTop) /2 );
-            draggableItems[i]["positionY"] = elementBoundBoxCenter; // Ajout d'une propriété "positionY" à notre tableau "draggableItems" et pour chaque élément draggable on affectela la valeur "elementBoundBoxBottom"
+            draggableItems[i]["positionY"] = elementBoundBoxCenter; // Adding a "positionY" property to our "draggableItems" array and for each draggable element we assign the value "elementBoundBoxBottom"
         }
-        
-        // Comparer la position verticale de la souris à la position EXACTE de l'élément "draggable" que l'on survole
-        for (var i = 0; i < draggableItems.length; i++) 
+
+        // Compare the vertical position of the mouse with the EXACT position of the "draggable" element that you are hovering over
+        for (var i = 0; i < draggableItems.length; i++)
         {
          if ( draggableItems[i]["positionY"] < MousePositionY)
             {
-                var elementAbove = document.getElementById(draggableItems[i]["id"]); // On crée une variable locale qui représente l'élément juste au dessus de la position vertical de la souris
-                selectedElementPosition = i+1; // <-- on sait alors que notre position doit etre après l'élément juste au dessus
+                var elementAbove = document.getElementById(draggableItems[i]["id"]); // We create a local variable which represents the element just above the vertical position of the mouse
+                selectedElementPosition = i+1; // <-- we know then that our position must be after the element just above
             }
             else
             {
-                if (!elementUnder) // <-- on veut l'élément qui se trouve immédiatement en dessous et pas tous les éléments
+                if (!elementUnder) // <-- we want the element that is immediately below and not all the elements
                  {
-                    var elementUnder = document.getElementById(draggableItems[i]["id"]); // <-- si on entre alors un élément est bien présent en dessous de la souris
+                    var elementUnder = document.getElementById(draggableItems[i]["id"]); // <-- if we enter then an element is present below the mouse
                 }
             }
         }
 
-        // on s'assure de la présence d'un élément au dessus de notre souris et si il n'y en a aucun alors la position sera tout en haut de la liste       
+        // we make sure there is an element above our mouse and if there is none then the position will be at the top of the list
         if ( typeof(elementAbove) == "undefined" )
         {
-            selectedElementPosition = 0; 
+            selectedElementPosition = 0;
         }
         //Go étape DROP
 
 
         // 6.2
-       ResetElementsTransitions(); // <-- utilisation du CSS pour faire un reset de l'état initial de chaque élément non séléctionné (loop back animation ^^)
+       ResetElementsTransitions(); // <-- use of CSS to reset the initial state of each unselected element (loop back animation ^^)
 
-        // 6.1 --> si l'élément en dessous est objet alors on applique un margin de 40px et une transition CSS qui fera déscendre l'objet (animation look alike)
-        if ( typeof(elementUnder) == "object" ) 
+        // 6.1 --> if the element below is an object then we apply a 40px margin and a CSS transition which will cause the object to descend (animation look alike)
+        if ( typeof(elementUnder) == "object" )
         {
             elementUnder.style.marginTop = "40px";
             elementUnder.style.transition = "all 0.5s ease";
@@ -97,11 +97,11 @@ window.addEventListener("load", (function()
 
     // 6.2
     function ResetElementsTransitions()
-    {        
-        for (var i = 0; i < draggableItems.length; i++) 
+    {
+        for (var i = 0; i < draggableItems.length; i++)
         {
             document.getElementById(draggableItems[i]["id"]).style.margin = "10px" ;
         }
     }
-    
+
 }));
