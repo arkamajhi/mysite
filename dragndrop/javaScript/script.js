@@ -32,22 +32,22 @@ window.addEventListener("load", (function()
     // 5
     draggableArea.addEventListener("drop", function(e){
 
-        e.preventDefault(); // La méthode preventDefault () annule l'action par défaut qui appartient à l'élément déclencheur
+        e.preventDefault(); // The preventDefault () method cancels the default action that belongs to the element déclencheur
 
         draggableArea.insertBefore(selectedElement, draggableArea.children[selectedElementPosition]);
 
-        // Ici s'arrete le drag and drop sans animation
+        // Here stops the drag and drop without animation
 
 
         // Animation 3
-        ResetElementsTransitions() // <-- on reset la transition ici aussi pour éviter l'éspace !! ICI s'arrete notre drag and drop animé !!
+        ResetElementsTransitions() // <-- we reset the transition here too to avoid space !! HERE our animated drag and drop ends !!
 
     });
 
     // 4
     function GetCurrentPositionY(MousePositionY)
     {
-        // Récupérer la position EXACTE de chaque élement draggable afin de savoir si on doit placer notre selectedItem en haut ou en bas par rapport à l'élément qu'on est en train de survoler
+        // Retrieve the EXACT position of each draggable element in order to know if we should place our selectedItem up or down in relation to the element we are hovering over
         for (var i = 0; i < draggableItems.length; i++)
         {
             var element                 = document.getElementById(draggableItems[i]["id"]);
@@ -56,7 +56,7 @@ window.addEventListener("load", (function()
             var elementBoundBoxBottom   = elementBoundBox.bottom;
 
             var elementBoundBoxCenter = elementBoundBoxTop + ( (elementBoundBoxBottom - elementBoundBoxTop) /2 );
-            draggableItems[i]["positionY"] = elementBoundBoxCenter; // Ajout d'une propriété "positionY" à notre tableau "draggableItems" et pour chaque élément draggable on affectela la valeur "elementBoundBoxBottom"
+            draggableItems[i]["positionY"] = elementBoundBoxCenter; // Adding a "positionY" property to our "draggableItems" array and for each draggable element we assign the value "elementBoundBoxCenter"
         }
 
         // Compare the vertical position of the mouse with the EXACT position of the "draggable" element that you are hovering over
