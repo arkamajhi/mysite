@@ -59,24 +59,24 @@ window.addEventListener("load", (function()
             draggableItems[i]["positionY"] = elementBoundBoxCenter; // Ajout d'une propriété "positionY" à notre tableau "draggableItems" et pour chaque élément draggable on affectela la valeur "elementBoundBoxBottom"
         }
 
-        // Comparer la position verticale de la souris à la position EXACTE de l'élément "draggable" que l'on survole
+        // Compare the vertical position of the mouse with the EXACT position of the "draggable" element that you are hovering over
         for (var i = 0; i < draggableItems.length; i++)
         {
          if ( draggableItems[i]["positionY"] < MousePositionY)
             {
-                var elementAbove = document.getElementById(draggableItems[i]["id"]); // On crée une variable locale qui représente l'élément juste au dessus de la position vertical de la souris
-                selectedElementPosition = i+1; // <-- on sait alors que notre position doit etre après l'élément juste au dessus
+                var elementAbove = document.getElementById(draggableItems[i]["id"]); // We create a local variable which represents the element just above the vertical position of the mouse
+                selectedElementPosition = i+1; // <-- we know then that our position must be after the element just above
             }
             else
             {
-                if (!elementUnder) // <-- on veut l'élément qui se trouve immédiatement en dessous et pas tous les éléments
+                if (!elementUnder) // <-- we want the element that is immediately below and not all the elements
                  {
-                    var elementUnder = document.getElementById(draggableItems[i]["id"]); // <-- si on entre alors un élément est bien présent en dessous de la souris
+                    var elementUnder = document.getElementById(draggableItems[i]["id"]); // <-- if we enter then an element is present below the mouse
                 }
             }
         }
 
-        // on s'assure de la présence d'un élément au dessus de notre souris et si il n'y en a aucun alors la position sera tout en haut de la liste
+        // we make sure there is an element above our mouse and if there is none then the position will be at the top of the list
         if ( typeof(elementAbove) == "undefined" )
         {
             selectedElementPosition = 0;
