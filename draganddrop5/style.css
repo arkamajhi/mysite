@@ -1,0 +1,54 @@
+body
+{
+  background: white;
+}
+
+.imgBox
+{
+  background-image: url('arka.jpg');
+  background-repeat: no-repeat;
+  background-size: 120px 145px;
+  position: relative;
+  height: 145px;
+  width: 120px;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  border-radius: 15px;
+}
+
+.whiteBox
+{
+  display: inline-block;
+  height: 145px;
+  width: 120px;
+  margin: 10px;
+  background-color: lightgrey;
+  border-radius: 15px;
+}
+
+.filled
+{
+  display: inline-block;
+  height: 145px;
+  width: 120px;
+  margin: 10px;
+  background-color: red;
+  border-radius: 15px;
+}
+
+.hold
+{
+  border: 2px dashed red;
+}
+
+.hide
+{
+  display:none;
+}
+
+.dashed
+{
+  border: 2px dashed;
+  background: grey;
+}
