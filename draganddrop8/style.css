@@ -1,26 +1,16 @@
 body {
   font-family: "Benton Sans", "Helvetica Neue", helvetica, arial, sans-serif;
-  margin: 0em;
+  margin: 2em;
 }
 
-.containers
-{
-  display: flex;
-  width:100vw;
-}
-
-.container
-{
-  text-align: center;
-  justify-content: center;
-  align-items: center;
-  background: blue;
-  width:100vw;
+.container {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
 }
 
 .box {
-  padding:0px;
-  border: 1px solid #666;
+  border: 3px solid #666;
   background-color: #ddd;
   border-radius: .5em;
   padding: 10px;
@@ -28,7 +18,7 @@ body {
 }
 
 .box.over {
-  border: 4px dotted #666;
+  border: 3px dotted #666;
 }
 
 [draggable] {
