@@ -4,7 +4,7 @@ const whiteBoxes=document.getElementsByClassName('whiteBox');
 imgBox.addEventListener('dragstart',(e)=>{
   console.log('Dragstart triggered');
   e.target.className+=' hold';
-  setTimeout(()=>{e.target.className='hide'},0);
+  setTimeout(()=>{e.target.className='hide'},1000);
 
 });
 
@@ -17,7 +17,6 @@ for(whiteBox of whiteBoxes)
 {
   whiteBox.addEventListener('dragover',(e)=>{
     e.preventDefault();
-    e.dataTransfer.setData("text",e.target.id);
   });
   whiteBox.addEventListener('dragenter',(e)=>{
     e.target.className+=' dashed';
