@@ -85,9 +85,9 @@ window.addEventListener("load", (function()
 
 
         // 6.2
-       ResetElementsTransitions(); // <-- utilisation du CSS pour faire un reset de l'état initial de chaque élément non séléctionné (loop back animation ^^)
+       ResetElementsTransitions(); // <-- use of CSS to reset the initial state of each unselected element (loop back animation ^^)
 
-        // 6.1 --> si l'élément en dessous est objet alors on applique un margin de 40px et une transition CSS qui fera déscendre l'objet (animation look alike)
+        // 6.1 --> if the element below is an object then we apply a 40px margin and a CSS transition which will cause the object to descend (animation look alike)
         if ( typeof(elementUnder) == "object" )
         {
             elementUnder.style.marginTop = "40px";
