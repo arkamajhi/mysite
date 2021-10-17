@@ -21,6 +21,11 @@ containers.forEach(container => {
     let current=document.querySelector('.dragging');
     container.append(current);
   });
+  container.addEventListener('drop',function(){
+    console.log("Hovered");
+    let current=document.querySelector('.dragging');
+    container.append(current);
+  });
 });
 
 function evenodd()
