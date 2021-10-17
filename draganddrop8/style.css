@@ -1,0 +1,66 @@
+body {
+  font-family: "Benton Sans", "Helvetica Neue", helvetica, arial, sans-serif;
+  margin: 0em;
+}
+
+.containers
+{
+  display: flex;
+  width:100vw;
+  grid-gap: 10px;
+}
+
+.container
+{
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  background: white;
+  width:100vw;
+  border: 1px solid #666;
+  border-radius: .5em;
+  padding: 10px 10px;
+
+}
+.age_heading_div>h2
+{
+  margin-top: 0px;
+  font-size: 1em;
+}
+
+.box {
+
+  border: 1px solid #666;
+  background-color: #ddd;
+  border-radius: .5em;
+  padding: 10px;
+  cursor: move;
+}
+
+.box.over {
+  border: 4px dotted #666;
+}
+
+.age_heading_div
+{
+  height: 50px;
+}
+
+.agegroup
+{
+  display: flex;
+  flex-direction: column;
+  grid-gap: 10px;
+  align-items: stretch;
+}
+
+[draggable] {
+  user-select: none;
+}
+
+.drag
+{
+  display: flex;
+  flex-direction: row;
+  grid-gap: 10px;
+}
