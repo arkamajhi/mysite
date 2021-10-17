@@ -31,11 +31,11 @@ function evenodd()
 }
 
 window.addEventListener('DOMContentLoaded',function(){
+  init();
+  let one=document.querySelector('.one');
+  let two=document.querySelector('.two');
 
-  //let one=document.querySelector('.one');
-  //let two=document.querySelector('.two');
-
-  /*cards.forEach(card => {
+  cards.forEach(card => {
     if (evenodd()) {
       one.appendChild(card)
     }
@@ -44,9 +44,29 @@ window.addEventListener('DOMContentLoaded',function(){
     }
   });
 
-  cards.forEach(card => {
-    //console.log("A: "+card);
-    (document.querySelector('.a'+(Math.floor(Math.random() * 6) + 1))).appendChild(card);
-  });*/
-
 })
+
+
+function touchHandler(event) {
+    var touch = event.changedTouches[0];
+
+    var simulatedEvent = document.createEvent("MouseEvent");
+        simulatedEvent.initMouseEvent({
+        touchstart: "mousedown",
+        touchmove: "mousemove",
+        touchend: "mouseup"
+    }[event.type], true, true, window, 1,
+        touch.screenX, touch.screenY,
+        touch.clientX, touch.clientY, false,
+        false, false, false, 0, null);
+
+    touch.target.dispatchEvent(simulatedEvent);
+    event.preventDefault();
+}
+
+function init() {
+    document.addEventListener("touchstart", touchHandler, true);
+    document.addEventListener("touchmove", touchHandler, true);
+    document.addEventListener("touchend", touchHandler, true);
+    document.addEventListener("touchcancel", touchHandler, true);
+}
