@@ -59,8 +59,7 @@ main h2
 {
   font-size: 2em;
   text-align: center;
-  margin-top: -3px;
-  margin-bottom: 1px;
+  padding-top: 2em;
 }
 
 container:first-child>.card>h2{color:rgb(0,157,225)}
