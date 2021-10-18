@@ -60,6 +60,7 @@ main h2
   font-size: 2em;
   text-align: center;
   padding-top: 1em;
+  margin-bottom: 0.5em;
 }
 
 container:first-child>.card>h2{color:rgb(0,157,225)}
