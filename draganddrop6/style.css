@@ -59,7 +59,7 @@ main h2
 {
   font-size: 2em;
   text-align: center;
-  padding-top: 2em;
+  padding-top: 1.2em;
 }
 
 container:first-child>.card>h2{color:rgb(0,157,225)}
