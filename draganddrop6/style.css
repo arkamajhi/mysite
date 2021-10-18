@@ -42,6 +42,11 @@ main
   font-size: 2em;
   text-align: center;
 }
+main h2
+{
+  font-size: 3em;
+  text-align: center;
+}
 
 container:first-child>.card>h2{color:rgb(0,157,225)}
 container:last-child>.card>h2{color:coral}
