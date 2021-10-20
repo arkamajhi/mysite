@@ -1,3 +1,12 @@
+a1=["BCG","Hepa-B","OPV"];
+a2=["OPV","IPV","Penta","PCV","ROta"];
+a3=["OPV","Penta","ROta"];
+a4=["OPV","IPV","Penta","PCV","ROta"];
+a5=["PCV","MR","JE"];
+a6=["OPV","MR","JE","DPT"];
+
+
+
 let cards = document.querySelectorAll('.card');
 let containers = document.querySelectorAll('.container');
 
@@ -12,6 +21,7 @@ cards.forEach(card => {
   card.addEventListener('dragend',function(){
     console.log("Drag Ended");
     card.classList.remove('dragging');
+    checkpos();
   });
 });
 
@@ -56,3 +66,12 @@ function touchHandler(event) {
     document.addEventListener("touchend", touchHandler, true);
     document.addEventListener("touchcancel", touchHandler, true);
 }*/
+
+function checkpos()
+{
+  var hasChildDiv = document.querySelector(".a1").querySelector("#BCG");
+  if (hasChildDiv !== null)
+  {
+    alert('yes')
+  }
+}
