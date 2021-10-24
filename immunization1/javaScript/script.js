@@ -2,7 +2,7 @@
 window.addEventListener("load", (function()
 {
 
-    $(function ()
+    /*$(function ()
     {
       var parent = $("#draggableContainer");
       var divs = parent.children();
@@ -10,7 +10,7 @@ window.addEventListener("load", (function()
       {
           parent.append(divs.splice(Math.floor(Math.random() * divs.length), 1)[0]);
       }
-    });
+    });*/
 
 
     // 1
@@ -25,7 +25,7 @@ window.addEventListener("load", (function()
       var sectioncount=0;
       for (var i = 0; i < draggableItems.length; i++)
       {
-          if(parseInt(draggableItems[i].id.charAt(0))==a)
+          if(((draggableItems[i].id.length==2)?(parseInt(draggableItems[i].id.charAt(0))):(parseInt(draggableItems[i].id.substring(0,2))))==a)
           {
             sectioncount++;
           }
