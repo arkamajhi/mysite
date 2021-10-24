@@ -1,20 +1,10 @@
 
 window.addEventListener("load", (function()
 {
-    $(function ()
-    {
-      var parent = $("#draggableContainer");
-      var divs = parent.children();
-      while (divs.length)
-      {
-          parent.append(divs.splice(Math.floor(Math.random() * divs.length), 1)[0]);
-      }
-    });
-
     // 1
     var draggableArea       = document.getElementById("draggableContainer");
     var draggableItems      = document.getElementsByClassName("draggableItem");
-    //console.log(draggableItems);
+    console.log(draggableItems);
     var selectedElement     = "";
     var selectedElementPosition = 0;
 
@@ -47,6 +37,7 @@ window.addEventListener("load", (function()
         draggableArea.insertBefore(selectedElement, draggableArea.children[selectedElementPosition]);
 
         // Here stops the drag and drop without animation
+
 
         // Animation 3
         ResetElementsTransitions() // <-- we reset the transition here too to avoid space !! HERE our animated drag and drop ends !!
@@ -110,31 +101,6 @@ window.addEventListener("load", (function()
         for (var i = 0; i < draggableItems.length; i++)
         {
             document.getElementById(draggableItems[i]["id"]).style.margin = "10px" ;
-            //document.getElementById(draggableItems[i]["id"]).style.background = "purple" ;
-        }
-
-        var counter = 0;
-
-        for (var i = 0; i < draggableItems.length; i++)
-        {
-          if (i > 0 && i < draggableItems.length)
-          {
-            if( ( parseInt(draggableItems[i-1]["id"].charAt(0)) <= parseInt(draggableItems[i]["id"].charAt(0)) ) && (counter==0) )
-            {
-              document.getElementById(draggableItems[i-1]["id"]).style.background = "green" ;
-              document.getElementById(draggableItems[i]["id"]).style.background = "green" ;
-            }
-            else
-            {
-              counter=1;
-              //document.getElementById(draggableItems[i]["id"]).style.background = "green" ;
-              document.getElementById(draggableItems[i]["id"]).style.background = "black" ;
-            }
-          }
-          else
-          {
-            counter=0;
-          }
         }
     }
 
