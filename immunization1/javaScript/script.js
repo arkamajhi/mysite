@@ -11,12 +11,27 @@ window.addEventListener("load", (function()
           parent.append(divs.splice(Math.floor(Math.random() * divs.length), 1)[0]);
       }
     });
+
+
     // 1
     var draggableArea       = document.getElementById("draggableContainer");
     var draggableItems      = document.getElementsByClassName("draggableItem");
     console.log(draggableItems);
     var selectedElement     = "";
     var selectedElementPosition = 0;
+
+    for (var a = 1; a <= 10; a++)
+    {
+      var sectioncount=0;
+      for (var i = 0; i < draggableItems.length; i++)
+      {
+          if(parseInt(draggableItems[i].id.charAt(0))==a)
+          {
+            sectioncount++;
+          }
+      }
+      document.getElementById("background"+a).style.height = sectioncount*34+"px" ;
+    }
 
     // 2
     for (var i = 0; i < draggableItems.length; i++)
@@ -108,6 +123,7 @@ window.addEventListener("load", (function()
     // 6.2
     function ResetElementsTransitions()
     {
+
         for (var i = 0; i < draggableItems.length; i++)
         {
             document.getElementById(draggableItems[i]["id"]).style.margin = "5px" ;
