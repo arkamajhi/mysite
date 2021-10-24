@@ -9,7 +9,17 @@
     border: 2px solid black;
     border-radius: 10px;
     margin: 20px;
-    background-color: rgb(158, 48, 48);
+    /*background-color: rgb(158, 48, 48);*/
+    background: linear-gradient(
+      #606dbc, /* 32 + (64*5)=>320 */
+      #606dbc 352px,
+      #465298 352px, /* 352 + (64*5)=>320 */
+      #465298 672px,
+      #606dbc 672px, /* 672 + (64*3)=>192 */
+      #606dbc 864px,
+      #465298 864px, /* 864 + (64*5)=>320 */
+      #465298 1184px
+    );
 }
 .draggableItem
 {
