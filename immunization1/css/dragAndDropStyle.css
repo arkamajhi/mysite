@@ -7,8 +7,18 @@
   width: 100%;
   border-radius: 10px;
   z-index: 1;
-  text-align: left;
-  justify-content: center;
+}
+.vertical-center {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+.ages {
+  padding-left: 10px;
+  font-size: 15px;
+  font-weight: bold;
 }
 .bgrect:nth-child(odd)
 {
