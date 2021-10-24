@@ -2,7 +2,7 @@
 window.addEventListener("load", (function()
 {
 
-    /*$(function ()
+    $(function ()
     {
       var parent = $("#draggableContainer");
       var divs = parent.children();
@@ -10,7 +10,7 @@ window.addEventListener("load", (function()
       {
           parent.append(divs.splice(Math.floor(Math.random() * divs.length), 1)[0]);
       }
-    });*/
+    });
 
 
     // 1
