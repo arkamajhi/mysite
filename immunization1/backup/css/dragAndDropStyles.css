@@ -1,0 +1,50 @@
+#draggableContainer
+{
+    display: flex;
+    flex-flow: column wrap;
+    align-items: center;
+    box-sizing: border-box;
+    height: 2688px;
+    padding: 30px 30px 30px 30px;
+    border: 2px solid black;
+    border-radius: 10px;
+    margin: 20px;
+    /*background-color: rgb(158, 48, 48);*/
+    background: repeating-linear-gradient(
+      #F6D7A7, /* for 1 32 + (64*5)=>320 */
+      #F6D7A7 352px,
+      #F6EABE 352px, /* for 2 352 + (64*5)=>320 */
+      #F6EABE 672px,
+      #C8E3D4 672px, /* for 3 672 + (64*3)=>192 */
+      #C8E3D4 864px,
+      #87AAAA 864px, /* for 4 864 + (64*5)=>320 */
+      #87AAAA 1184px,
+      #F6D7A7 1184px, /* for 5 1184 + (64*4)=>256 */
+      #F6D7A7 1440px,
+      #F6EABE 1440px, /* for 6 1440 + (64*5)=>320 */
+      #F6EABE 1760px,
+      #C8E3D4 1760px, /* for 7 1760 + (64*10)=>640 */
+      #C8E3D4 2400px,
+      #87AAAA 2400px, /* for 8 2400 + (64*1)=>64 */
+      #87AAAA 2464px,
+      #F6D7A7 2464px, /* for 9 2400 + (64*1)=>64 */
+      #F6D7A7 2528px,
+      #F6EABE 2528px, /* for 10 2528 + (64*1)=>64 */
+      #F6EABE 2592px
+    );
+}
+.draggableItem
+{
+    text-align: center;
+    width: 90%;
+    height: 40px;
+    font-size: 30px;
+    border: 2px solid black;
+    margin: 10px ;
+    border-radius: 10px;
+    cursor:grab;
+    color: white;
+    font-weight: 100px;
+    background-color: rgb(10, 73, 141);
+    transition: all 0.5s ease;
+}
