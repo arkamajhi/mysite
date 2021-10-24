@@ -1,14 +1,21 @@
-#background
+.bgrect
 {
-    position: absolute;
+  position: relative;
+  left: 0px;
+  width: 100%;
+  border-radius: 10px;
+  z-index: 1;
+}
+#background1
+{
     top: 0px;
-    left: 0px;
-    height: 64px;
-    width: 98%;
-    margin: 1%;
-    border-radius: 10px;
+    height: 69px;
     background-color: green;
-    z-index: 1;
+}
+#background2
+{
+    height: 65px;
+    background-color: green;
 }
 
 #draggableContainer
