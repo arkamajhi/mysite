@@ -52,7 +52,6 @@
     flex-flow: column wrap;
     align-items: flex-end;
     box-sizing: border-box;
-    height: 2688px;
     width: 100%;
     border: 2px solid black;
     border-radius: 10px;
@@ -71,6 +70,6 @@
     cursor:grab;
     color: white;
     font-weight: 100px;
-    background-color: rgb(10, 73, 141);
+    background-color: #852747;
     transition: all 0.5s ease;
 }
