@@ -2,20 +2,27 @@
 {
   position: relative;
   left: 0px;
+  min-height: 64px;
   width: 100%;
   border-radius: 10px;
   z-index: 1;
+}
+.bgrect:nth-child(odd)
+{
+  background: #916BBF;
+}
+.bgrect:nth-child(even)
+{
+  background: #C996CC;
 }
 #background1
 {
     top: 0px;
     height: 69px;
-    background-color: green;
 }
 #background2
 {
     height: 65px;
-    background-color: green;
 }
 
 #draggableContainer
