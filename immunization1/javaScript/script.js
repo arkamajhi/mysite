@@ -1,6 +1,16 @@
 
 window.addEventListener("load", (function()
 {
+    $(function ()
+    {
+      var parent = $("#draggableContainer");
+      var divs = parent.children();
+      while (divs.length)
+      {
+          parent.append(divs.splice(Math.floor(Math.random() * divs.length), 1)[0]);
+      }
+    });
+
     // 1
     var draggableArea       = document.getElementById("draggableContainer");
     var draggableItems      = document.getElementsByClassName("draggableItem");
