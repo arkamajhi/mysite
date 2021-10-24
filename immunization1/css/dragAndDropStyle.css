@@ -1,11 +1,14 @@
 .bgrect
 {
   position: relative;
+  top: -6px;
   left: 0px;
-  min-height: 64px;
+  min-height: 102px;
   width: 100%;
   border-radius: 10px;
   z-index: 1;
+  text-align: left;
+  justify-content: center;
 }
 .bgrect:nth-child(odd)
 {
@@ -17,12 +20,12 @@
 }
 #background1
 {
-    top: 0px;
-    height: 69px;
+    top: -6px;
+    height: 34px;
 }
 #background2
 {
-    height: 65px;
+    height: 34px;
 }
 
 #draggableContainer
@@ -30,14 +33,12 @@
     position: absolute;
     top: 0px;
     left: 0px;
-
     display: flex;
     flex-flow: column wrap;
     align-items: flex-end;
     box-sizing: border-box;
     height: 2688px;
-    width: 98%;
-    margin: 1%;
+    width: 100%;
     border: 2px solid black;
     border-radius: 10px;
     background-color: rgb(158, 48, 48,0.2);
@@ -46,7 +47,7 @@
 .draggableItem
 {
     text-align: center;
-    width: 80%;
+    width: 60%;
     height: 20px;
     font-size: 15px;
     border: 2px solid black;
