@@ -16,9 +16,10 @@
   transform: translateY(-50%);
 }
 .ages {
-  padding-left: 10px;
-  font-size: 15px;
+  padding-left: 20px;
+  font-size: 20px;
   font-weight: bold;
+  color: white;
 }
 .bgrect:nth-child(odd)
 {
