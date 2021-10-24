@@ -1,20 +1,38 @@
+#background
+{
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    height: 64px;
+    width: 98%;
+    margin: 1%;
+    border-radius: 10px;
+    background-color: green;
+    z-index: 1;
+}
+
 #draggableContainer
 {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+
     display: flex;
     flex-flow: column wrap;
-    align-items: center;
+    align-items: flex-end;
     box-sizing: border-box;
     height: 2688px;
-    padding: 30px 30px 30px 30px;
+    width: 98%;
+    margin: 1%;
     border: 2px solid black;
     border-radius: 10px;
-    margin: 20px;
-    background-color: rgb(158, 48, 48);
+    background-color: rgb(158, 48, 48,0.2);
+    z-index: 2;
 }
 .draggableItem
 {
     text-align: center;
-    width: 90%;
+    width: 80%;
     height: 40px;
     font-size: 30px;
     border: 2px solid black;
