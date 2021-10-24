@@ -100,7 +100,7 @@ window.addEventListener("load", (function()
         // 6.1 --> if the element below is an object then we apply a 40px margin and a CSS transition which will cause the object to descend (animation look alike)
         if ( typeof(elementUnder) == "object" )
         {
-            elementUnder.style.marginTop = "40px";
+            elementUnder.style.marginTop = "20px";
             elementUnder.style.transition = "all 0.5s ease";
         }
     }
@@ -110,7 +110,7 @@ window.addEventListener("load", (function()
     {
         for (var i = 0; i < draggableItems.length; i++)
         {
-            document.getElementById(draggableItems[i]["id"]).style.margin = "10px" ;
+            document.getElementById(draggableItems[i]["id"]).style.margin = "5px" ;
         }
 
         var counter = 0;
