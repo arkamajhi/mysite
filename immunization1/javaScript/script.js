@@ -2,15 +2,15 @@
 window.addEventListener("load", (function()
 {
 
-  $(function ()
-  {
-    var parent = $("#draggableContainer");
-    var divs = parent.children();
-    while (divs.length)
+    $(function ()
     {
-        parent.append(divs.splice(Math.floor(Math.random() * divs.length), 1)[0]);
-    }
-  });
+      var parent = $("#draggableContainer");
+      var divs = parent.children();
+      while (divs.length)
+      {
+          parent.append(divs.splice(Math.floor(Math.random() * divs.length), 1)[0]);
+      }
+    });
     // 1
     var draggableArea       = document.getElementById("draggableContainer");
     var draggableItems      = document.getElementsByClassName("draggableItem");
@@ -111,6 +111,34 @@ window.addEventListener("load", (function()
         for (var i = 0; i < draggableItems.length; i++)
         {
             document.getElementById(draggableItems[i]["id"]).style.margin = "10px" ;
+        }
+
+        var counter = 0;
+
+        for (var i = 0; i < draggableItems.length; i++)
+        {
+          if (i > 0 && i < draggableItems.length)
+          {
+            if( ( parseInt(draggableItems[i-1]["id"].charAt(0)) <= parseInt(draggableItems[i]["id"].charAt(0)) ) && (counter==0) )
+            {
+              document.getElementById(draggableItems[i-1]["id"]).style.background = "green" ;
+              document.getElementById(draggableItems[i]["id"]).style.background = "green" ;
+              if(i==draggableItems.length-1)
+              {
+                alert("Congratulations");
+              }
+            }
+            else
+            {
+              counter=1;
+              //document.getElementById(draggableItems[i]["id"]).style.background = "green" ;
+              document.getElementById(draggableItems[i]["id"]).style.background = "black" ;
+            }
+          }
+          else
+          {
+            counter=0;
+          }
         }
     }
 
