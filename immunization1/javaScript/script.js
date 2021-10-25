@@ -175,7 +175,6 @@ window.addEventListener("load", (function()
           {
             document.getElementById(draggableItems[i]["id"]).style.background = "#45526C" ;
             //document.getElementById(draggableItems[i]["id"]).style.backgroundColor = "#45526C";
-
           }
         }
 
