@@ -30,8 +30,8 @@ window.addEventListener("load", (function()
             sectioncount++;
           }
       }
-      document.getElementById("background"+a).style.height = sectioncount*34+"px" ;
-      document.getElementById("background"+a).style."z-index" = a ;
+      document.getElementById("background"+a).style.height = (sectioncount*34)-2+"px" ;
+      document.getElementById("background"+a).style.zIndex = draggableItems.length-a ;
     }
 
     // 2
