@@ -127,7 +127,8 @@ window.addEventListener("load", (function()
 
         for (var i = 0; i < draggableItems.length; i++)
         {
-            document.getElementById(draggableItems[i]["id"]).style.margin = "5px" ;
+            document.getElementById(draggableItems[i]["id"]).style.margin = "5px 15px 5px 5px" ;
+            document.getElementById(draggableItems[i]["id"]).style.margin = "5px 15px 5px 5px" ;
         }
 
         var counter = 0;
