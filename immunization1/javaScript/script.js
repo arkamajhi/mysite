@@ -173,8 +173,8 @@ window.addEventListener("load", (function()
           }
           else
           {
-            //document.getElementById(draggableItems[i]["id"]).class="draggableItem";
-            document.getElementById(draggableItems[i]["id"]).style.backgroundColor = "#45526C";
+            document.getElementById(draggableItems[i]["id"]).style.background = "#45526C" ;
+            //document.getElementById(draggableItems[i]["id"]).style.backgroundColor = "#45526C";
 
           }
         }
