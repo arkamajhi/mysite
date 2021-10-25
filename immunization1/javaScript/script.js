@@ -31,6 +31,7 @@ window.addEventListener("load", (function()
           }
       }
       document.getElementById("background"+a).style.height = sectioncount*34+"px" ;
+      document.getElementById("background"+a).style."z-index" = a ;
     }
 
     // 2
