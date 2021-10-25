@@ -13,7 +13,7 @@
   z-index: 0;
   box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
   font-family: "Poppins";
-  //overflow: hidden;
+  overflow: hidden;
 }
 .bgrect:hover
 {
@@ -102,17 +102,17 @@
 }
 
 .xlarge{
-  width: 400px;
-  height: 400px;
-  left: -10px;
-  bottom: -10px;
+  width: 350px;
+  height: 350px;
+  left: -150px;
+  bottom: -90px;
 }
 
 .xxlarge{
-  width: 600px;
-  height: 600px;
-  left: -20px;
-  bottom: -20px;
+  width: 450px;
+  height: 450px;
+  left: -220px;
+  bottom: -140px;
 }
 
 .shade1{
