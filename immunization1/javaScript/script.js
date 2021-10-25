@@ -20,6 +20,8 @@ window.addEventListener("load", (function()
     var selectedElement     = "";
     var selectedElementPosition = 0;
 
+    var sectionslength=[0];
+
     for (var a = 1; a <= 10; a++)
     {
       var sectioncount=0;
@@ -32,7 +34,11 @@ window.addEventListener("load", (function()
       }
       document.getElementById("background"+a).style.height = (sectioncount*34)-2+"px" ;
       document.getElementById("background"+a).style.zIndex = draggableItems.length-a ;
+
+      sectionslength[a]=sectionslength[a-1]+sectioncount;
     }
+
+    console.log(sectionslength);
 
     // 2
     for (var i = 0; i < draggableItems.length; i++)
@@ -157,6 +163,21 @@ window.addEventListener("load", (function()
             counter=0;
           }
         }*/
+
+        for (var i = 0; i < draggableItems.length; i++)
+        {
+          var dragid=((draggableItems[i].id.length==2)?(parseInt(draggableItems[i].id.charAt(0))):(parseInt(draggableItems[i].id.substring(0,2))));
+          if((i+1)<=sectionslength[dragid]&&(i+1)>sectionslength[dragid-1])
+          {
+            document.getElementById(draggableItems[i]["id"]).style.background = "green" ;
+          }
+          else
+          {
+            document.getElementById(draggableItems[i]["id"]).style.background = "#45526C";
+          }
+        }
+
+
     }
 
 }));
