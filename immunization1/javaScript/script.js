@@ -130,7 +130,7 @@ window.addEventListener("load", (function()
             document.getElementById(draggableItems[i]["id"]).style.margin = "5px 15px 5px 5px" ;
         }
 
-        var counter = 0;
+        /*var counter = 0;
 
         for (var i = 0; i < draggableItems.length; i++)
         {
@@ -156,7 +156,7 @@ window.addEventListener("load", (function()
           {
             counter=0;
           }
-        }
+        }*/
     }
 
 }));
