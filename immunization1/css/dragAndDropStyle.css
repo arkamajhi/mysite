@@ -9,8 +9,12 @@
   border-bottom-left-radius: 40px;
   border-bottom-right-radius: 15px;
   border-top-right-radius: 15px;
-
-  z-index: 1;
+  z-index: 0;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+}
+.bgrect:hover
+{
+  box-shadow: 0 3px 6px rgba(0,0,0,0.5), 0 3px 6px rgba(0,0,0,0.5);
 }
 .vertical-center {
   margin: 0;
@@ -33,15 +37,6 @@
 {
   background: #C996CC;
 }
-#background1
-{
-    top: -6px;
-    height: 34px;
-}
-#background2
-{
-    height: 34px;
-}
 
 #draggableContainer
 {
@@ -53,10 +48,10 @@
     align-items: flex-end;
     box-sizing: border-box;
     width: 100%;
-    border: 2px solid black;
+    //border: 2px solid black;
     border-radius: 10px;
-    background-color: rgb(158, 48, 48,0.2);
-    z-index: 2;
+    //background-color: rgb(158, 48, 48,0.2);
+    z-index: 100;
 }
 .draggableItem
 {
@@ -72,4 +67,9 @@
     font-weight: 100px;
     background-color: #852747;
     transition: all 0.5s ease;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+}
+.draggableItem:hover
+{
+  box-shadow: 0 3px 6px rgba(0,0,0,0.5), 0 3px 6px rgba(0,0,0,0.5);
 }
