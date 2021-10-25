@@ -175,6 +175,32 @@ window.addEventListener("load", (function()
           {
             document.getElementById(draggableItems[i]["id"]).style.background = "#45526C" ;
             //document.getElementById(draggableItems[i]["id"]).style.backgroundColor = "#45526C";
+
+          }
+        }
+
+        //console.log("Length of section array = "+sectionslength.length);
+        for (var i = 0; i < sectionslength.length; i++)
+        {
+          var counter=0;
+          for (var j = sectionslength[i]; j < sectionslength[i+1]; j++)
+          {
+            var dragid=((draggableItems[j].id.length==2)?(parseInt(draggableItems[j].id.charAt(0))):(parseInt(draggableItems[j].id.substring(0,2))));
+            if(dragid==i+1)
+            {
+              counter++;
+            }
+
+            if(counter==sectionslength[i+1]-sectionslength[i])
+            {
+
+              //alert("Complete");
+              document.querySelector("#background"+(i+1)+" > div.vertical-center.ages > img").style.visibility = 'visible';
+            }
+            else
+            {
+              document.querySelector("#background"+(i+1)+" > div.vertical-center.ages > img").style.visibility = 'hidden';
+            }
           }
         }
 
