@@ -93,37 +93,24 @@
   box-shadow: 0px 0px 1px 0px #508fb9;
 }
 
-.small{
-  width: 200px;
-  height: 200px;
-  left: -100px;
-  bottom: -100px;
-}
-
-.medium{
-  width: 400px;
-  height: 400px;
-  left: -200px;
-  bottom: -200px;
-}
 
 .large{
-  width: 600px;
-  height: 600px;
+  width: 400px;
+  height: 400px;
   left: -300px;
   bottom: -300px;
 }
 
 .xlarge{
-  width: 800px;
-  height: 800px;
+  width: 600px;
+  height: 600px;
   left: -400px;
   bottom: -400px;
 }
 
 .xxlarge{
-  width: 1000px;
-  height: 1000px;
+  width: 800px;
+  height: 800px;
   left: -500px;
   bottom: -500px;
 }
@@ -139,13 +126,6 @@
   opacity: 0.7;
 }
 
-.shade4{
-  opacity: 0.8;
-}
-
-.shade5{
-  opacity: 0.9;
-}
 
 @keyframes ripple{
   0%{
