@@ -73,7 +73,7 @@ window.addEventListener("load", (function()
 
         // Animation 3
         ResetElementsTransitions() // <-- we reset the transition here too to avoid space !! HERE our animated drag and drop ends !!
-
+        tick();
     });
 
     // 4
@@ -118,6 +118,7 @@ window.addEventListener("load", (function()
 
         // 6.2
        ResetElementsTransitions(); // <-- use of CSS to reset the initial state of each unselected element (loop back animation ^^)
+       //tick();
 
         // 6.1 --> if the element below is an object then we apply a 40px margin and a CSS transition which will cause the object to descend (animation look alike)
         if ( typeof(elementUnder) == "object" )
@@ -136,34 +137,6 @@ window.addEventListener("load", (function()
             document.getElementById(draggableItems[i]["id"]).style.margin = "5px 15px 5px 5px" ;
         }
 
-        /*var counter = 0;
-
-        for (var i = 0; i < draggableItems.length; i++)
-        {
-          if (i > 0 && i < draggableItems.length)
-          {
-            if( ( parseInt(draggableItems[i-1]["id"].charAt(0)) <= parseInt(draggableItems[i]["id"].charAt(0)) ) && (counter==0) )
-            {
-              document.getElementById(draggableItems[i-1]["id"]).style.background = "green" ;
-              document.getElementById(draggableItems[i]["id"]).style.background = "green" ;
-              if(i==draggableItems.length-1)
-              {
-                alert("Congratulations");
-              }
-            }
-            else
-            {
-              counter=1;
-              //document.getElementById(draggableItems[i]["id"]).style.background = "green" ;
-              document.getElementById(draggableItems[i]["id"]).style.background = "black" ;
-            }
-          }
-          else
-          {
-            counter=0;
-          }
-        }*/
-
         for (var i = 0; i < draggableItems.length; i++)
         {
           var dragid=((draggableItems[i].id.length==2)?(parseInt(draggableItems[i].id.charAt(0))):(parseInt(draggableItems[i].id.substring(0,2))));
@@ -179,7 +152,11 @@ window.addEventListener("load", (function()
           }
         }
 
-        /*
+      }
+
+      function tick()
+      {
+
         //console.log("Length of section array = "+sectionslength.length);
         for (var i = 0; i < sectionslength.length; i++)
         {
@@ -202,7 +179,7 @@ window.addEventListener("load", (function()
               document.querySelector("#background"+(i+1)+" > div.vertical-center.ages > img").style.visibility = 'hidden';
             }
           }
-        }*/
+        }
 
 
     }
