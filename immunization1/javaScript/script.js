@@ -172,7 +172,7 @@ window.addEventListener("load", (function()
             {
               //alert("Complete");
               document.querySelector("#background"+(i+1)+" > div.vertical-center.ages > img").style.visibility = 'visible';
-              tick++;
+              ticks++;
             }
             else
             {
@@ -180,7 +180,7 @@ window.addEventListener("load", (function()
             }
           }
         }
-        if(tick==10)
+        if(ticks==10)
         {
           alert("Congratulations !! You Won");
         }
