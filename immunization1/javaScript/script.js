@@ -118,7 +118,6 @@ window.addEventListener("load", (function()
 
         // 6.2
        ResetElementsTransitions(); // <-- use of CSS to reset the initial state of each unselected element (loop back animation ^^)
-       //tick();
 
         // 6.1 --> if the element below is an object then we apply a 40px margin and a CSS transition which will cause the object to descend (animation look alike)
         if ( typeof(elementUnder) == "object" )
@@ -156,7 +155,7 @@ window.addEventListener("load", (function()
 
       function tick()
       {
-
+        var ticks=0;
         //console.log("Length of section array = "+sectionslength.length);
         for (var i = 0; i < sectionslength.length; i++)
         {
@@ -173,12 +172,17 @@ window.addEventListener("load", (function()
             {
               //alert("Complete");
               document.querySelector("#background"+(i+1)+" > div.vertical-center.ages > img").style.visibility = 'visible';
+              tick++;
             }
             else
             {
               document.querySelector("#background"+(i+1)+" > div.vertical-center.ages > img").style.visibility = 'hidden';
             }
           }
+        }
+        if(tick==10)
+        {
+          alert("Congratulations !! You Won");
         }
 
 
