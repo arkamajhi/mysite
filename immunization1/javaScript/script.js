@@ -171,16 +171,16 @@ window.addEventListener("load", (function()
             if(counter==sectionslength[i+1]-sectionslength[i])
             {
               //alert("Complete");
-              document.querySelector("#background"+(i+1)+" > div.vertical-center.ages > img").style.visibility = 'visible';
+              //document.querySelector("#background"+(i+1)+" > div.vertical-center.ages > img").style.visibility = 'visible';
               ticks++;
             }
             else
             {
-              document.querySelector("#background"+(i+1)+" > div.vertical-center.ages > img").style.visibility = 'hidden';
+              //document.querySelector("#background"+(i+1)+" > div.vertical-center.ages > img").style.visibility = 'hidden';
             }
           }
         }
-        if(ticks==10)
+        if(ticks==sectionslength.length-1)
         {
           alert("Congratulations !! You Won");
         }
