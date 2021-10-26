@@ -179,6 +179,7 @@ window.addEventListener("load", (function()
           }
         }
 
+        /*
         //console.log("Length of section array = "+sectionslength.length);
         for (var i = 0; i < sectionslength.length; i++)
         {
@@ -193,7 +194,6 @@ window.addEventListener("load", (function()
 
             if(counter==sectionslength[i+1]-sectionslength[i])
             {
-
               //alert("Complete");
               document.querySelector("#background"+(i+1)+" > div.vertical-center.ages > img").style.visibility = 'visible';
             }
@@ -202,7 +202,7 @@ window.addEventListener("load", (function()
               document.querySelector("#background"+(i+1)+" > div.vertical-center.ages > img").style.visibility = 'hidden';
             }
           }
-        }
+        }*/
 
 
     }
