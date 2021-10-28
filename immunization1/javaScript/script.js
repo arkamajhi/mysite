@@ -3,11 +3,10 @@ if ("ServiceWorker" in navigator)
   navigator.ServiceWorker.register("sw.js").then(registration=>{
     console.log("SW Registered");
     console.log(registration);
-  })
-}
-else
-{
-
+  }).catch(error => {
+    console.log("SW Failed");
+    console.log(registration);
+  });
 }
 
 
