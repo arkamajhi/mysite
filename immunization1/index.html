@@ -90,7 +90,7 @@
             border-radius: 15px;
             z-index: 1000;
             box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
-            animation: timerscaling 0.5s alternate infinite ease-in;
+            animation: timerscaling  alternate infinite ease-in-out;
           }
           @keyframes timerscaling
           {
@@ -109,6 +109,8 @@
           now = new Date(now); // Date object
 
           var countDownDate=now;
+          var speedinit=1.5;
+          var deltaspeed=1/60;
 
           // Update the count down every 1 second
           var x = setInterval(function()
@@ -128,6 +130,8 @@
 
             // Output the result in an element with id="demo"
             document.getElementById("timer").innerHTML = minutes + " min " + seconds + " sec";
+            document.getElementById("timer").style.animationDuration = speedinit-deltaspeed+"s";
+            //speedinit-=deltaspeed;
 
             // If the count down is over, write some text
             if (distance < 0)
