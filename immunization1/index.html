@@ -146,6 +146,13 @@
           }, 1000);
         </script>
 
+        <script>
+          if('serviceworker' in navigator)
+          {
+            navigator.serviceworker.register('/service-worker.js');
+          }
+        </script>
+
         <script src="javaScript/script.js"> </script>
         <script src="javaScript/jQuery-3.5.1.js"> </script>
 
