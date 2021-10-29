@@ -1,11 +1,12 @@
 {
   "name": "PWA Example",
   "short_name": "PWA Example",
-  "start_url": ".",
+  "start_url": "/?home=true",
   "name": "PWA Example",
   "background_color": "#6dcdb1",
   "theme_color": "#009578",
   "display": "standalone",
+  "orientation":"portarit",
   "icons":[
     {
       "src":"images/logo192.png",
