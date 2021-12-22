@@ -21,7 +21,7 @@
     <meta property="og:type" content="website" />
     <meta property="og:url" content="" />
 
-    <script src="js/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="js/components/isvr_photosphere_menu.js"></script>
     <script src="js/components/isvr_photosphere_menu_thumb.js"></script>
     <script src="js/components/isvr_photosphere_menu_navigation.js"></script>
@@ -42,7 +42,7 @@
 
         <a-entity position="0 1.8 5">
             <a-entity
-                id="camera" 
+                id="camera"
                 camera="far: 10000; fov: 80; near: 0.5;"
                 look-controls="enabled: true">
                 <a-entity
@@ -56,38 +56,38 @@
             </a-entity>
         </a-entity>
 
-         
+
         <a-entity data-current-page="1" isvr-photosphere-menu id="photosphere-menu" visible="false">
             <a-entity isvr-photosphere-menu-navigation id="menu-arrow-up" position="0 1.5 0" visible="false">
                 <a-plane position="-0.07 0 0" rotation="0 0 -45" width="0.10" height="0.3" color="#5b00f4"></a-plane>
                 <a-plane position="0.07 0 0" rotation="0 0 45" width="0.10" height="0.3" color="#5b00f4"></a-plane>
             </a-entity>
-                         
+
             <a-image data-image-id="1" isvr-photosphere-menu-thumb class="img-photosphere-thumb" src="#img-photosphere-1-thumb" width="2" height="0.7" position="0 0.8 0">
                 <a-animation attribute="position" begin="mouseenter" from="0 0.8 0" to="0 0.8 0.5" dur="400"></a-animation>
                 <a-animation attribute="position" begin="mouseleave" from="0 0.8 0.5" to="0 0.8 0" dur="400"></a-animation>
                 <a-animation attribute="material.opacity" begin="fade" to="1"></a-animation>
             </a-image>
-                         
+
             <a-image data-image-id="2" isvr-photosphere-menu-thumb class="img-photosphere-thumb" src="#img-photosphere-2-thumb" width="2" height="0.7" position="0 0 0">
                 <a-animation attribute="position" begin="mouseenter" from="0 0 0" to="0 0 0.5" dur="400"></a-animation>
                 <a-animation attribute="position" begin="mouseleave" from="0 0 0.5" to="0 0 0" dur="400"></a-animation>
                 <a-animation attribute="material.opacity" begin="fade" to="1"></a-animation>
             </a-image>
-                         
+
             <a-image data-image-id="3" isvr-photosphere-menu-thumb class="img-photosphere-thumb" src="#img-photosphere-3-thumb" width="2" height="0.7" position="0 -0.8 0">
                 <a-animation attribute="position" begin="mouseenter" from="0 -0.8 0" to="0 -0.8 0.5" dur="400"></a-animation>
                 <a-animation attribute="position" begin="mouseleave" from="0 -0.8 0.5" to="0 -0.8 0" dur="400"></a-animation>
                 <a-animation attribute="material.opacity" begin="fade" to="1"></a-animation>
             </a-image>
-                         
+
             <a-entity isvr-photosphere-menu-navigation="url:https://www.ideaspacevr.org/webvr-photosphere-viewer-equirectangular-images/field-data?key=images_upload&chunk-size=3&page=2" id="menu-arrow-down" position="0 -1.5 0" visible=" true ">
                 <a-plane position="-0.07 0 0" rotation="0 0 45" width="0.10" height="0.3" color="#5b00f4"></a-plane>
                 <a-plane position="0.07 0 0" rotation="0 0 -45" width="0.10" height="0.3" color="#5b00f4"></a-plane>
             </a-entity>
         </a-entity>
-        
-        <a-entity 
+
+        <a-entity
             geometry="primitive:sphere;radius:5000;segmentsWidth:64;segmentsHeight:64"
             material="shader:flat;color:#ffffff;fog:false; src:#img-photosphere-1 "
             scale="-1 1 1"
@@ -98,4 +98,3 @@
 
 </body>
 </html>
-
