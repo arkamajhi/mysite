@@ -16,11 +16,25 @@
 
       <a-entity id="updateMe box" geometry="width: 5; height: 5; depth: 5" material="color: #4CC3D9; flatShading: false; wireframe: false; visible: true; transparent: false; npot: false" position="-18.91267 2 -4.94297" rotation="" scale="" shadow="cast: true"></a-entity>
 
+      <!-- Default lighting injected by A-Frame. -->
+      <a-entity id="dfds" light="type: ambient; color: #BBB"></a-entity>
+      <a-entity id="dfds" light="type: directional; color: #FFF; intensity: 0.6" position="-0.5 1 1"></a-entity>
+
+      <a-light type="directional" position="0 0 0" rotation="-90 0 0" target="#directionaltarget">
+    <a-entity id="directionaltarget" position="0 0 -1"></a-entity>
+</a-light>
+
+      <!--a-entity id="updateMe light" light="type: ambient; intensity: 0.5;"></a-entity-->
+      <!--a-entity id="updateMe light" light="type: directional;
+                       castShadow: true;
+                       intensity: 0.4;
+                       shadowCameraVisible: true;"
+                position="-5 3 1.5"></a-entity-->
+
       <a-entity id="updateMe rig" position="-13.94918 10 30.90757">
         <a-camera id="updateMe camera" camera="" position="0.7094570066599037 1.6 2.883530945809841" rotation="" look-controls="" wasd-controls="" data-aframe-inspector-original-camera=""></a-camera>
       </a-entity>
 
-      <a-entity id="updateMe light" light="intensity: 1.05; castShadow: true; type: spot" position="-4.1823 9.33632 28.18435" data-aframe-default-light="" aframe-injected=""></a-entity>
 
 
     <div class="a-loader-title" style="display: none;"></div></a-scene>
