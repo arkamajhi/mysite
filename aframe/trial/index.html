@@ -18,7 +18,12 @@
         <a-camera id="updateMe camera" camera="" position="0.7094570066599037 1.6 2.883530945809841" rotation="" look-controls="" wasd-controls="" data-aframe-inspector-original-camera=""></a-camera>
       </a-entity>
 
-      
+      <a-entity id="updateMe light" light="type: ambient; intensity: 0.5;"></a-entity>
+      <a-entity id="updateMe light" light="type: directional;
+                       castShadow: true;
+                       intensity: 0.4;
+                       shadowCameraVisible: true;"
+                position="-5 3 1.5"></a-entity>
 
       <div class="a-loader-title" style="display: none;">Hello, World! • A-Frame</div>
     </a-scene>
