@@ -11,13 +11,18 @@
 
       <a-entity id="room1">
         <a-entity id="arch_room1">
-          <a-plane id="floor_room1" position="" rotation="-90 0 0" width="4" height="4" material="color: #314245" geometry="; height: 30; width: 30" scale="1 1 1" shadow="; receive: true; cast: true"></a-plane>
+          <a-plane id="floor_room1" position="" rotation="-90 0 0" width="4" height="4" material="color: #202b2d" geometry="; height: 30; width: 30" scale="1 1 1" shadow="; receive: true; cast: true"></a-plane>
           <a-entity id="col1" geometry="width: 1; height: 10; depth: 2" material="color: #334a71; flatShading: false; wireframe: false; visible: true; transparent: false; npot: false; blending: normal" position="14.5 5 14" rotation="" scale="" shadow="cast: true"></a-entity>
           <a-entity id="col2" geometry="width: 1; height: 12.5; depth: 30" material="color: #334a71; flatShading: false; wireframe: false; visible: true; transparent: false; npot: false; blending: normal" position="-14.5 6 0" rotation="" scale="" shadow="cast: true"></a-entity>
           <a-entity id="col3" geometry="width: 30; height: 12.5; depth: 1" material="color: #334a71; flatShading: false; wireframe: false; visible: true; transparent: false; npot: false; blending: normal" position="0 6 -14.5" rotation="" scale="" shadow="cast: true"></a-entity>
           <a-entity id="col4" geometry="width: 1; height: 10; depth: 2" material="color: #334a71; flatShading: false; wireframe: false; visible: true; transparent: false; npot: false; blending: normal" position="14.5 5 -4" rotation="" scale="" shadow="cast: true"></a-entity>
           <a-entity id="beam1" geometry="width: 1; height: 2.5; depth: 20" material="color: #334a71; flatShading: false; wireframe: false; visible: true; transparent: false; npot: false; blending: normal" position="14.5 11.25 5" rotation="" scale="" shadow="cast: true"></a-entity>
           <a-entity id="beam2" geometry="width: 1; height: 2.5; depth: 20" material="color: #334a71; flatShading: false; wireframe: false; visible: true; transparent: false; npot: false; blending: normal" position="14.5 1.25 5" rotation="" scale="" shadow="cast: true"></a-entity>
+        </a-entity>
+
+        <a-entity id="lights_room1">
+          <a-entity id="room1_ceilinglight1" visible="true" rotation="-90 0 0" light="intensity: 0.4; castShadow: true; type: spot;; penumbra: 1; angle: 50" position="7.08009 24.66324 3.75279"></a-entity>
+          <a-entity id="room1_ceilinglight2" visible="true" rotation="-90 0 0" light="intensity: 0.4; castShadow: true; type: spot;; penumbra: 1; angle: 50" position="-6.53321 24.66324 3.75279"></a-entity>
         </a-entity>
 
         <a-entity id="tables_room1">
