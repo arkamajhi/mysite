@@ -9,30 +9,34 @@
       <a-entity id="cylinder" visible="false" geometry="primitive: cylinder; height: 15; radius: 2" material="color: #FFC65D" position="3.62744 6.99598 -51.12136" shadow="cast: true"></a-entity>
       <a-entity id="box" visible="false" geometry="width: 4; height: 3; depth: 8" material="color: #334a71; flatShading: false; wireframe: false; visible: true; transparent: false; npot: false; blending: normal" position="6.75571 1.5 -50.93274" rotation="" scale="" shadow="cast: true"></a-entity>
 
-      <a-entity id="tableset1" position="-13.61 0 0">
-        <a-entity id="table1" geometry="width: 4; height: 3; depth: 8" material="color: #334a71; flatShading: false; wireframe: false; visible: true; transparent: false; npot: false; blending: normal" position="6.75571 1.5 4.23284" rotation="" scale="" shadow="cast: true"></a-entity>
+      <a-entity id="room1">
+        <a-entity id="arch_room1">
+          <a-plane id="floor_room1" position="" rotation="-90 0 0" width="4" height="4" material="color: #314245" geometry="; height: 30; width: 30" scale="1 1 1" shadow="; receive: true; cast: true"></a-plane>
+          <a-entity id="col1" geometry="width: 1; height: 10; depth: 2" material="color: #334a71; flatShading: false; wireframe: false; visible: true; transparent: false; npot: false; blending: normal" position="14.5 5 14" rotation="" scale="" shadow="cast: true"></a-entity>
+          <a-entity id="col2" geometry="width: 1; height: 12.5; depth: 30" material="color: #334a71; flatShading: false; wireframe: false; visible: true; transparent: false; npot: false; blending: normal" position="-14.5 6 0" rotation="" scale="" shadow="cast: true"></a-entity>
+          <a-entity id="col3" geometry="width: 30; height: 12.5; depth: 1" material="color: #334a71; flatShading: false; wireframe: false; visible: true; transparent: false; npot: false; blending: normal" position="0 6 -14.5" rotation="" scale="" shadow="cast: true"></a-entity>
+          <a-entity id="col4" geometry="width: 1; height: 10; depth: 2" material="color: #334a71; flatShading: false; wireframe: false; visible: true; transparent: false; npot: false; blending: normal" position="14.5 5 -4" rotation="" scale="" shadow="cast: true"></a-entity>
+          <a-entity id="beam1" geometry="width: 1; height: 2.5; depth: 20" material="color: #334a71; flatShading: false; wireframe: false; visible: true; transparent: false; npot: false; blending: normal" position="14.5 11.25 5" rotation="" scale="" shadow="cast: true"></a-entity>
+          <a-entity id="beam2" geometry="width: 1; height: 2.5; depth: 20" material="color: #334a71; flatShading: false; wireframe: false; visible: true; transparent: false; npot: false; blending: normal" position="14.5 1.25 5" rotation="" scale="" shadow="cast: true"></a-entity>
+        </a-entity>
 
-        <a-box id="a1" material="color: #704ad9" shadow="cast: true; receive: true" scale="1.33465 1.33465 1.33465" position="6.98657 4.04546 1.69584" rotation="0 45 0" color="#4CC3D9"></a-box>
-        <a-sphere id="a2" shadow="cast: true; receive: true" scale="0.70572 0.70572 0.70572" position="6.90215 4.19825 6.35517" radius="1.25" color="#EF2D5E"></a-sphere>
-        <a-cylinder id="a3" shadow="cast: true; receive: true" scale="1.21309 1.77164 1.21309" position="6.97685 4.7973 3.89328" radius="0.5" height="1.5" color="#FFC65D"></a-cylinder>
+        <a-entity id="tables_room1">
+          <a-entity id="tableset1" position="-13.61 0 0">
+            <a-entity id="table1" geometry="width: 4; height: 3; depth: 8" material="color: #334a71; flatShading: false; wireframe: false; visible: true; transparent: false; npot: false; blending: normal" position="6.75571 1.5 4.23284" rotation="" scale="" shadow="cast: true"></a-entity>
+            <a-box id="a1" material="color: #704ad9" shadow="cast: true; receive: true" scale="1.33465 1.33465 1.33465" position="6.98657 4.04546 1.69584" rotation="0 45 0" color="#4CC3D9"></a-box>
+            <a-sphere id="a2" shadow="cast: true; receive: true" scale="0.70572 0.70572 0.70572" position="6.90215 4.19825 6.35517" radius="1.25" color="#EF2D5E"></a-sphere>
+            <a-cylinder id="a3" shadow="cast: true; receive: true" scale="1.21309 1.77164 1.21309" position="6.97685 4.7973 3.89328" radius="0.5" height="1.5" color="#FFC65D"></a-cylinder>
+          </a-entity>
+          <a-entity id="tableset2">
+            <a-entity id="table1" geometry="width: 4; height: 3; depth: 8" material="color: #334a71; flatShading: false; wireframe: false; visible: true; transparent: false; npot: false; blending: normal" position="6.75571 1.5 4.23284" rotation="" scale="" shadow="cast: true"></a-entity>
+            <a-box id="a1" material="color: #704ad9" shadow="cast: true; receive: true" scale="1.33465 1.33465 1.33465" position="6.98657 4.04546 1.69584" rotation="0 45 0" color="#4CC3D9"></a-box>
+            <a-sphere id="a2" shadow="cast: true; receive: true" scale="0.70572 0.70572 0.70572" position="6.90215 4.19825 6.35517" radius="1.25" color="#EF2D5E"></a-sphere>
+            <a-cylinder id="a3" shadow="cast: true; receive: true" scale="1.21309 1.77164 1.21309" position="6.97685 4.7973 3.89328" radius="0.5" height="1.5" color="#FFC65D"></a-cylinder>
+          </a-entity>
+        </a-entity>
+
       </a-entity>
 
-      <a-entity id="tableset1">
-        <a-entity id="table1" geometry="width: 4; height: 3; depth: 8" material="color: #334a71; flatShading: false; wireframe: false; visible: true; transparent: false; npot: false; blending: normal" position="6.75571 1.5 4.23284" rotation="" scale="" shadow="cast: true"></a-entity>
-
-        <a-box id="a1" material="color: #704ad9" shadow="cast: true; receive: true" scale="1.33465 1.33465 1.33465" position="6.98657 4.04546 1.69584" rotation="0 45 0" color="#4CC3D9"></a-box>
-        <a-sphere id="a2" shadow="cast: true; receive: true" scale="0.70572 0.70572 0.70572" position="6.90215 4.19825 6.35517" radius="1.25" color="#EF2D5E"></a-sphere>
-        <a-cylinder id="a3" shadow="cast: true; receive: true" scale="1.21309 1.77164 1.21309" position="6.97685 4.7973 3.89328" radius="0.5" height="1.5" color="#FFC65D"></a-cylinder>
-      </a-entity>
-
-      <a-plane id="floor_room1" position="" rotation="-90 0 0" width="4" height="4" material="color: #314245" geometry="; height: 30; width: 30" scale="1 1 1" shadow="; receive: true; cast: true"></a-plane>
-      <a-entity id="col1" geometry="width: 1; height: 10; depth: 2" material="color: #334a71; flatShading: false; wireframe: false; visible: true; transparent: false; npot: false; blending: normal" position="14.5 5 14" rotation="" scale="" shadow="cast: true"></a-entity>
-      <a-entity id="col2" geometry="width: 1; height: 12.5; depth: 30" material="color: #334a71; flatShading: false; wireframe: false; visible: true; transparent: false; npot: false; blending: normal" position="-14.5 6 0" rotation="" scale="" shadow="cast: true"></a-entity>
-      <a-entity id="col3" geometry="width: 30; height: 12.5; depth: 1" material="color: #334a71; flatShading: false; wireframe: false; visible: true; transparent: false; npot: false; blending: normal" position="0 6 -14.5" rotation="" scale="" shadow="cast: true"></a-entity>
-      <a-entity id="col4" geometry="width: 1; height: 10; depth: 2" material="color: #334a71; flatShading: false; wireframe: false; visible: true; transparent: false; npot: false; blending: normal" position="14.5 5 -4" rotation="" scale="" shadow="cast: true"></a-entity>
-
-      <a-entity id="beam1" geometry="width: 1; height: 2.5; depth: 20" material="color: #334a71; flatShading: false; wireframe: false; visible: true; transparent: false; npot: false; blending: normal" position="14.5 11.25 5" rotation="" scale="" shadow="cast: true"></a-entity>
-      <a-entity id="beam2" geometry="width: 1; height: 2.5; depth: 20" material="color: #334a71; flatShading: false; wireframe: false; visible: true; transparent: false; npot: false; blending: normal" position="14.5 1.25 5" rotation="" scale="" shadow="cast: true"></a-entity>
 
 
       <a-entity id="rig" rotation="" position="-7.44616 4.69927 20.86926">
@@ -41,7 +45,7 @@
 
       <a-entity id="ambientlight" visible="true" light="color: #ffffff; type: ambient; castShadow: false; intensity: 0.42"></a-entity>
 
-      <a-entity id="diretionallight1" visible="true" rotation="-90 0 0" light="intensity: 0.92; castShadow: true; type: spot;; penumbra: 1" position="0.91057 35.099 -1.08693"></a-entity>
+      <a-entity id="diretionallight1" visible="true" rotation="-90 0 0" light="intensity: 0.75; castShadow: true; type: spot;; penumbra: 1; angle: 50" position="7.08009 24.66324 3.75279"></a-entity>
       <div class="a-loader-title" style="display: none;">Hello, World! • A-Frame</div>
     </a-scene>
   </body>
