@@ -3,7 +3,7 @@
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
   </head>
   <body>
-    <a-scene id="updateMe" visible="true" background="color: #5e5e5e" inspector="" keyboard-shortcuts="" screenshot="" vr-mode-ui="" device-orientation-permission-ui="">
+    <a-scene id="updateMe" shadow="type: pcfsoft" visible="true" background="color: #5e5e5e" inspector="" keyboard-shortcuts="" screenshot="" vr-mode-ui="" device-orientation-permission-ui="">
 
       <a-entity id="sphere" geometry="primitive: sphere; radius: 5" material="color: #EF2D5E" position="22.16638 5 18.80782" rotation="" scale="" shadow="cast: true"></a-entity>
 
@@ -25,9 +25,9 @@
         <a-camera id="camera" camera="" position="-8.89256321279314 7.68896 -22.302089798897743" rotation="-13.407212406061273 -88.23550045014713 0" look-controls="" wasd-controls="" data-aframe-inspector-original-camera=""></a-camera>
       </a-entity>
 
-      <a-entity id="ambientlight" visible="true" light="color: #e5eaff; type: ambient; castShadow: false; intensity: 0.52"></a-entity>
+      <a-entity id="ambientlight" visible="true" light="color: #ffffff; type: ambient; castShadow: false; intensity: 0.42"></a-entity>
 
-      <a-entity id="diretionallight1" visible="true" rotation="-90 0 0" light="intensity: 1.05; castShadow: true; type: spot;" position="0.91057 35.099 -1.08693"></a-entity>
+      <a-entity id="diretionallight1" visible="true" rotation="-90 0 0" light="intensity: 0.92; castShadow: true; type: spot;; penumbra: 1" position="0.91057 35.099 -1.08693"></a-entity>
       <div class="a-loader-title" style="display: none;">Hello, World! • A-Frame</div>
     </a-scene>
   </body>
