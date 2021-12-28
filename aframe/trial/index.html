@@ -34,12 +34,21 @@
         </a-entity>
 
         <a-entity id="wallads_room1">
-          <a-assets>
-            <video id="vid" src="lakme.mp4"></video>
-          </a-assets>
-
-          <a-video src="#vid"></a-video>
+          <a-video position="0 3 -5" autoplay="true" loop="true"
+         src="lakme.mp4"
+         material="shader:flat; side:double; transparent:true;"
+         geometry="mergeTo:null; primitive:circle; radius:3.0;">
+          </a-video>
         </a-entity>
+
+        <script src="https://rawgit.com/aframevr/aframe/master/dist/aframe-master.js"></script>
+        <a-scene>
+          <a-assets>
+            <video id="myvideo" src="lakme.mp4"></video>
+          </a-assets>
+          <a-sky src="#myvideo"></a-sky>
+          <!-- or a-videosphere or a-video -->
+        </a-scene>
 
         <a-entity id="tables_room1">
           <a-entity id="tableset1" position="-13.61 0 0">
