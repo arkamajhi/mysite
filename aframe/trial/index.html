@@ -11,7 +11,9 @@
 
       <a-entity id="sphere" visible="false" geometry="primitive: sphere; radius: 5" material="color: #EF2D5E" position="22.16638 5 -55.60458" rotation="" scale="" shadow="cast: true"></a-entity>
       <a-entity id="cylinder" visible="false" geometry="primitive: cylinder; height: 15; radius: 2" material="color: #FFC65D" position="3.62744 6.99598 -51.12136" shadow="cast: true"></a-entity>
-      <a-entity id="box" visible="false" geometry="width: 4; height: 3; depth: 8" material="color: #334a71; flatShading: false; wireframe: false; visible: true; transparent: false; npot: false; blending: normal" position="6.75571 1.5 -50.93274" rotation="" scale="" shadow="cast: true"></a-entity>
+      <a-entity id="box">
+        <a-box position="0 0 -2" height="0" color="red"  animation="property: rotation; to: 0 360 0 ; loop: true; dur: 2000" rotation="0 0 0"></a-box>
+      </a-entity>
 
       <a-entity id="room1">
         <a-entity id="arch_room1">
