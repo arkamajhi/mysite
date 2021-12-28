@@ -6,7 +6,7 @@
     <a-scene id="updateMe" shadow="type: pcfsoft" visible="true" background="color: #5e5e5e" inspector="" keyboard-shortcuts="" screenshot="" vr-mode-ui="" device-orientation-permission-ui="">
 
       <a-assets>
-        <video id="vid" src="lakme.mp4"></video>
+        <video id="vid_room1" src="lakme.mp4"></video>
       </a-assets>
 
       <a-entity id="sphere" visible="false" geometry="primitive: sphere; radius: 5" material="color: #EF2D5E" position="22.16638 5 -55.60458" rotation="" scale="" shadow="cast: true"></a-entity>
@@ -35,12 +35,13 @@
             <a-entity id="room1_ceilinglight3" visible="true" rotation="-60.71920233898899 -0.6359831525952138 8.216787739971137" light="intensity: 1.5; castShadow: false; type: spot;; penumbra: 0.5; angle: 40; shadowCameraVisible: false" position="-3.84488 12.49525 -13.01803"></a-entity>
             <a-entity id="room1_ceilinglight4" visible="true" rotation="-60.71920233898899 -0.6359831525952138 8.216787739971137" light="intensity: 1.5; castShadow: false; type: spot;; penumbra: 0.5; angle: 40; shadowCameraVisible: false" position="-9.877 12.49525 -13.01803"></a-entity>
           </a-entity>
+
+
         </a-entity>
 
         <a-entity id="video">
-
           <a-video position="-0.25 5.75 -13.83" autoplay="true" loop="true"
-           src="#vid"
+           src="#vid_room1"
            material="shader:flat; side:double; transparent:true;"
            geometry="mergeTo:null; primitive:circle; radius:4.5">
           </a-video>
@@ -61,13 +62,14 @@
             <a-cylinder id="a3" shadow="cast: true; receive: true" scale="1.21309 1.77164 1.21309" position="6.97685 4.7973 3.89328" radius="0.5" height="1.5" color="#FFC65D"></a-cylinder>
           </a-entity>
         </a-entity>
-
       </a-entity>
 
 
 
       <a-entity id="rig" rotation="" position="-7.44616 4.69927 20.86926">
-        <a-camera id="camera" camera="" position="2.63902 2.6439 -23.28968" rotation="-13.407212406061273 -88.23550045014713 0" look-controls="" wasd-controls="" data-aframe-inspector-original-camera=""></a-camera>
+        <a-camera id="camera" camera="" position="2.63902 2.6439 -23.28968" rotation="-13.407212406061273 -88.23550045014713 0" look-controls="" wasd-controls="" data-aframe-inspector-original-camera="">
+          <a-cursor></a-cursor>
+        </a-camera>
       </a-entity>
 
       <a-entity id="ambientlight" visible="true" light="color: #ffffff; type: ambient; castShadow: false; intensity: 0.22"></a-entity>
