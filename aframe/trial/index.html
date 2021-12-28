@@ -34,8 +34,11 @@
         </a-entity>
 
         <a-entity id="wallads_room1">
+          <a-assets>
+            <video id="vid" src="lakme.mp4"></video>
+          </a-assets>
           <a-video position="-0.25 5.75 -13.83" autoplay="true" loop="true"
-           src="lakme.mp4"
+           src="#vid"
            material="shader:flat; side:double; transparent:true;"
            geometry="mergeTo:null; primitive:circle; radius:4.5">
           </a-video>
