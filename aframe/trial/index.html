@@ -5,9 +5,9 @@
   <body>
     <a-scene id="updateMe" shadow="type: pcfsoft; autoUpdate: true" visible="true" background="color: #5e5e5e" inspector="" keyboard-shortcuts="" screenshot="" vr-mode-ui="" device-orientation-permission-ui="">
 
-      <a-assets>
+      <!--a-assets>
         <video id="vid_room1" src="lakme.mp4" preload=""></video>
-      </a-assets>
+      </a-assets-->
 
       <a-entity id="sphere" visible="false" geometry="primitive: sphere; radius: 5" material="color: #EF2D5E" position="22.16638 5 -55.60458" rotation="" scale="" shadow="cast: true"></a-entity>
       <a-entity id="cylinder" visible="false" geometry="primitive: cylinder; height: 15; radius: 2" material="color: #FFC65D" position="3.62744 6.99598 -51.12136" shadow="cast: true"></a-entity>
@@ -39,14 +39,14 @@
 
         </a-entity>
 
-        <a-entity id="video">
+        <!--a-entity id="video">
           <a-video position="-0.25 5.75 -13.83" autoplay="true" loop="true"
            src="#vid_room1"
            material="shader:flat; side:double; transparent:true;"
            geometry="mergeTo:null; primitive:circle; radius:4.5">
           </a-video>
           <a-torus color="#43A367" arc="270" radius="5" radius-tubular="0.1" material="color: #1c1c1c" geometry="arc: 360; radius: 4.65" position="-0.25 5.74 -13.77"></a-torus>
-        </a-entity>
+        </a-entity-->
 
         <a-entity id="tables_room1">
           <a-entity id="tableset1" position="-13.61 0 0">
