@@ -6,11 +6,60 @@
     <script src="https://cdn.jsdelivr.net/npm/aframe-joystick@4.0.0/joystick.js"></script>
   </head>
   <body>
+
+
+
+<script>
+
+AFRAME.registerComponent('video-controls', {
+
+	init: function()
+	{
+		let video = document.querySelector("#video");
+
+		let videoDisplay = document.querySelector("#video-display");
+		let videoBorder  = document.querySelector("#video-border");
+		let videoMesh  = videoDisplay.getObject3D("mesh");
+		let borderMesh = videoBorder.getObject3D("mesh");
+
+		videoBorder.addEventListener("mousedown", function(event)
+		{
+			if ( video.paused )
+			{
+				video.play();
+				borderMesh.material.color.set("#004400");
+			}
+			else
+			{
+				video.pause();
+				borderMesh.material.color.set("#440000");
+			}
+		});
+	}
+
+});
+
+</script>
+
     <a-scene joystick vr-mode-ui="enabled: false" id="updateMe" shadow="type: pcfsoft; autoUpdate: true" visible="true" background="color: #5e5e5e" inspector="" keyboard-shortcuts="" screenshot=""  device-orientation-permission-ui="">
 
-      <!--a-assets>
-        <video id="vid_room1" src="lakme.mp4" preload=""></video>
-      </a-assets-->
+      <a-assets>
+        <video id="video" loop="true" src="lakme.mp4" autoplay></video>
+      </a-assets>
+
+      <a-plane
+    		id = "video-border"
+    		width = "17" height = "10"
+    		position = "0 5 -20"
+    		color = "#440000"
+    		video-controls>
+    		<a-video
+    			id = "video-display"
+    			width="16" height="9"
+    			position="0 0 0.1"
+    			src="#video">
+    		</a-video>
+    	</a-plane>
 
       <a-entity id="sphere" visible="false" geometry="primitive: sphere; radius: 5" material="color: #EF2D5E" position="22.16638 5 -55.60458" rotation="" scale="" shadow="cast: true"></a-entity>
       <a-entity id="cylinder" visible="false" geometry="primitive: cylinder; height: 15; radius: 2" material="color: #FFC65D" position="3.62744 6.99598 -51.12136" shadow="cast: true"></a-entity>
