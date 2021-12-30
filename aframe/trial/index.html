@@ -2,9 +2,10 @@
   <head>
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="https://unpkg.com/aframe-event-set-component@3.0.3/dist/aframe-event-set-component.min.js"></script>
+    <script src="https://cdn.rawgit.com/mrturck/aframe-joystick/master/joystick.min.js"></script>
   </head>
   <body>
-    <a-scene id="updateMe" shadow="type: pcfsoft; autoUpdate: true" visible="true" background="color: #5e5e5e" inspector="" keyboard-shortcuts="" screenshot="" vr-mode-ui="" device-orientation-permission-ui="">
+    <a-scene joystick vr-mode-ui="enabled: false" id="updateMe" shadow="type: pcfsoft; autoUpdate: true" visible="true" background="color: #5e5e5e" inspector="" keyboard-shortcuts="" screenshot=""  device-orientation-permission-ui="">
 
       <!--a-assets>
         <video id="vid_room1" src="lakme.mp4" preload=""></video>
