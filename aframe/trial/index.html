@@ -71,7 +71,12 @@
 
       <a-entity id="rig" rotation="" position="-7.44616 4.69927 20.86926">
         <a-camera id="camera" camera="" position="2.63902 2.6439 -23.28968" rotation="-13.407212406061273 -88.23550045014713 0" look-controls="" wasd-controls="" data-aframe-inspector-original-camera="">
-          <a-cursor visible="true" material="color: #787878" raycaster="" cursor="" geometry=""></a-cursor>
+          <!--a-cursor visible="true" material="color: #787878" raycaster="" cursor="" geometry=""></a-cursor-->
+          <a-cursor position="0 0 -3"
+              geometry="primitive: ring; radiusOuter: 0.030; radiusInner: 0.020;"
+              material="color: #11d8c4; shader: flat"
+              fuse="true" timeout="10">
+          </a-cursor>  
         </a-camera>
       </a-entity>
 
