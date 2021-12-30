@@ -1,0 +1,28 @@
+<html class="a-fullscreen">
+  <head>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://unpkg.com/aframe-event-set-component@3.0.3/dist/aframe-event-set-component.min.js"></script>
+    <!--script s-rc="https://cdn.rawgit.com/mrturck/aframe-joystick/master/joystick.min.js"></script-->
+    <script src="js/joystick.js"></script>
+  </head>
+  <body>
+    <a-scene>
+      <a-assets>
+        <video id="video">
+          <source src="https://antfood-website.siteleaf.net/uploads/vr-video.mp4" type="video/mp4">
+        </video>
+      </a-assets>
+      <a-sky src="https://antfood-website.siteleaf.net/uploads/home_temp-23be82.png" rotation="0 0 0"></a-sky>
+      <a-entity position="0 0 -10">
+        <a-video src="#video" width="16" height="9" video-player autoplay="false"></a-video>
+      </a-entity>
+
+      <a-camera id="player" position="0 0 0" spawner="mixin: laser; on: shoot" shoot-listener>
+        <a-cursor id="cursor" position="0 0 -1">
+        </a-cursor>
+      </a-camera>
+    </a-scene>
+
+  </body>
+
+</html>
