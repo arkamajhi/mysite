@@ -49,7 +49,7 @@ AFRAME.registerComponent('video-controls', {
 
       <a-plane
     		id = "video-border"
-    		geometry="mergeTo:null; primitive:circle; radius:4.8"
+    		width = "17" height = "10"
     		position = "-0.25 5.75 -13.83"
     		color = "#440000"
     		video-controls>
@@ -59,10 +59,10 @@ AFRAME.registerComponent('video-controls', {
     			position="0 0 0.1"
     			src="#video">
     		</a-video-->
-        <a-video position="0 0 0.1"
-         src="#video"
-         material="shader:flat; side:double; transparent:true;"
-         geometry="mergeTo:null; primitive:circle; radius:4.5">
+        <a-video
+          id = "video-display"
+          position="0 0 0.1" width="16" height="9"
+          src="#video">
         </a-video>
     	</a-plane>
 
