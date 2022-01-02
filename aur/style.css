@@ -39,7 +39,12 @@ h4
   color:white;
 }
 
+.navbar-brand
+{
+  font-weight: bolder;
+}
+
 .scrollspy-example
 {
-  padding: 0 20;
+  padding: 0px 20px;
 }
