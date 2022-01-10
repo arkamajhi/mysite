@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!-- Pano2VR project file  -->
+<pano2vrconfig rev="18105" version="6.1.14">
+  <panorama>
+    <id>node1</id>
+    <input>
+      <patch/>
+      <type>auto</type>
+      <filename>pano (1).jpeg</filename>
+      <videotype>equi</videotype>
+      <levelpitch>0</levelpitch>
+      <levelroll>0</levelroll>
+    </input>
+    <viewingparameter>
+      <pan/>
+      <tilt/>
+      <fov/>
+      <flyinstart/>
+      <pannorth>0</pannorth>
+    </viewingparameter>
+    <userdata>
+      <capturedatetime>2020-10-29T19:17:36</capturedatetime>
+      <title>DCIM\100GOPRO\GS__9747.JPG</title>
+      <datetime>10/29/2020 7:17 PM</datetime>
+      <tags>hotspot</tags>
+    </userdata>
+    <floorplans/>
+    <hotspots>
+      <hotspot>
+        <position/>
+        <next>
+          <pan>0</pan>
+          <tilt>0</tilt>
+          <fov>0</fov>
+        </next>
+        <polygon>
+          <polystring>-270/11.46|-279.76/11.28|-279.4/-1.97|-269.97/-2</polystring>
+          <usedefaultcolor>1</usedefaultcolor>
+          <backgroundcolor>#0000ff,64</backgroundcolor>
+          <bordercolor>#0000ff</bordercolor>
+        </polygon>
+        <type>poly</type>
+        <id>Poly01</id>
+        <linktype>url</linktype>
+        <linksubtype>unknown</linksubtype>
+        <url>www.arkadesignstudio.in</url>
+        <target>_blank</target>
+      </hotspot>
+    </hotspots>
+    <output>
+      <placeidcache>{"entries":[]}</placeidcache>
+      <htmlcss>
+        <html>
+          <enabled>1</enabled>
+          <filename>../html5/index.html</filename>
+          <values>
+            <value id="css"></value>
+            <value id="fitcover">false</value>
+            <value id="gginfo">false</value>
+            <value id="htmltitle">$(upt)</value>
+            <value id="jsxml">false</value>
+            <value id="parseanchor">false</value>
+          </values>
+        </html>
+        <facequality/>
+        <transition>
+          <zoomafterinfov>90</zoomafterinfov>
+          <zoomafteroutfov>20</zoomafteroutfov>
+        </transition>
+        <autorotate/>
+        <soundstransition/>
+        <flyintransition/>
+        <hotspottext/>
+        <hotspotstyle/>
+        <webvr/>
+        <tilesize>1440</tilesize>
+        <filename>../html5/pano.xml</filename>
+      </htmlcss>
+    </output>
+    <streetview/>
+    <streetviewproject/>
+    <sounds/>
+    <animation>
+      <title>Animation01</title>
+    </animation>
+  </panorama>
+</pano2vrconfig>
