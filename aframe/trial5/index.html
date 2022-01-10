@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Hello, WebVR! • A-Frame</title>
+    <meta name="description" content="Hello, WebVR! • A-Frame">
+    <script src="https://aframe.io/releases/0.9.2/aframe.min.js"></script>
+
+    <!--animation component script-->
+    <script src="https://unpkg.com/aframe-animation-component@^4.1.2/dist/aframe-animation-component.min.js"></script>
+    <script src="https://unpkg.com/aframe-look-at-component@0.5.1/dist/aframe-look-at-component.min.js"></script>
+
+    <script>
+      AFRAME.registerComponent('infogroup',{
+        init:function(){
+            this.el.addEventListener('reloadinfo',function(evt){
+            //alert(evt.detail.currinfo+"   "+evt.detail.newinfo);
+            //get the entire current spot group and scale it to 0
+            var currinfogroup=document.getElementById(evt.detail.currinfo);
+            currinfogroup.setAttribute("scale","0 0 0");
+
+            //get the entire new spot group and scale it to 1
+            var newinfogroup=document.getElementById(evt.detail.newinfo);
+            newinfogroup.setAttribute("scale","1 1 1");
+          });
+        }
+      });
+      AFRAME.registerComponent('infoicon',{
+        schema:{
+          linkto:{type:"string",default:""},
+          infogroup:{type:"string",default:""}
+        },
+        init:function(){
+
+          //add image source of hotspot icon
+          this.el.setAttribute("src","#info-icon");
+          //resize
+          this.el.setAttribute("scale","0.5 0.5 0.5");
+          //make the icon look at the camera all the time
+          this.el.setAttribute("look-at","#cam");
+
+          var data=this.data;
+
+          this.el.addEventListener('click',function(){
+            this.setAttribute("scale","2.5 1.25 1");
+            this.setAttribute("src",data.infolink);
+          });
+          this.el.addEventListener('mouseleave',function(){
+            this.setAttribute("scale","0.5 0.5 0.5");
+            this.setAttribute("src","#info-icon");
+
+            var cur=document.getElementById("cursor-visual");
+            cur.emit("stopFuse");
+          });
+          this.el.addEventListener('mouseenter', function (evt) {
+            var cur=document.getElementById("cursor-visual");
+            cur.emit("startFuse");
+
+          });
+        }
+      });
+
+
+      AFRAME.registerComponent('hotspots',{
+        init:function(){
+            this.el.addEventListener('reloadspots',function(evt){
+
+            //get the entire current spot group and scale it to 0
+            var currspotgroup=document.getElementById(evt.detail.currspots);
+            currspotgroup.setAttribute("scale","0 0 0");
+
+            //get the entire new spot group and scale it to 1
+            var newspotgroup=document.getElementById(evt.detail.newspots);
+            newspotgroup.setAttribute("scale","1 1 1");
+          });
+        }
+      });
+      AFRAME.registerComponent('spot',{
+        schema:{
+          linkto:{type:"string",default:""},
+          spotgroup:{type:"string",default:""},
+          infogroup:{type:"string",default:""},
+          infoparent:{type:"string",default:""}
+        },
+        init:function(){
+
+          //add image source of hotspot icon
+          this.el.setAttribute("src","#hotspot");
+          //make the icon look at the camera all the time
+          this.el.setAttribute("look-at","#cam");
+
+          var data=this.data;
+
+          this.el.addEventListener('click',function(){
+            //set the skybox source to the new image as per the spot
+            var sky=document.getElementById("skybox");
+            sky.setAttribute("src",data.linkto);
+
+            var spotcomp=document.getElementById("spots");
+            var currspots=this.parentElement.getAttribute("id");
+            //create event for spots component to change the spots data
+            spotcomp.emit('reloadspots',{newspots:data.spotgroup,currspots:currspots});
+
+
+            var infocomp=document.getElementById("infos");
+            var currinfo=data.infoparent;
+            //create event for spots component to change the spots data
+            infocomp.emit('reloadinfo',{currinfo:currinfo,newinfo:data.infogroup});
+          });
+          this.el.addEventListener('mouseleave',function(){
+            var cur=document.getElementById("cursor-visual");
+            cur.emit("stopFuse");
+          });
+          this.el.addEventListener('mouseenter', function (evt) {
+            var cur=document.getElementById("cursor-visual");
+            cur.emit("startFuse");
+          });
+        }
+      });
+
+      AFRAME.registerComponent('entertourbtn',{
+        init:function(){
+            this.el.addEventListener('mouseleave',function(){
+            var cur=document.getElementById("cursor-visual");
+            cur.emit("stopFuse");
+
+              this.emit("startAnim1");
+          });
+          this.el.addEventListener('mouseenter', function (evt) {
+            var cur=document.getElementById("cursor-visual");
+            cur.emit("startFuse");
+            this.emit("stopAnim1");
+          });
+
+          this.el.addEventListener('click', function (evt) {
+
+            var sky=document.getElementById("skybox");
+            sky.setAttribute("src","#room1");
+
+            var w = document.getElementById("landingassets");
+            w.setAttribute("scale","0 0 0");
+
+            /*
+            var w = document.getElementById("welcomepanel");
+            w.parentNode.removeChild(w);
+
+            var h1 = document.getElementById("help1panel");
+            h1.parentNode.removeChild(h1);
+
+            var h2 = document.getElementById("help2panel");
+            h2.parentNode.removeChild(h2);
+
+            var e = document.getElementById("enterbtn");
+            e.parentNode.removeChild(e);
+
+            var b = document.getElementById("base");
+            b.parentNode.removeChild(b);
+            */
+
+            var ig1 = document.getElementById("infogroup-room1");
+            ig1.setAttribute("scale","1 1 1");
+
+            var hs1 = document.getElementById("group-room1");
+            hs1.setAttribute("scale","1 1 1");
+
+            var ho = document.getElementById("home-icon");
+            ho.setAttribute("scale","1 1 1");
+          });
+        }
+      });
+
+      AFRAME.registerComponent('homebtn',{
+        init:function(){
+            this.el.addEventListener('mouseleave',function(){
+            var cur=document.getElementById("cursor-visual");
+            cur.emit("stopFuse");
+
+          });
+          this.el.addEventListener('mouseenter', function (evt) {
+            var cur=document.getElementById("cursor-visual");
+            cur.emit("startFuse");
+
+          });
+
+          this.el.addEventListener('click', function (evt) {
+
+            var sky=document.getElementById("skybox");
+            sky.setAttribute("src","#landingsky");
+
+            var w = document.getElementById("landingassets");
+            w.setAttribute("scale","1 1 1");
+
+
+            var ig1 = document.getElementById("infogroup-room1");
+            ig1.setAttribute("scale","0 0 0");
+
+            var hs1 = document.getElementById("group-room1");
+            hs1.setAttribute("scale","0 0 0");
+
+            var ho = document.getElementById("home-icon");
+            ho.setAttribute("scale","0 0 0");
+          });
+        }
+      });
+
+    </script>
+  </head>
+  <body>
+    <a-scene id="ascene" background="color: #FAFAFA" inspector="https://cdn.jsdelivr.net/gh/aframevr/aframe-inspector@master/dist/aframe-inspector.min.js">
+      <a-assets>
+        <img id="landingsky" src="assets/skydome.png">
+        <img id="welcome" src="assets/welcome.png">
+        <img id="help1" src="assets/help-1.png">
+        <img id="help2" src="assets/help-2.png">
+
+
+        <img id="room1" src="assets/1.jpg">
+        <img id="room2" src="assets/2.jpg">
+        <img id="room3" src="assets/3.jpg">
+        <img id="room4" src="assets/4.jpg">
+
+        <img id="info1" src="assets/panel-1.png">
+        <img id="info2" src="assets/panel-2.png">
+        <img id="info3" src="assets/panel-3.png">
+        <img id="info4" src="assets/panel-4.png">
+
+        <img id="hotspot" src="assets/hotspot.png">
+        <img id="info-icon" src="assets/info-icon.png">
+        <img id="home" src="assets/home.png">
+      </a-assets>
+      <!-- room teleport hotspots -->
+      <a-entity id="spots" hotspots>
+        <a-entity id="group-room1" scale="0 0 0">
+          <a-image spot="linkto:#room2;spotgroup:group-room2;infogroup:infogroup-room2;infoparent:infogroup-room1" position="-10 0 0"></a-image>
+        </a-entity>
+        <a-entity id="group-room2" scale="0 0 0">
+          <a-image spot="linkto:#room1;spotgroup:group-room1;infogroup:infogroup-room1;infoparent:infogroup-room2" position="10 0 2"></a-image>
+          <a-image spot="linkto:#room3;spotgroup:group-room3;infogroup:infogroup-room3;infoparent:infogroup-room2" position="-10 0 -2"></a-image>
+          <a-image spot="linkto:#room4;spotgroup:group-room4;infogroup:infogroup-room4;infoparent:infogroup-room2" position="2 0 -10"></a-image>
+        </a-entity>
+        <a-entity id="group-room3" scale="0 0 0">
+          <a-image spot="linkto:#room2;spotgroup:group-room2;infogroup:infogroup-room2;infoparent:infogroup-room3" position="10 0 4"></a-image>
+        </a-entity>
+        <a-entity id="group-room4" scale="0 0 0">
+          <a-image spot="linkto:#room2;spotgroup:group-room2;infogroup:infogroup-room2;infoparent:infogroup-room4" position="0 0 10"></a-image>
+        </a-entity>
+      </a-entity>
+
+      <!-- info spots -->
+      <a-entity id="infos" infogroup>
+        <a-entity id="infogroup-room1" scale="0 0 0">
+          <a-image infoicon="infolink:#info1" position="0 -1.2 -3"></a-image>
+        </a-entity>
+        <a-entity id="infogroup-room2" scale="0 0 0">
+          <a-image infoicon="infolink:#info4" position="-3 0 -3"></a-image>
+        </a-entity>
+        <a-entity id="infogroup-room3" scale="0 0 0">
+          <a-image infoicon="infolink:#info2" position="0 0 4"></a-image>
+          <a-image infoicon="infolink:#info4" position="3 0 -2"></a-image>
+        </a-entity>
+        <a-entity id="infogroup-room4" scale="0 0 0">
+          <a-image infoicon="infolink:#info3" position="5 0 0"></a-image>
+        </a-entity>
+      </a-entity>
+
+      <a-entity id="cam" camera position="0 1.6 0" look-controls wasd-controls>
+
+        <a-entity id="cursor-visual" cursor="fuse:true;fuseTimeout:2000"
+                  material="shader:flat;color:#09B4FF"
+                  position="0 0 -1"
+                  geometry="primitive: ring; radiusInner: 0.01; radiusOuter: 0.015;thetaLength:0"
+                  animation__mouseenter="property: geometry.thetaLength; dir: alternate; dur: 2000;
+                                easing: easeInSine; from:0;to: 360;startEvents:startFuse;pauseEvents:stopFuse;autoplay:false"
+
+                  animation__mouseleave="property: geometry.thetaLength; dir: alternate; dur: 500;
+                                easing: easeInSine; to: 0;startEvents:stopFuse;autoplay:false">
+          <a-entity geometry="primitive:ring;radiusOuter:0.015;radiusInner:0.01" material="shader:flat;color:#000000"></a-entity>
+        </a-entity>
+      </a-entity>
+
+      <a-image id="home-icon" homebtn src="#home" position="0 -2 -1" scale="0 0 0" rotation="-90 0 0"></a-image>
+      <a-entity id="landingassets">
+        <a-curvedimage id="welcomepanel" src="#welcome" position="0 2 -4" scale="1 1 1" height="4" radius="4" theta-length="180" rotation="0 90 0"></a-curvedimage>
+        <a-image id="help1panel" src="#help1" position="-3 2 -3" scale="2 1 0" look-at="#cam"></a-image>
+        <a-image id="help2panel" src="#help2" position="3 2 -3" scale="2 1 0" look-at="#cam"></a-image>
+        <a-image id="enterbtn" entertourbtn src="#hotspot" position="0 0.2 -3" rotation="90 0 0">        </a-image>
+        <a-plane id="base"  color="#f2f2f2" width="20" height="20" rotation="-90 0 0" position="0 0 0"></a-plane>
+      </a-entity>
+      <!--<a-sphere id="skybox" src="#landingsky" radius="40" material="shader:flat;side:back"></a-sphere>-->
+      <a-sky id="skybox" src="#landingsky"></a-sky>
+    </a-scene>
+  </body>
+</html>
