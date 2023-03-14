@@ -29,3 +29,7 @@ const latlngs = [
 ];
 const polyline = L.polyline(latlngs, {});
 polyline.addTo(map);
+
+const marker=[18.920675417289807,72.82952788802635];
+const cMarker = L.circleMarker(marker);
+cMarker.addTo(map);
