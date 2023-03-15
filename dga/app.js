@@ -3,15 +3,15 @@ const myMap = L.map('map').setView([22.9074872, 79.07306671], 5);
 
 //https://stackoverflow.com/questions/9394190/leaflet-map-api-with-google-satellite-layer
 
-L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{
-    maxZoom: 20,
-    subdomains:['mt0','mt1','mt2','mt3']
-}).addTo(myMap);
+//L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{
+//    maxZoom: 20,
+//    subdomains:['mt0','mt1','mt2','mt3']
+//}).addTo(myMap);
 
-//const tileUrl='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-//const attribution = '';
-//const tileLayer = L.tileLayer(tileUrl,{attribution});
-//tileLayer.addTo(myMap);
+const tileUrl='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+const attribution = '';
+const tileLayer = L.tileLayer(tileUrl,{attribution});
+tileLayer.addTo(myMap);
 
 //mapLink ='<a href="http://www.esri.com/">Esri</a>';
 //wholink ='i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community';
