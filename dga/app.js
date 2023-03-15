@@ -9,9 +9,9 @@ tileLayer.addTo(myMap);
 //wholink ='i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community';
 //L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {attribution: '&copy; '+mapLink+', '+wholink, maxZoom: 18,}).addTo(myMap);
 
-const videoUrl = 'https://www.mapbox.com/bites/00188/patricia_nasa.webm';
-const videoBounds = [[ 32, -130], [ 13, -100]];
-L.videoOverlay(videoUrl, videoBounds ).addTo(myMap);
+//const videoUrl = 'https://www.mapbox.com/bites/00188/patricia_nasa.webm';
+//const videoBounds = [[ 32, -130], [ 13, -100]];
+//L.videoOverlay(videoUrl, videoBounds ).addTo(myMap);
 
 
 function generateList()
@@ -87,3 +87,23 @@ function flyToStore(store){
     }, 2000);
 }
 
+function getColor(d)
+{
+    return d > 100 ? "#a63603" :
+        d > 200 ? "#e6550d" :
+            d > 300 ? "#fd8d3c";
+}
+
+function style(feature)
+{
+    weight: 1,
+    opacity: 1,
+    color: 'grey',
+    dashArray: '',
+    fillOpacity: 0.9,
+    fillColor: getColor(feature.properties.LENGTH_)
+}
+
+const geojson = L.geoJSON(Indsubdist,{
+    style: style
+}).addTo(myMap);
