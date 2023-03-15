@@ -9,6 +9,8 @@
 
     <link href="https://fonts.googleapis.com/css?family=Mukta+Mahee" rel="stylesheet">
     <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.1/css/fontawesome.min.css" integrity="sha384-QYIZto+st3yW+o8+5OHfT6S482Zsvz2WfOzpFSXMF9zqeLcFV0/wlZpMtyFcZALm" crossorigin="anonymous">
+
 </head>
 <body>
     <button onclick="generateList()">Click me</button>
@@ -26,6 +28,13 @@
     </form>
 
     <main>
+
+        <div id="multilevel-pane">
+            <div class="multilevel-heading">
+                <h2>Multilevel</h2>
+            </div>
+        </div>
+
         <div class="phc-list">
             <div class="heading">
                 <h2>List of PHCs</h2>
@@ -34,12 +43,20 @@
 
             </ul>
         </div>
+
         <div id="map">
-            Right Side
+            Left Side
         </div>
+
     </main>
 
-    <button onclick="toggleFullScreen()">Toggle Fullscreen</button>
+    <button onclick="toggleFullScreen()">
+        <div id="fullscreenbtn">
+            Maximize Full-Screen
+          </div>
+
+    </button>
+
 
 
 
