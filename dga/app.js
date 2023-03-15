@@ -1,12 +1,23 @@
 const myMap = L.map('map').setView([22.9074872, 79.07306671], 5);
+
 const tileUrl='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 const attribution = '';
 const tileLayer = L.tileLayer(tileUrl,{attribution});
 tileLayer.addTo(myMap);
 
+//mapLink ='<a href="http://www.esri.com/">Esri</a>';
+//wholink ='i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community';
+//L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {attribution: '&copy; '+mapLink+', '+wholink, maxZoom: 18,}).addTo(myMap);
+
+//const videoUrl = 'https://www.mapbox.com/bites/00188/patricia_nasa.webm';
+//const videoBounds = [[ 32, -130], [ 13, -100]];
+//L.videoOverlay(videoUrl, videoBounds ).addTo(myMap);
+
+
 function generateList()
 {
     const ul=document.querySelector('.list');
+    ul.innerHTML="";
     storeList.forEach((shop) => {
         const li = document.createElement('li');
         const div = document.createElement('div');
@@ -27,9 +38,10 @@ function generateList()
         li.appendChild(div);
         ul.appendChild(li);
     });
+    shopsLayer.addTo(myMap);
 }
 
-generateList();
+//generateList();
 
 function makePopupContent(shop){
     return `
@@ -60,7 +72,7 @@ const shopsLayer = L.geoJSON(storeList,{
         return L.marker(latlng,{icon: myIcon});
     }
 });
-shopsLayer.addTo(myMap);
+
 
 function flyToStore(store){
     const lat = store.geometry.coordinates[1];
