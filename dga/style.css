@@ -8,9 +8,6 @@
     margin: 0;
     box-sizing: border-box;
     -webkit-font-smoothing: antialiased;
-}
-
-body{
     font-family: 'Mukta Mahee', verdana, sans-serif;
 }
 
@@ -28,6 +25,7 @@ main{
 .store-list .heading{
     background: #ff6900;
     color: #fff;
+
 }
 
 .store-list .heading h2{
@@ -53,6 +51,7 @@ main{
     text-decoration: none;
     font-size: 20px;
     color: #ff6900;
+    font-weight: bold;
 }
 
 .store-list .shop-item p{
