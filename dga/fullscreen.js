@@ -1,6 +1,9 @@
 function toggleFullScreen() {
     if (!document.fullscreenElement &&    // alternative standard method
      !document.mozFullScreenElement && !document.webkitFullscreenElement) {  // current working methods
+
+        document.getElementById("fullscreenbtn").innerHTML = 'Minimize Full-Screen';
+
       if (document.documentElement.requestFullscreen) {
         document.documentElement.requestFullscreen();
       } else if (document.documentElement.mozRequestFullScreen) {
@@ -9,6 +12,7 @@ function toggleFullScreen() {
         document.documentElement.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
       }
     } else {
+        document.getElementById("fullscreenbtn").innerHTML = 'Maximize Full-Screen';
        if (document.cancelFullScreen) {
           document.cancelFullScreen();
        } else if (document.mozCancelFullScreen) {
