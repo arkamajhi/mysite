@@ -9,9 +9,9 @@ tileLayer.addTo(myMap);
 //wholink ='i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community';
 //L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {attribution: '&copy; '+mapLink+', '+wholink, maxZoom: 18,}).addTo(myMap);
 
-//const videoUrl = 'https://www.mapbox.com/bites/00188/patricia_nasa.webm';
-//const videoBounds = [[ 32, -130], [ 13, -100]];
-//L.videoOverlay(videoUrl, videoBounds ).addTo(myMap);
+const videoUrl = 'https://www.mapbox.com/bites/00188/patricia_nasa.webm';
+const videoBounds = [[ 32, -130], [ 13, -100]];
+L.videoOverlay(videoUrl, videoBounds ).addTo(myMap);
 
 
 function generateList()
