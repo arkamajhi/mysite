@@ -1,9 +1,17 @@
 const myMap = L.map('map').setView([22.9074872, 79.07306671], 5);
 
-const tileUrl='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-const attribution = '';
-const tileLayer = L.tileLayer(tileUrl,{attribution});
-tileLayer.addTo(myMap);
+
+//https://stackoverflow.com/questions/9394190/leaflet-map-api-with-google-satellite-layer
+
+L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{
+    maxZoom: 20,
+    subdomains:['mt0','mt1','mt2','mt3']
+}).addTo(myMap);
+
+//const tileUrl='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+//const attribution = '';
+//const tileLayer = L.tileLayer(tileUrl,{attribution});
+//tileLayer.addTo(myMap);
 
 //mapLink ='<a href="http://www.esri.com/">Esri</a>';
 //wholink ='i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community';
@@ -18,93 +26,144 @@ function generateList()
 {
     const ul=document.querySelector('.list');
     ul.innerHTML="";
-    storeList.forEach((shop) => {
+    PHCList.forEach((PHC) => {
         const li = document.createElement('li');
         const div = document.createElement('div');
         const a = document.createElement('a');
         const p = document.createElement('p');
 
         a.addEventListener('click', () => {
-            flyToStore(shop);
+            flyToPHC(PHC);
         });
 
-        div.classList.add('shop-item');
-        a.innerText = shop.properties.name;
+        div.classList.add('PHC-item');
+        a.innerText = PHC.properties.name;
         a.href = "#";
-        p.innerText = shop.properties.address;
+        p.innerText = PHC.properties.address;
 
         div.appendChild(a);
         div.appendChild(p);
         li.appendChild(div);
         ul.appendChild(li);
     });
-    shopsLayer.addTo(myMap);
+
 }
 
 //generateList();
 
-function makePopupContent(shop){
+function makePopupContent(phc){
     return `
         <div>
-            <h4>${shop.properties.name}</h4>
-            <p>${shop.properties.address}</p>
+            <h4>${phc.properties.name}</h4>
+            <p>${phc.properties.address}</p>
             <div class="phone-number">
-                <a href="tel:${shop.properties.phone}">
-                    ${shop.properties.phone}
+                <a href="tel:${phc.properties.phone}">
+                    ${phc.properties.phone}
                 </a>
             </div>
         </div>
     `;
 }
 
-function onEachFeature(feature, layer){
-    layer.bindPopup(makePopupContent(feature), {closeButton:false, offset: L.point(0,-8)});
-}
+//function onEachFeature(feature, layer){layer.bindPopup(makePopupContent(feature), {closeButton:false, offset: L.point(0,-8)})}
 
 var myIcon = L.icon({
     iconUrl: "marker.png",
     iconSize: [30,40]
 });
 
-const shopsLayer = L.geoJSON(storeList,{
-    onEachFeature: onEachFeature,
+const PHCsLayer = L.geoJSON(PHCList,{
+    onEachFeature: function (feature, layer){layer.bindPopup(makePopupContent(feature), {closeButton:false, offset: L.point(0,-8)}).bindTooltip(feature.properties.name)},
     pointToLayer: function(feature, latlng){
         return L.marker(latlng,{icon: myIcon});
     }
 });
 
+PHCsLayer.addTo(myMap);
 
-function flyToStore(store){
-    const lat = store.geometry.coordinates[1];
-    const lng = store.geometry.coordinates[0];
+
+function flyToPHC(phc){
+    const lat = phc.geometry.coordinates[1];
+    const lng = phc.geometry.coordinates[0];
     myMap.flyTo([lat,lng], 14, {duration: 3});
 
     setTimeout(()=>{
         L.popup({closeButton:false, offset: L.point(0,-8)})
         .setLatLng([lat,lng])
-        .setContent(makePopupContent(store))
+        .setContent(makePopupContent(phc))
         .openOn(myMap);
     }, 2000);
 }
 
-function getColor(d)
-{
-    return d > 100 ? "#a63603" :
-        d > 200 ? "#e6550d" :
-            d > 300 ? "#fd8d3c";
+
+
+
+
+
+
+function getColor(d){
+    return d > 1000 ? 'red' : 'blue';
 }
 
-function style(feature)
-{
-    weight: 1,
-    opacity: 1,
-    color: 'grey',
-    dashArray: '',
-    fillOpacity: 0.9,
-    fillColor: getColor(feature.properties.LENGTH_)
+function style(feature){
+    return{
+        weight: 0.5,
+        opacity: 1,
+        color: 'grey',
+        dashArray: '',
+        fillOpacity: 0.3,
+        fillColor: getColor(feature.properties.AREA_)
+    }
 }
 
-const geojson = L.geoJSON(Indsubdist,{
+
+function highlightFeature(e) {
+    var layer = e.target;
+
+    layer.setStyle({
+        weight:5,
+        color:'#666',
+        dashArray:'',
+        fillOpacity:0.7
+    });
+
+    if(!L.Browser.ie && !L.Browser.opera && !L.Browser.edge){
+        layer.bringToFront();
+    }
+
+    //info.update(layer.feature.properties);
+}
+
+function resetHighlight(e) {
+    geojson.resetStyle(e.target);
+    //info.update();
+}
+
+function zoomToFeature(e) {
+    myMap.fitBounds(e.target.getBounds());
+}
+
+function makePopupSubdistrict(SD){
+    return `
+        <div>
+            <h4>${SD.properties.NAME1_}</h4>
+            <p>${SD.properties.NAME2_}</p>
+        </div>
+    `;
+}
+
+function onEachFeature(feature, layer){
+    layer.on({
+        mouseover: highlightFeature,
+        mouseout: resetHighlight,
+        click: zoomToFeature
+    });
+    layer.bindPopup(makePopupSubdistrict(layer.feature), {closeButton:false, offset: L.point(0,-8)});
+    layer.bindTooltip(makePopupSubdistrict(layer.feature), {closeButton:false, offset: L.point(0,-8)});
+}
+
+
+var geojson = L.geoJSON(Indsubdist,{
     style: style,
     onEachFeature: onEachFeature
 }).addTo(myMap);
