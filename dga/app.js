@@ -105,5 +105,6 @@ function style(feature)
 }
 
 const geojson = L.geoJSON(Indsubdist,{
-    style: style
+    style: style,
+    onEachFeature: onEachFeature
 }).addTo(myMap);
