@@ -12,6 +12,19 @@
 </head>
 <body>
     <button onclick="generateList()">Click me</button>
+
+    <form action="#">
+        <select name="" id="state">
+            <option value="">-- Select State --</option>
+        </select>
+        <select name="" id="district">
+            <option value="">-- Select District --</option>
+        </select>
+        <select name="" id="subdistrict">
+            <option value="">-- Select Sub-District --</option>
+        </select>
+    </form>
+
     <main>
         <div class="store-list">
             <div class="heading">
@@ -30,6 +43,7 @@
 
     <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js" integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin=""></script>
     <script src="phc_list.js"></script>
+    <script src="subdist.geojson"></script>
     <script src="app.js"></script>
 
 </body>
