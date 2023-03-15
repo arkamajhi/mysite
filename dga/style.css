@@ -15,46 +15,46 @@ main{
     display: flex;
 }
 
-.store-list{
+.phc-list{
     width:25%;
     height: 100vh;
     overflow: auto;
     background: whitesmoke;
 }
 
-.store-list .heading{
+.phc-list .heading{
     background: #ff6900;
     color: #fff;
 
 }
 
-.store-list .heading h2{
+.phc-list .heading h2{
     padding: 1rem;
 }
 
-.store-list ul.list{
+.phc-list ul.list{
     padding: 0 1rem;
     list-style-type: none;
 }
 
-.store-list .shop-item{
+.phc-list .PHC-item{
     margin: 1rem 0;
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     padding-bottom: 1rem;
 }
 
-.store-list li:last-child .shop-item{
+.phc-list li:last-child .PHC-item{
     border: none;
 }
 
-.store-list .shop-item a{
+.phc-list .PHC-item a{
     text-decoration: none;
     font-size: 20px;
     color: #ff6900;
     font-weight: bold;
 }
 
-.store-list .shop-item p{
+.phc-list .PHC-item p{
     font-size: 14px;
     color: #404040;
 }
