@@ -1,6 +1,6 @@
 #map{
     height:100vh;
-    width:75%;
+    width:60%;
 }
 
 *{
@@ -15,8 +15,24 @@ main{
     display: flex;
 }
 
+.multilevel-pane{
+    width:20%;
+    height: 100vh;
+    overflow: auto;
+    background: whitesmoke;
+}
+
+.multilevel-heading{
+    background: #ff6900;
+    color: #fff;
+}
+
+.multilevel-heading h2{
+    padding: 1rem;
+}
+
 .phc-list{
-    width:25%;
+    width:20%;
     height: 100vh;
     overflow: auto;
     background: whitesmoke;
