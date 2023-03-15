@@ -1,4 +1,4 @@
-const storeList = [
+const PHCList = [
     {
         "type": "Feature",
         "geometry": {
