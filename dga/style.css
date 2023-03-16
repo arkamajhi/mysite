@@ -141,7 +141,10 @@ main{
 
 .phc-list .heading{
     background: #ff6900;
-    color: #fff;
+    color: #000000;
+    border-bottom: 2px solid black;
+    box-shadow: 3px 3px 4px #888888;
+    padding: 2% 0% 2%;
     position: sticky;
     top: 0;
 }
