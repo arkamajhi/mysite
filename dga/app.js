@@ -1,4 +1,4 @@
-const myMap = L.map('map').setView([22.9074872, 79.07306671], 5);
+const myMap = L.map('map').setView([21.5, 83], 5);
 
 
 //https://stackoverflow.com/questions/9394190/leaflet-map-api-with-google-satellite-layer
@@ -121,8 +121,8 @@ function highlightFeature(e) {
     var layer = e.target;
 
     layer.setStyle({
-        weight:5,
-        color:'#666',
+        weight:2,
+        color:'#000000',
         dashArray:'',
         fillOpacity:0.7
     });
