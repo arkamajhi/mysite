@@ -2,7 +2,7 @@ function toggleFullScreen() {
     if (!document.fullscreenElement &&    // alternative standard method
      !document.mozFullScreenElement && !document.webkitFullscreenElement) {  // current working methods
 
-        document.getElementById("fullscreenbtncontent").innerHTML = '<img src="https://cdn-icons-png.flaticon.com/512/2989/2989876.png" alt="">';
+        document.getElementById("fullscreenbtncontent").innerHTML = '<img src="./2989876.png" alt="">';
 
       if (document.documentElement.requestFullscreen) {
         document.documentElement.requestFullscreen();
@@ -12,7 +12,7 @@ function toggleFullScreen() {
         document.documentElement.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
       }
     } else {
-        document.getElementById("fullscreenbtncontent").innerHTML = '<img src="https://cdn-icons-png.flaticon.com/512/2989/2989868.png" alt="">';
+        document.getElementById("fullscreenbtncontent").innerHTML = '<img src="./2989868.png" alt="">';
        if (document.cancelFullScreen) {
           document.cancelFullScreen();
        } else if (document.mozCancelFullScreen) {
