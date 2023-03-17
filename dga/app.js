@@ -111,7 +111,7 @@ function style(feature){
         opacity: 1,
         color: 'grey',
         dashArray: '',
-        fillOpacity: 0.3,
+        fillOpacity: 0.1,
         fillColor: getColor(feature.properties.AREA_)
     }
 }
@@ -121,7 +121,7 @@ function highlightFeature(e) {
     var layer = e.target;
 
     layer.setStyle({
-        weight:2,
+        weight:0.5,
         color:'#000000',
         dashArray:'',
         fillOpacity:0.7
