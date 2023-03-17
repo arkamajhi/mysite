@@ -20,36 +20,50 @@
     <main>
 
         <div class="left-pane">
-            <div class="multilevel-list">
+            <div class="multilevel-pane">
                 <div class="heading">
                     <h3>Choose from the following</h3>
                 </div>
-                <div class="multi-selection-dropdowns">
+                <div class="multi-selection">
 
-                    <select name="" class="dropdown" id="state">
-                        <option value="">-- Select State --</option>
-                    </select>
+                    <div class="multi-level-selects">
 
-                    <select name="" class="dropdown" id="district">
-                        <option value="">-- Select District --</option>
-                    </select>
-                    <select name="" class="dropdown" id="subdistrict">
-                        <option value="">-- Select Sub-District --</option>
-                    </select>
+                        <div class="selectdiv">
+                            Choose the state from the dropdown below<br>
+                            <select name="" class="dropdown" id="state" onchange="">
+                                <option value="">-- Select State --</option>
+                            </select>
+                        </div>
+
+                        <div class="selectdiv">
+                            Choose the district from the dropdown below<br>
+                            <select name="" class="dropdown" id="district">
+                                <option value="">-- Select District --</option>
+                            </select>
+                        </div>
+
+                        <!--select name="" class="dropdown" id="subdistrict">
+                            <option value="">-- Select Sub-District --</option>
+                        </select-->
+                    </div>
+
                     <div class="query">
                         <button  class="query-button" onclick="generateList()"><h2>Execute Query</h2></button>
                     </div>
                 </div>
-            </div>
 
-            <div class="phc-list">
-                <div class="heading">
-                    <h2>List of PHCs</h2>
+                <div class="phc-list">
+                    <div class="heading">
+                        <h2>List of PHCs</h2>
+                    </div>
+                    <ul class="list">
+
+                    </ul>
                 </div>
-                <ul class="list">
 
-                </ul>
             </div>
+
+
         </div>
 
         <div class="right-pane">
@@ -103,6 +117,8 @@ There are many variations of passages of Lorem Ipsum available, but the majority
 
     <script src="app.js"></script>
     <script src="fullscreen.js"></script>
+    <script src="geojson.js"></script>
+    <script src="dropdown.js"></script>
 
 </body>
 </html>
