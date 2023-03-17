@@ -82,40 +82,44 @@ main{
 
 
 
-.multilevel-list{
-    height: 40vh;
+.multilevel-pane{
+    height: 100vh;
     overflow: auto;
     background: whitesmoke;
 }
 
-.multilevel-list .heading{
+.multilevel-pane .heading{
     background: #ff6900;
-    color: #000000;
+    color: #ffffff;
     border-bottom: 2px solid black;
     box-shadow: 3px 3px 4px #888888;
 }
 
-.multilevel-list .heading h3{
+.multilevel-pane .heading h3{
     text-align: center;
     padding: 1rem;
 }
 
-.multi-selection-dropdowns{
+.multilevel-pane .multi-selection{
     align-items: center;
+    text-align: center;
 }
 
-.multi-selection-dropdowns .dropdown{
-    width: 90%;
-    margin: 5%;
+.selectdiv{
+    margin: 0.5rem;
+    padding: 0.8rem;
+    border:1px solid black;
+    border-radius: 15px;
+}
+
+.multilevel-pane .multi-selection .dropdown{
+    width: 100%;
+    margin: 0;
 }
 
 .query{
-    display: flex;
-    justify-content: center;
-    padding: 1% 5% 5% ;
+    padding: 5% 0% 5% ;
     border-bottom: 2px solid black;
-
-
 }
 .query .query-button{
     border: 2px solid black;
@@ -126,14 +130,14 @@ main{
 .query .query-button h2{
     padding: 1rem;
     background: #ff6900;
-    color: #000000;
+    color: #ffffff;
 
     border-radius: 13px;
 
 }
 
 .phc-list{
-    height: 60vh;
+    height: auto;
     overflow: auto;
     background: whitesmoke;
     align-items: flex-start;
@@ -141,7 +145,7 @@ main{
 
 .phc-list .heading{
     background: #ff6900;
-    color: #000000;
+    color: #ffffff;
     border-bottom: 2px solid black;
     box-shadow: 3px 3px 4px #888888;
     padding: 2% 0% 2%;
@@ -224,7 +228,8 @@ main{
 
 #chart .heading{
     background: #ff6900;
-    color: #000000;
+    color: #ffffff;
+
     border-bottom: 2px solid black;
     box-shadow: 3px 3px 4px #888888;
     position: sticky;
