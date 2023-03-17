@@ -167,3 +167,24 @@ var geojson = L.geoJSON(Indsubdist,{
     style: style,
     onEachFeature: onEachFeature
 }).addTo(myMap);
+
+/*
+var polygon = L.polygon([
+    [51.51, -0.08],
+    [51.503, -0.06],
+    [51.51, -0.047]
+  ]).addTo(myMap);
+  var m1 = L.marker([51.515, -0.07]); // Outside and north of polygon
+  var m2 = L.marker([51.506, -0.06]); // In polygon, not on border
+  var m2 = L.marker([51.505, -0.074]); // Inside polygon boundary box but outside of polygon.
+  var m2 = L.marker([51.51, -0.067]); // On polygon border.
+
+  console.log(polygon.contains(m1.getLatLng()));
+  // ==> false
+  console.log(polygon.contains(m2.getLatLng()));
+  // ==> true
+  console.log(polygon.contains(m3.getLatLng()));
+  // ==> false
+  console.log(polygon.contains(m4.getLatLng()));
+  // ==> true
+  */
