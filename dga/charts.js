@@ -65,7 +65,7 @@ d3.csv(charData).then(function(datapoints){
     const cost=[];
     for(i=0;i<datapoints.length;i++)
     {
-        cost.push(datapoints.length[i.cost])
+        cost.push(datapoints.length[i].cost)
     }
     console.log(cost);
 });
