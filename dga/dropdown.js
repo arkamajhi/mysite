@@ -24,6 +24,12 @@ function display_district()
 {
     document.querySelectorAll('.phc-list').forEach(el => el.hidden = true);
 
+    try {
+        dhLayer.remove();
+    } catch (error) {
+
+    }
+
     selectdistrict.innerHTML = "";
     let opt = document.createElement("option");
     //opt.value = i; // the index
@@ -60,4 +66,10 @@ selectdistrict.addEventListener('change', changed_district);
 function changed_district()
 {
     document.querySelectorAll('.phc-list').forEach(el => el.hidden = true);
+
+    try {
+        dhLayer.remove();
+    } catch (error) {
+
+    }
 }
