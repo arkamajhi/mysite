@@ -59,13 +59,43 @@ const ctx = document.getElementById('myChart');
         });
         */
 
-const charData = 'csv\dga_dh_2019.csv';
+/*const charData = './csv/dga_dh_2019.csv';
+var a1=[];
 d3.csv(charData).then(function(datapoints){
-    console.log(datapoints);
-    const cost=[];
+    //console.log(datapoints);
+    var a1countyes=0;
+    var a1counttotal=0;
     for(i=0;i<datapoints.length;i++)
     {
-        cost.push(datapoints.length[i].cost)
+        console.log(a1countyes);
+        if(datapoints[i].2=='Yes')
+            {
+                a1countyes++;
+            }
     }
-    console.log(cost);
-});
+    //a1.push(a1countyes);
+    //console.log(a1countyes);
+});*/
+
+//console.log(cost);
+
+/*const ctx = document.getElementById('myChart');
+
+new Chart(ctx, {
+    type: 'bar',
+    data: {
+
+      datasets: [{
+        label: '# of Votes',
+        data: a1,
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });*/
