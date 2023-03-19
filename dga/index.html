@@ -28,14 +28,14 @@
                     <div class="multi-level-selects">
 
                         <div class="selectdiv">
-                            Choose the state from the dropdown below<br>
+                            Choose the state/s from the dropdown below<br>
                             <select name="" class="dropdown" id="state" onchange="">
                                 <option value="">-- Select State --</option>
                             </select>
                         </div>
 
                         <div class="selectdiv">
-                            Choose the district from the dropdown below<br>
+                            Choose the district/s from the dropdown below<br>
                             <select name="" class="dropdown" id="district">
                                 <option value="">-- Select District --</option>
                             </select>
@@ -47,15 +47,15 @@
                     </div>
 
                     <div class="query">
-                        <button  class="query-button" onclick="generateList()"><h2>Execute Query</h2></button>
+                        <button  class="query-button" onclick="updateList()"><h2>Execute Query</h2></button>
                     </div>
                 </div>
 
                 <div class="phc-list">
                     <div class="heading">
-                        <h2>List of PHCs</h2>
+                        <h2>List of District Hospitals</h2>
                     </div>
-                    <ul class="list">
+                    <ul class="list" id="left-list">
 
                     </ul>
                 </div>
@@ -101,16 +101,28 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.2/d3.min.js" integrity="sha512-oKI0pS1ut+mxQZdqnD3w9fqArLyILRsT3Dx0B+8RVEXzEk3aNK3J3pWlaGJ8MtTs1oiwyXDAH6hG6jy1sY0YqA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js" integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin=""></script>
-    <script src="phc_list.js"></script>
+
+
+
     <!--script src="subdist.geojson"></script-->
     <script src="india_district_4dec2021.geojson"></script>
 
-    <script src="app.js"></script>
-    <script src="fullscreen.js"></script>
-    <script src="geojson.js"></script>
+    <script src="basemap.js"></script>
+    <script src="basemapshade.js"></script>
+
+    <script src="updatelist.js"></script>
+
+
+    <script src="dh_list.js"></script>
+
     <script src="dropdown.js"></script>
-    <script src="test.js"></script>
+
+    <!--script src="test.js"></script-->
+
     <script src="charts.js"></script>
+
+    <script src="fullscreen.js"></script>
+
 
 </body>
 </html>
