@@ -16,7 +16,7 @@
     height:100vh;
 }
 
-.leaflet-bottom, .leaflet-right{
+.leaflet-bottom{
     display: none;
 }
 
