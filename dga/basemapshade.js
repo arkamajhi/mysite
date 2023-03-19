@@ -21,7 +21,7 @@ function style(feature){
         opacity: 1,
         color: 'grey',
         dashArray: '',
-        fillOpacity: 0.1,
+        fillOpacity: 0.05,
         fillColor: getColor(feature.properties.AREA_)
     }
 }
@@ -34,7 +34,7 @@ function highlightFeature(e) {
         weight:0.5,
         color:'#000000',
         dashArray:'',
-        fillOpacity:0.7
+        fillOpacity:0.5
     });
 
     if(!L.Browser.ie && !L.Browser.opera && !L.Browser.edge){
@@ -77,3 +77,4 @@ var geojson = L.geoJSON(Indsubdist,{
     style: style,
     onEachFeature: onEachFeature
 }).addTo(myMap);
+//.addTo(myMap);
