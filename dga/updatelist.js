@@ -19,38 +19,29 @@ function updateList()
 
 
     dhList.forEach((PHC) => {
-        if(selectstate.value!="All States"&&selectstate.value!="")
-        {
-            if(selectstate.value==PHC.properties.state)
-            {
-                console.log("Found something from selected state. "+selectstate.value+" = "+PHC.properties.state);
 
-                if(selectdistrict.value!="All Districts")
-                {
-                    if(selectdistrict.value==PHC.properties.district)
-                    {
-                        console.log("Found something from selected state and selected district. Oh Yeah !!!");
-                        appendList(PHC);
-                    }
-                    {
-                        //console.log("But not from selected state and district. "+selectdistrict.value+" != "+datapoints[i].district);
-                    }
-                }
-                else
-                {
-                    console.log(selectstate.value+" state selected but none or all district selected");
-                    appendList(PHC);
-                }
+        if(selectstate.value=="All States")
+        {
+            appendList(PHC);
+        }
+        else if(selectstate.value==PHC.properties.state)
+        {
+            if(selectdistrict.value=="All Districts")
+            {
+                appendList(PHC);
+            }
+            else if(selectdistrict.value==PHC.properties.district)
+            {
+                appendList(PHC);
             }
             else
             {
-                //console.log("Not from selected state");
+                //appendList(PHC);
             }
         }
         else
         {
-            console.log("None or all state selected");
-            appendList(PHC);
+            //appendList(PHC);
         }
 
     });
