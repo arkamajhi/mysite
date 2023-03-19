@@ -21,6 +21,9 @@ selectstate.addEventListener('change', display_district);
 
 let selectdistrict = document.getElementById('district');
 
+
+
+
 function display_district()
 {
     document.querySelectorAll('.phc-list').forEach(el => el.hidden = true);
@@ -51,7 +54,6 @@ function display_district()
     }
 
     var uniquedistrict = (listdistict.filter((value, index, array) => array.indexOf(value) === index)).sort();
-
 
 
     uniquedistrict.map( (lang, i) => {
