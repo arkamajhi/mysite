@@ -3,10 +3,6 @@ const myMap = L.map('map').setView([21.5, 83], 5);
 
 //https://stackoverflow.com/questions/9394190/leaflet-map-api-with-google-satellite-layer
 
-const googlemap = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{
-    maxZoom: 20,
-    subdomains:['mt0','mt1','mt2','mt3']
-});
 
 const tileUrl='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 const attribution= 'Map data &copy; OpenStreetMap contributors';
@@ -74,6 +70,31 @@ var OpenTopoMap = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png'
 	attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
 });
 
+//Streets
+
+googleStreets = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',{
+    maxZoom: 20,
+    subdomains:['mt0','mt1','mt2','mt3']
+});
+//Hybrid:
+
+googleHybrid = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}',{
+    maxZoom: 20,
+    subdomains:['mt0','mt1','mt2','mt3']
+});
+//Satellite:
+
+googleSat = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{
+    maxZoom: 20,
+    subdomains:['mt0','mt1','mt2','mt3']
+});
+//Terrain
+
+googleTerrain = L.tileLayer('http://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}',{
+    maxZoom: 20,
+    subdomains:['mt0','mt1','mt2','mt3']
+});
+
 
 
 //const videoUrl = 'https://www.mapbox.com/bites/00188/patricia_nasa.webm';
@@ -90,7 +111,10 @@ var baseMaps = {
     "Stamen TonerLite":Stamen_TonerLite,
     "Stamen TonerBackground":Stamen_TonerBackground,
     "Stamen Watercolor":Stamen_Watercolor,
-    "Google Map": googlemap,
+    "Google Street":googleStreets,
+    "Google Hybrid":googleHybrid,
+    "Google Satellite":googleSat,
+    "Google Terrain":googleTerrain,
     "ESRI": esri,
     "Topo Map": OpenTopoMap
 };
