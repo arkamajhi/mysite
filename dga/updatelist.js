@@ -6,8 +6,6 @@ var ul=document.getElementById('left-list');
 
 function updateList()
 {
-    ul.forEach
-
     document.querySelectorAll('.phc-list').forEach(el => el.hidden = false);
 
     console.log("generation_started");
@@ -16,41 +14,6 @@ function updateList()
 
     console.log(dhList);
 
-    /*
-    if(selectstate.value!="All States"&&selectstate.value!="")
-    {
-        if(selectstate.value==datapoints[i].state)
-        {
-            console.log("Found something from selected state. "+selectstate.value+" = "+datapoints[i].state);
-
-            if(selectdistrict.value!="All Districts")
-            {
-                if(selectdistrict.value==datapoints[i].district)
-                {
-                    console.log("Found something from selected state and selected district. Oh Yeah !!!");
-                    PushToList(datapoints,i);
-                }
-                {
-                    //console.log("But not from selected state and district. "+selectdistrict.value+" != "+datapoints[i].district);
-                }
-            }
-            else
-            {
-                console.log(selectstate.value+" state selected but none or all district selected");
-                PushToList(datapoints,i);
-            }
-        }
-        else
-        {
-            //console.log("Not from selected state");
-        }
-    }
-    else
-    {
-        console.log("None or all state selected");
-        PushToList(datapoints,i);
-    }
-    */
 
     ul.innerHTML="";
 
@@ -95,16 +58,47 @@ function updateList()
 
 
 
+
+    const filteredFeatures = dhList.filter(item => {
+        if(selectstate.value=="All States")
+        {
+            return true;
+        }
+        else if(selectstate.value==item.properties.state)
+        {
+            if(selectdistrict.value=="All Districts")
+            {
+                return true;
+            }
+            else if(selectdistrict.value==item.properties.district)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        else
+        {
+            return false;
+        }
+    });
+    console.log("filteredFeatures");
+    console.log(filteredFeatures);
+
+
     var myIcon = L.icon({
         iconUrl: "marker.png",
         iconSize: [30,40]
     });
 
-    dhLayer = L.geoJSON(dhList,
+    dhLayer = L.geoJSON(filteredFeatures,
     {
         onEachFeature: function (feature, layer)
         {
-            layer.bindPopup(makePopupContent(feature),{closeButton:false, offset: L.point(0,-8)})
+            layer
+            .bindPopup(makePopupContent(feature),{closeButton:false, offset: L.point(0,-8)})
             .bindTooltip(feature.properties.name)
         },
         pointToLayer: function(feature, latlng)
@@ -116,7 +110,13 @@ function updateList()
     dhLayer.addTo(myMap);
 
     //dhLayer.remove();
+
+
+
 }
+
+
+
 
 function appendList(PHC)
 {
