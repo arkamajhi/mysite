@@ -1,3 +1,4 @@
+var dhLayer;
 function updateList()
 {
     document.querySelectorAll('.phc-list').forEach(el => el.hidden = false);
@@ -74,7 +75,7 @@ function updateList()
         iconSize: [30,40]
     });
 
-    const dhLayer = L.geoJSON(dhList,{
+    dhLayer = L.geoJSON(dhList,{
         onEachFeature: function (feature, layer){layer.bindPopup(makePopupContent(feature), {closeButton:false, offset: L.point(0,-8)}).bindTooltip(feature.properties.name)},
         pointToLayer: function(feature, latlng){
             return L.marker(latlng,{icon: myIcon});
@@ -82,6 +83,8 @@ function updateList()
     });
 
     dhLayer.addTo(myMap);
+
+    //dhLayer.remove();
 }
 
 
