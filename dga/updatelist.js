@@ -1,11 +1,18 @@
 var dhLayer;
+
+var ul=document.getElementById('left-list');
+
+
+
 function updateList()
 {
+    ul.forEach
+
     document.querySelectorAll('.phc-list').forEach(el => el.hidden = false);
 
     console.log("generation_started");
     //const ul=document.querySelector('.list');
-    const ul=document.getElementById('left-list');
+
 
     console.log(dhList);
 
@@ -45,29 +52,47 @@ function updateList()
     }
     */
 
-
+    ul.innerHTML="";
 
 
     dhList.forEach((PHC) => {
-        const li = document.createElement('li');
-        const div = document.createElement('div');
-        const a = document.createElement('a');
-        const p = document.createElement('p');
+        if(selectstate.value!="All States"&&selectstate.value!="")
+        {
+            if(selectstate.value==PHC.properties.state)
+            {
+                console.log("Found something from selected state. "+selectstate.value+" = "+PHC.properties.state);
 
-        a.addEventListener('click', () => {
-            flyToPHC(PHC);
-        });
+                if(selectdistrict.value!="All Districts")
+                {
+                    if(selectdistrict.value==PHC.properties.district)
+                    {
+                        console.log("Found something from selected state and selected district. Oh Yeah !!!");
+                        appendList(PHC);
+                    }
+                    {
+                        //console.log("But not from selected state and district. "+selectdistrict.value+" != "+datapoints[i].district);
+                    }
+                }
+                else
+                {
+                    console.log(selectstate.value+" state selected but none or all district selected");
+                    appendList(PHC);
+                }
+            }
+            else
+            {
+                //console.log("Not from selected state");
+            }
+        }
+        else
+        {
+            console.log("None or all state selected");
+            appendList(PHC);
+        }
 
-        div.classList.add('PHC-item');
-        a.innerText = PHC.properties.name;
-        a.href = "#";
-        p.innerText = PHC.properties.address;
-
-        div.appendChild(a);
-        div.appendChild(p);
-        li.appendChild(div);
-        ul.appendChild(li);
     });
+
+
 
 
     var myIcon = L.icon({
@@ -75,9 +100,15 @@ function updateList()
         iconSize: [30,40]
     });
 
-    dhLayer = L.geoJSON(dhList,{
-        onEachFeature: function (feature, layer){layer.bindPopup(makePopupContent(feature), {closeButton:false, offset: L.point(0,-8)}).bindTooltip(feature.properties.name)},
-        pointToLayer: function(feature, latlng){
+    dhLayer = L.geoJSON(dhList,
+    {
+        onEachFeature: function (feature, layer)
+        {
+            layer.bindPopup(makePopupContent(feature),{closeButton:false, offset: L.point(0,-8)})
+            .bindTooltip(feature.properties.name)
+        },
+        pointToLayer: function(feature, latlng)
+        {
             return L.marker(latlng,{icon: myIcon});
         }
     });
@@ -85,6 +116,28 @@ function updateList()
     dhLayer.addTo(myMap);
 
     //dhLayer.remove();
+}
+
+function appendList(PHC)
+{
+    const li = document.createElement('li');
+    const div = document.createElement('div');
+    const a = document.createElement('a');
+    const p = document.createElement('p');
+
+    a.addEventListener('click', () => {
+        flyToPHC(PHC);
+    });
+
+    div.classList.add('PHC-item');
+    a.innerText = PHC.properties.name;
+    a.href = "#";
+    p.innerText = PHC.properties.address;
+
+    div.appendChild(a);
+    div.appendChild(p);
+    li.appendChild(div);
+    ul.appendChild(li);
 }
 
 
