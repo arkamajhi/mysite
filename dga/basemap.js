@@ -126,7 +126,7 @@ var overlayMaps = {
 
 //var layerControl = L.control.layers(baseMaps, overlayMaps).addTo(map);
 
-var layerControl = L.control.layers(baseMaps).addTo(myMap);
+
 
 
 
