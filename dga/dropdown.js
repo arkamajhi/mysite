@@ -62,6 +62,15 @@ function display_district()
     opt.innerHTML = lang;
     selectdistrict.append(opt);
     });
+
+    var layerControlElement_state = document.getElementsByClassName('leaflet-control-layers')[0];
+    var state_checkbox = layerControlElement_state.getElementsByTagName('input')[0];
+    if(!state_checkbox.checked)
+    {
+        state_checkbox.click();
+        //console.log(state_checkbox.value);
+    }
+
 }
 
 selectdistrict.addEventListener('change', changed_district);
@@ -74,5 +83,13 @@ function changed_district()
         dhLayer.remove();
     } catch (error) {
 
+    }
+
+    var layerControlElement_district = document.getElementsByClassName('leaflet-control-layers')[0];
+    var district_checkbox = layerControlElement_district.getElementsByTagName('input')[1];
+    if(!district_checkbox.checked)
+    {
+        district_checkbox.click();
+        //console.log(district_checkbox.value);
     }
 }
