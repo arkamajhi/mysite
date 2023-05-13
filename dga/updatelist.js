@@ -84,23 +84,36 @@ function updateList()
         iconSize: [30,40]
     });
 
-    dhLayer = L.geoJSON(filteredFeatures,
+    if(filteredFeatures.length>0)
     {
-        onEachFeature: function (feature, layer)
-        {
-            layer
-            .bindPopup(makePopupContent(feature),{closeButton:false, offset: L.point(0,-8)})
-            .bindTooltip(feature.properties.name)
-        },
-        pointToLayer: function(feature, latlng)
-        {
-            return L.marker(latlng,{icon: myIcon});
-        }
-    });
+        document.querySelectorAll('.phc-list').forEach(el => el.hidden = false);
 
-    dhLayer.addTo(myMap);
+        dhLayer = L.geoJSON(filteredFeatures,
+            {
+                onEachFeature: function (feature, layer)
+                {
+                    layer
+                    .bindPopup(makePopupContent(feature),{closeButton:false, offset: L.point(0,-8)})
+                    .bindTooltip(feature.properties.name)
+                },
+                pointToLayer: function(feature, latlng)
+                {
+                    return L.marker(latlng,{icon: myIcon});
+                }
+            });
 
-    //dhLayer.remove();
+            dhLayer.addTo(myMap);
+
+            //dhLayer.remove();
+
+            //layerControl.addOverlay(dhLayer, "Points").addTo(myMap);
+    }
+    else
+    {
+        document.querySelectorAll('.phc-list').forEach(el => el.hidden = true);
+    }
+
+
 
 
 
