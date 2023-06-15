@@ -2,88 +2,104 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Linked Highlighting in D3</title>
+  <title>Linked Scatter Charts</title>
   <style>
-    .highlighted {
-      fill: orange;
+    .chart {
+      width: 400px;
+      height: 300px;
+      margin: 10px;
+      float: left;
     }
   </style>
 </head>
 <body>
-  <h1>Linked Highlighting in D3</h1>
-  <svg id="chart" width="400" height="300"></svg>
+  <div id="chart1" class="chart"></div>
+  <div id="chart2" class="chart"></div>
 
   <script src="https://d3js.org/d3.v7.min.js"></script>
   <script>
-    // Sample data
-    const data = [
-      { x: 10, y: 50, category: "A" },
-      { x: 30, y: 70, category: "A" },
-      { x: 50, y: 90, category: "A" },
-      { x: 70, y: 30, category: "B" },
-      { x: 90, y: 50, category: "B" },
-      { x: 110, y: 70, category: "B" },
+    // Sample data for the scatter charts
+    const data1 = [
+      { x: 1, y: 5 },
+      { x: 2, y: 10 },
+      { x: 3, y: 8 },
+      { x: 4, y: 12 },
+      { x: 5, y: 6 }
     ];
 
-    // Set up the chart dimensions
-    const width = 400;
-    const height = 300;
-    const margin = { top: 20, right: 20, bottom: 30, left: 40 };
-    const innerWidth = width - margin.left - margin.right;
-    const innerHeight = height - margin.top - margin.bottom;
+    const data2 = [
+      { x: 1, y: 3 },
+      { x: 2, y: 6 },
+      { x: 3, y: 5 },
+      { x: 4, y: 9 },
+      { x: 5, y: 2 }
+    ];
 
-    // Create SVG container
-    const svg = d3.select("#chart")
-      .attr("width", width)
-      .attr("height", height);
+    // Create the first scatter chart
+    const chart1 = createScatterChart("#chart1", data1);
+    chart1.on("pointHover", highlightLinkedPoints);
 
-    // Create scales
-    const xScale = d3.scaleLinear()
-      .domain([0, d3.max(data, d => d.x)])
-      .range([margin.left, innerWidth]);
+    // Create the second scatter chart
+    const chart2 = createScatterChart("#chart2", data2);
+    chart2.on("pointHover", highlightLinkedPoints);
 
-    const yScale = d3.scaleLinear()
-      .domain([0, d3.max(data, d => d.y)])
-      .range([innerHeight, margin.top]);
+    // Function to create a scatter chart
+    function createScatterChart(selector, data) {
+      const margin = { top: 20, right: 20, bottom: 30, left: 40 };
+      const width = 400 - margin.left - margin.right;
+      const height = 300 - margin.top - margin.bottom;
 
-    // Create circles
-    const circles = svg.selectAll("circle")
-      .data(data)
-      .enter()
-      .append("circle")
-      .attr("cx", d => xScale(d.x))
-      .attr("cy", d => yScale(d.y))
-      .attr("r", 5)
-      .attr("fill", "steelblue")
-      .on("mouseover", handleMouseOver)
-      .on("mouseout", handleMouseOut);
+      const svg = d3.select(selector)
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    // Event handler for mouseover
-    function handleMouseOver(d) {
-      // Highlight the hovered circle
-      d3.select(this)
-        .attr("class", "highlighted");
+      const xScale = d3.scaleLinear()
+        .domain([0, d3.max(data, d => d.x)])
+        .range([0, width]);
 
-      // Identify and highlight related circles
-      const relatedCircles = findRelatedCircles(d);
-      relatedCircles.attr("class", "highlighted");
+      const yScale = d3.scaleLinear()
+        .domain([0, d3.max(data, d => d.y)])
+        .range([height, 0]);
+
+      const xAxis = d3.axisBottom(xScale);
+      const yAxis = d3.axisLeft(yScale);
+
+      svg.append("g")
+        .attr("class", "x-axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxis);
+
+      svg.append("g")
+        .attr("class", "y-axis")
+        .call(yAxis);
+
+      svg.selectAll(".dot")
+        .data(data)
+        .enter().append("circle")
+        .attr("class", "dot")
+        .attr("r", 5)
+        .attr("cx", d => xScale(d.x))
+        .attr("cy", d => yScale(d.y))
+        .on("mouseover", function(event, d) {
+          d3.select(this).classed("highlight", true);
+          dispatch.call("pointHover", this, d);
+        })
+        .on("mouseout", function() {
+          d3.select(this).classed("highlight", false);
+        });
+
+      const dispatch = d3.dispatch("pointHover");
+
+      return dispatch;
     }
 
-    // Event handler for mouseout
-    function handleMouseOut(d) {
-      // Revert the highlighting of the hovered circle
-      d3.select(this)
-        .attr("class", null);
-
-      // Clear highlighting from related circles
-      const relatedCircles = findRelatedCircles(d);
-      relatedCircles.attr("class", null);
-    }
-
-    // Function to find related circles based on data
-    function findRelatedCircles(d) {
-      return svg.selectAll("circle")
-        .filter(dataPoint => dataPoint.category === d.category);
+    // Function to highlight linked points
+    function highlightLinkedPoints(point) {
+      d3.selectAll(".dot")
+        .classed("highlight", d => d.x === point.x && d.y === point.y);
     }
   </script>
 </body>
