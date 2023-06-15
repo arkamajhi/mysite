@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Linked Highlighting in D3</title>
+  <style>
+    .highlighted {
+      fill: orange;
+    }
+  </style>
+</head>
+<body>
+  <h1>Linked Highlighting in D3</h1>
+  <svg id="chart" width="400" height="300"></svg>
+
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script>
+    // Sample data
+    const data = [
+      { x: 10, y: 50, category: "A" },
+      { x: 30, y: 70, category: "A" },
+      { x: 50, y: 90, category: "A" },
+      { x: 70, y: 30, category: "B" },
+      { x: 90, y: 50, category: "B" },
+      { x: 110, y: 70, category: "B" },
+    ];
+
+    // Set up the chart dimensions
+    const width = 400;
+    const height = 300;
+    const margin = { top: 20, right: 20, bottom: 30, left: 40 };
+    const innerWidth = width - margin.left - margin.right;
+    const innerHeight = height - margin.top - margin.bottom;
+
+    // Create SVG container
+    const svg = d3.select("#chart")
+      .attr("width", width)
+      .attr("height", height);
+
+    // Create scales
+    const xScale = d3.scaleLinear()
+      .domain([0, d3.max(data, d => d.x)])
+      .range([margin.left, innerWidth]);
+
+    const yScale = d3.scaleLinear()
+      .domain([0, d3.max(data, d => d.y)])
+      .range([innerHeight, margin.top]);
+
+    // Create circles
+    const circles = svg.selectAll("circle")
+      .data(data)
+      .enter()
+      .append("circle")
+      .attr("cx", d => xScale(d.x))
+      .attr("cy", d => yScale(d.y))
+      .attr("r", 5)
+      .attr("fill", "steelblue")
+      .on("mouseover", handleMouseOver)
+      .on("mouseout", handleMouseOut);
+
+    // Event handler for mouseover
+    function handleMouseOver(d) {
+      // Highlight the hovered circle
+      d3.select(this)
+        .attr("class", "highlighted");
+
+      // Identify and highlight related circles
+      const relatedCircles = findRelatedCircles(d);
+      relatedCircles.attr("class", "highlighted");
+    }
+
+    // Event handler for mouseout
+    function handleMouseOut(d) {
+      // Revert the highlighting of the hovered circle
+      d3.select(this)
+        .attr("class", null);
+
+      // Clear highlighting from related circles
+      const relatedCircles = findRelatedCircles(d);
+      relatedCircles.attr("class", null);
+    }
+
+    // Function to find related circles based on data
+    function findRelatedCircles(d) {
+      return svg.selectAll("circle")
+        .filter(dataPoint => dataPoint.category === d.category);
+    }
+  </script>
+</body>
+</html>
