@@ -10,6 +10,18 @@
       margin: 10px;
       float: left;
     }
+
+    .dot {
+      fill: steelblue;
+      stroke: steelblue;
+      opacity: 0.7;
+    }
+
+    .highlight {
+      fill: orange;
+      stroke: orange;
+      opacity: 1;
+    }
   </style>
 </head>
 <body>
@@ -37,11 +49,15 @@
 
     // Create the first scatter chart
     const chart1 = createScatterChart("#chart1", data1);
-    chart1.on("pointHover", highlightLinkedPoints);
+    chart1.on("pointHover", function(d) {
+      highlightLinkedPoints(d);
+    });
 
     // Create the second scatter chart
     const chart2 = createScatterChart("#chart2", data2);
-    chart2.on("pointHover", highlightLinkedPoints);
+    chart2.on("pointHover", function(d) {
+      highlightLinkedPoints(d);
+    });
 
     // Function to create a scatter chart
     function createScatterChart(selector, data) {
@@ -96,11 +112,12 @@
       return dispatch;
     }
 
-    // Function to highlight linked points
     function highlightLinkedPoints(point) {
-      d3.selectAll(".dot")
-        .classed("highlight", d => d.x === point.x && d.y === point.y);
-    }
+  d3.selectAll(".dot")
+    .classed("highlight", d => {
+      return d.x === point.x && d.y === point.y;
+    });
+}
   </script>
 </body>
 </html>
