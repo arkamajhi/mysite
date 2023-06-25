@@ -1,123 +1,100 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>Linked Scatter Charts</title>
+  <title>D3 Scatterplot Example</title>
   <style>
-    .chart {
-      width: 400px;
-      height: 300px;
-      margin: 10px;
-      float: left;
+    #chart {
+      width: 600px;
+      height: 400px;
+      margin: 20px auto;
     }
-
-    .dot {
-      fill: steelblue;
-      stroke: steelblue;
-      opacity: 0.7;
-    }
-
-    .highlight {
-      fill: orange;
-      stroke: orange;
-      opacity: 1;
+    .tooltip {
+      position: absolute;
+      background-color: rgba(0, 0, 0, 0.8);
+      color: #fff;
+      padding: 10px;
+      font-size: 12px;
+      border-radius: 5px;
+      pointer-events: none;
     }
   </style>
 </head>
 <body>
-  <div id="chart1" class="chart"></div>
-  <div id="chart2" class="chart"></div>
+  <div id="chart"></div>
 
   <script src="https://d3js.org/d3.v7.min.js"></script>
   <script>
-    // Sample data for the scatter charts
-    const data1 = [
-      { x: 1, y: 5 },
-      { x: 2, y: 10 },
-      { x: 3, y: 8 },
-      { x: 4, y: 12 },
-      { x: 5, y: 6 }
-    ];
+    // Generate sample data
+    const data = [];
+    const classes = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T"];
 
-    const data2 = [
-      { x: 1, y: 3 },
-      { x: 2, y: 6 },
-      { x: 3, y: 5 },
-      { x: 4, y: 9 },
-      { x: 5, y: 2 }
-    ];
-
-    // Create the first scatter chart
-    const chart1 = createScatterChart("#chart1", data1);
-    chart1.on("pointHover", function(d) {
-      highlightLinkedPoints(d);
-    });
-
-    // Create the second scatter chart
-    const chart2 = createScatterChart("#chart2", data2);
-    chart2.on("pointHover", function(d) {
-      highlightLinkedPoints(d);
-    });
-
-    // Function to create a scatter chart
-    function createScatterChart(selector, data) {
-      const margin = { top: 20, right: 20, bottom: 30, left: 40 };
-      const width = 400 - margin.left - margin.right;
-      const height = 300 - margin.top - margin.bottom;
-
-      const svg = d3.select(selector)
-        .append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
-        .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-      const xScale = d3.scaleLinear()
-        .domain([0, d3.max(data, d => d.x)])
-        .range([0, width]);
-
-      const yScale = d3.scaleLinear()
-        .domain([0, d3.max(data, d => d.y)])
-        .range([height, 0]);
-
-      const xAxis = d3.axisBottom(xScale);
-      const yAxis = d3.axisLeft(yScale);
-
-      svg.append("g")
-        .attr("class", "x-axis")
-        .attr("transform", "translate(0," + height + ")")
-        .call(xAxis);
-
-      svg.append("g")
-        .attr("class", "y-axis")
-        .call(yAxis);
-
-      svg.selectAll(".dot")
-        .data(data)
-        .enter().append("circle")
-        .attr("class", "dot")
-        .attr("r", 5)
-        .attr("cx", d => xScale(d.x))
-        .attr("cy", d => yScale(d.y))
-        .on("mouseover", function(event, d) {
-          d3.select(this).classed("highlight", true);
-          dispatch.call("pointHover", this, d);
-        })
-        .on("mouseout", function() {
-          d3.select(this).classed("highlight", false);
-        });
-
-      const dispatch = d3.dispatch("pointHover");
-
-      return dispatch;
+    for (let i = 1; i <= 100; i++) {
+      const name = `Person ${i}`;
+      const age = Math.floor(Math.random() * 30) + 10; // Random age between 10 and 39
+      const classIndex = Math.floor(Math.random() * classes.length);
+      const classValue = classes[classIndex];
+      data.push({ name, age, class: classValue });
     }
 
-    function highlightLinkedPoints(point) {
-  d3.selectAll(".dot")
-    .classed("highlight", d => {
-      return d.x === point.x && d.y === point.y;
-    });
-}
+    // Set up the SVG container
+    const svg = d3.select("#chart")
+      .append("svg")
+      .attr("width", "100%")
+      .attr("height", "100%")
+      .attr("viewBox", [0, 0, 600, 400])
+      .attr("preserveAspectRatio", "xMidYMid meet");
+
+    // Set up the scales
+    const xScale = d3.scaleLinear()
+      .domain([d3.min(data, d => d.age) - 1, d3.max(data, d => d.age) + 1])
+      .range([50, 550]);
+
+    const yScale = d3.scalePoint()
+      .domain(classes)
+      .range([50, 350]);
+
+    // Add the circles
+    svg.selectAll("circle")
+      .data(data)
+      .enter()
+      .append("circle")
+      .attr("cx", d => xScale(d.age))
+      .attr("cy", d => yScale(d.class))
+      .attr("r", 5)
+      .attr("fill", "steelblue")
+      .attr("opacity", 0.7)
+      .on("mouseover", (event, d) => {
+        d3.select(event.target)
+          .attr("fill", "orange")
+          .attr("r", 7);
+
+        tooltip.style("visibility", "visible")
+          .html(`<strong>Name:</strong> ${d.name}<br><strong>Age:</strong> ${d.age}<br><strong>Class:</strong> ${d.class}`)
+          .style("left", (event.pageX + 10) + "px")
+          .style("top", (event.pageY - 10) + "px");
+      })
+      .on("mouseout", (event, d) => {
+        d3.select(event.target)
+          .attr("fill", "steelblue")
+          .attr("r", 5);
+
+        tooltip.style("visibility", "hidden");
+      });
+
+    // Add tooltips
+    const tooltip = d3.select("body")
+      .append("div")
+      .attr("class", "tooltip")
+      .style("visibility", "hidden");
+
+    // Add axes
+    svg.append("g")
+      .attr("transform", "translate(0, 350)")
+      .call(d3.axisBottom(xScale));
+
+    svg.append("g")
+      .attr("transform", "translate(50, 0)")
+      .call(d3.axisLeft(yScale));
   </script>
 </body>
 </html>
