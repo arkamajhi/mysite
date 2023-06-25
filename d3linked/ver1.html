@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>D3 Scatterplot Example</title>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    /* Styles for the first chart */
+    .chart-container {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .chart {
+      width: 600px;
+      height: 500px;
+      margin-right: 20px;
+      position: relative;
+    }
+
+    /* Styles for the second chart */
+    .chart2 {
+      width: 600px;
+      height: 500px;
+      margin-top: 20px;
+      position: relative;
+    }
+  </style>
+</head>
+<body>
+  <h1 class="chart-title">The Interactive Chart</h1>
+  <div class="chart-container">
+    <div class="chart" id="chart"></div>
+  </div>
+
+  <h1 class="chart-title">The Second Chart</h1>
+  <div class="chart-container">
+    <div class="chart2" id="chart2"></div>
+  </div>
+
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script>
+    // Generate sample data
+    const data = [];
+    const classes = ["Class A", "Class B", "Class C", "Class D"];
+    const classColors = ["steelblue", "orange", "green", "purple"];
+
+    for (let i = 1; i <= 100; i++) {
+      const name = `Person ${i}`;
+      const age = Math.floor(Math.random() * 30) + 10; // Random age between 10 and 39
+      const iq = Math.floor(Math.random() * 100) + 70; // Random IQ between 70 and 169
+      const economy = Math.floor(Math.random() * 100) + 1; // Random economy between 1 and 100
+      const classIndex = Math.floor(Math.random() * 4);
+      const classValue = classes[classIndex];
+      data.push({ name, age, iq, economy, class: classValue });
+    }
+
+    // Set up the first SVG container
+    const svg = d3.select("#chart")
+      .append("svg")
+      .attr("width", "100%")
+      .attr("height", "100%")
+      .attr("viewBox", [0, 0, 600, 500])
+      .attr("preserveAspectRatio", "xMidYMid meet");
+
+    // Set up the second SVG container
+    const svg2 = d3.select("#chart2")
+      .append("svg")
+      .attr("width", "100%")
+      .attr("height", "100%")
+      .attr("viewBox", [0, 0, 600, 500])
+      .attr("preserveAspectRatio", "xMidYMid meet");
+
+    // Set up the scales for the first chart
+    const xScale = d3.scaleLinear()
+      .domain([10, 39])
+      .range([50, 550]);
+
+    const yScale = d3.scaleLinear()
+      .domain([70, 169])
+      .range([450, 50]);
+
+    // Set up the scales for the second chart
+    const xScale2 = d3.scaleLinear()
+      .domain([10, 39])
+      .range([50, 550]);
+
+    const yScale2 = d3.scaleLinear()
+      .domain([1, 100])
+      .range([450, 50]);
+
+    // Add the axes for the first chart
+    const xAxis = d3.axisBottom(xScale);
+    const yAxis = d3.axisLeft(yScale);
+
+    svg.append("g")
+      .attr("class", "x-axis")
+      .attr("transform", "translate(0, 450)")
+      .call(xAxis);
+
+    svg.append("text")
+      .attr("class", "x-axis-title")
+      .attr("x", 300)
+      .attr("y", 490)
+      .text("Age");
+
+    svg.append("g")
+      .attr("class", "y-axis")
+      .attr("transform", "translate(50, 0)")
+      .call(yAxis);
+
+    svg.append("text")
+      .attr("class", "y-axis-title")
+      .attr("x", -230)
+      .attr("y", 20)
+      .text("IQ");
+
+    // Add the circles for the first chart
+    const circles = svg.selectAll("circle")
+      .data(data)
+      .enter()
+      .append("circle")
+      .attr("cx", d => xScale(d.age))
+      .attr("cy", d => yScale(d.iq))
+      .attr("r", 5)
+      .attr("fill", d => {
+        const classIndex = classes.indexOf(d.class);
+        return classColors[classIndex];
+      })
+      .attr("opacity", 0.7)
+      .on("mouseover", handleMouseOver)
+      .on("mouseout", handleMouseOut);
+
+    // Add tooltips for the first chart
+    const tooltip = d3.select("body")
+      .append("div")
+      .attr("class", "tooltip");
+
+    // Add the axes for the second chart
+    const xAxis2 = d3.axisBottom(xScale2);
+    const yAxis2 = d3.axisLeft(yScale2);
+
+    svg2.append("g")
+      .attr("class", "x-axis")
+      .attr("transform", "translate(0, 450)")
+      .call(xAxis2);
+
+    svg2.append("text")
+      .attr("class", "x-axis-title")
+      .attr("x", 300)
+      .attr("y", 490)
+      .text("Age");
+
+    svg2.append("g")
+      .attr("class", "y-axis")
+      .attr("transform", "translate(50, 0)")
+      .call(yAxis2);
+
+    svg2.append("text")
+      .attr("class", "y-axis-title")
+      .attr("x", -230)
+      .attr("y", 20)
+      .text("Economy");
+
+    // Add the circles for the second chart
+    const circles2 = svg2.selectAll("circle")
+      .data(data)
+      .enter()
+      .append("circle")
+      .attr("cx", d => xScale2(d.age))
+      .attr("cy", d => yScale2(d.economy))
+      .attr("r", 5)
+      .attr("fill", d => {
+        const classIndex = classes.indexOf(d.class);
+        return classColors[classIndex];
+      })
+      .attr("opacity", 0.7)
+      .on("mouseover", handleMouseOver)
+      .on("mouseout", handleMouseOut);
+
+    // Add tooltips for the second chart
+    const tooltip2 = d3.select("body")
+      .append("div")
+      .attr("class", "tooltip");
+
+    // Handle mouseover event
+    function handleMouseOver(event, d) {
+      d3.select(this)
+        .attr("r", 8)
+        .attr("opacity", 1);
+
+      tooltip.html(`<strong>${d.name}</strong><br>Age: ${d.age}<br>IQ: ${d.iq}<br>Economy: ${d.economy}<br>Class: ${d.class}`)
+        .style("left", event.pageX + "px")
+        .style("top", event.pageY + "px")
+        .style("opacity", 0.9);
+    }
+
+    // Handle mouseout event
+    function handleMouseOut() {
+      d3.select(this)
+        .attr("r", 5)
+        .attr("opacity", 0.7);
+
+      tooltip.style("opacity", 0);
+    }
+  </script>
+</body>
+</html>
