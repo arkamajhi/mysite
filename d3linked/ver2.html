@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>D3 Scatterplot Example</title>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    #chart-container {
+      display: flex;
+    }
+
+    #chart {
+      width: 600px;
+      height: 500px;
+      margin-right: 20px;
+      position: relative;
+    }
+
+    .tooltip {
+      position: absolute;
+      background-color: rgba(0, 0, 0, 0.8);
+      color: #fff;
+      padding: 10px;
+      font-size: 12px;
+      border-radius: 5px;
+      pointer-events: none;
+      visibility: hidden;
+      white-space: nowrap;
+      font-family: 'Open Sans', sans-serif;
+    }
+
+    .index-box {
+      text-align: left;
+      font-family: 'Open Sans', sans-serif;
+    }
+
+    .index-box h2 {
+      font-size: 16px;
+    }
+
+    .index-box ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .index-box li {
+      margin-bottom: 5px;
+    }
+
+    .chart-title {
+      text-align: center;
+      font-size: 20px;
+      margin-bottom: 20px;
+      font-family: 'Open Sans', sans-serif;
+    }
+
+    .x-axis-title {
+      text-anchor: middle;
+      font-weight: bold;
+      font-family: 'Open Sans', sans-serif;
+    }
+
+    .y-axis-title {
+      text-anchor: middle;
+      font-weight: bold;
+      transform: rotate(-90deg);
+      transform-origin: center;
+      font-family: 'Open Sans', sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <h1 class="chart-title">The Interactive Chart</h1>
+  <div id="chart-container">
+    <div id="chart"></div>
+    <div class="index-box">
+      <h2>Filter</h2>
+      <ul id="filter-list"></ul>
+    </div>
+  </div>
+
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script>
+    // Generate sample data
+    const data = [];
+    const classes = ["Class A", "Class B", "Class C", "Class D"];
+    const classColors = ["steelblue", "orange", "green", "purple"];
+
+    for (let i = 1; i <= 100; i++) {
+      const name = `Person ${i}`;
+      const age = Math.floor(Math.random() * 30) + 10; // Random age between 10 and 39
+      const iq = Math.floor(Math.random() * 100) + 70; // Random IQ between 70 and 169
+      const classIndex = Math.floor(Math.random() * 4);
+      const classValue = classes[classIndex];
+      data.push({ name, age, iq, class: classValue });
+    }
+
+    // Set up the SVG container
+    const svg = d3.select("#chart")
+      .append("svg")
+      .attr("width", "100%")
+      .attr("height", "100%")
+      .attr("viewBox", [0, 0, 600, 500])
+      .attr("preserveAspectRatio", "xMidYMid meet");
+
+    // Set up the scales
+    const xScale = d3.scaleLinear()
+      .domain([d3.min(data, d => d.age) - 1, d3.max(data, d => d.age) + 1])
+      .range([50, 550]);
+
+    const yScale = d3.scaleLinear()
+      .domain([d3.min(data, d => d.iq) - 10, d3.max(data, d => d.iq) + 10])
+      .range([450, 50]);
+
+    // Add the axes
+    const xAxis = d3.axisBottom(xScale);
+    const yAxis = d3.axisLeft(yScale);
+
+    svg.append("g")
+      .attr("class", "x-axis")
+      .attr("transform", "translate(0, 450)")
+      .call(xAxis);
+
+    svg.append("text")
+      .attr("class", "x-axis-title")
+      .attr("x", 300)
+      .attr("y", 490)
+      .text("Age");
+
+    svg.append("g")
+      .attr("class", "y-axis")
+      .attr("transform", "translate(50, 0)")
+      .call(yAxis);
+
+    svg.append("text")
+      .attr("class", "y-axis-title")
+      .attr("x", -230)
+      .attr("y", 20)
+      .text("IQ");
+
+    // Add the circles
+    const circles = svg.selectAll("circle")
+      .data(data)
+      .enter()
+      .append("circle")
+      .attr("cx", d => xScale(d.age))
+      .attr("cy", d => yScale(d.iq))
+      .attr("r", 5)
+      .attr("fill", d => {
+        const classIndex = classes.indexOf(d.class);
+        return classColors[classIndex];
+      })
+      .attr("opacity", 0.7)
+      .on("mouseover", function(event, d) {
+        const tooltipWidth = tooltip.node().offsetWidth;
+        const tooltipHeight = tooltip.node().offsetHeight;
+        const tooltipLeft = event.pageX - tooltipWidth / 2;
+        const tooltipTop = event.pageY - tooltipHeight - 10;
+
+        d3.select(this)
+          .attr("r", 7);
+
+        svg.select(".hover-circle")
+          .attr("cx", xScale(d.age))
+          .attr("cy", yScale(d.iq))
+          .attr("opacity", 1);
+
+        svg.select(".overlay-circle")
+          .attr("cx", xScale(d.age))
+          .attr("cy", yScale(d.iq))
+          .attr("opacity", 1);
+
+        tooltip.style("visibility", "visible")
+          .html(`<strong>Name:</strong> ${d.name}<br><strong>Age:</strong> ${d.age}<br><strong>IQ:</strong> ${d.iq}<br><strong>Class:</strong> ${d.class}`)
+          .style("left", `${tooltipLeft}px`)
+          .style("top", `${tooltipTop}px`);
+      })
+      .on("mouseout", function(event, d) {
+        d3.select(this)
+          .attr("r", 5);
+
+        svg.select(".hover-circle")
+          .attr("opacity", 0);
+
+        svg.select(".overlay-circle")
+          .attr("opacity", 0);
+
+        tooltip.style("visibility", "hidden");
+      });
+
+    // Add tooltips
+    const tooltip = d3.select("body")
+      .append("div")
+      .attr("class", "tooltip");
+
+    // Add hover circle
+    svg.append("circle")
+      .attr("class", "hover-circle")
+      .attr("r", 7)
+      .attr("stroke-dasharray", "4")
+      .attr("pointer-events", "none")
+      .attr("opacity", 0)
+      .attr("fill", "none");
+
+    // Add overlay circle
+    svg.append("circle")
+      .attr("class", "overlay-circle")
+      .attr("r", 7)
+      .attr("stroke", "black")
+      .attr("stroke-width", 2)
+      .attr("fill", "none")
+      .attr("opacity", 0);
+
+    // Update the filter list
+    const filterList = d3.select("#filter-list");
+
+    classes.forEach(className => {
+      filterList.append("li")
+        .html(`<label><input type="checkbox" value="${className}" checked> ${className}</label>`)
+        .style("color", classColors[classes.indexOf(className)])
+        .on("change", function(event) {
+          const checked = event.target.checked;
+          const className = event.target.value;
+
+          if (checked) {
+            circles.filter(d => d.class === className)
+              .attr("opacity", 0.7);
+          } else {
+            circles.filter(d => d.class === className)
+              .attr("opacity", 0);
+          }
+        });
+    });
+  </script>
+</body>
+</html>
