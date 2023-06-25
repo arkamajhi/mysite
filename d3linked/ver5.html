@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>D3 Scatterplot Example</title>
+  <style>
+    #chart {
+      width: 600px;
+      height: 400px;
+      margin: 20px auto;
+    }
+    .tooltip {
+      position: absolute;
+      background-color: rgba(0, 0, 0, 0.8);
+      color: #fff;
+      padding: 10px;
+      font-size: 12px;
+      border-radius: 5px;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="chart"></div>
+
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script>
+    // Generate sample data
+    const data = [];
+    const classes = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T"];
+
+    for (let i = 1; i <= 100; i++) {
+      const name = `Person ${i}`;
+      const age = Math.floor(Math.random() * 30) + 10; // Random age between 10 and 39
+      const IQ = Math.floor(Math.random() * 70) + 70; // Random IQ between 70 and 139
+      data.push({ name, age, IQ });
+    }
+
+    // Set up the SVG container
+    const svg = d3.select("#chart")
+      .append("svg")
+      .attr("width", "100%")
+      .attr("height", "100%")
+      .attr("viewBox", [0, 0, 600, 400])
+      .attr("preserveAspectRatio", "xMidYMid meet");
+
+    // Set up the scales
+    const xScale = d3.scaleLinear()
+      .domain([d3.min(data, d => d.age) - 1, d3.max(data, d => d.age) + 1])
+      .range([50, 550]);
+
+    const yScale = d3.scaleLinear()
+      .domain([d3.min(data, d => d.IQ) - 5, d3.max(data, d => d.IQ) + 5])
+      .range([350, 50]);
+
+    // Add the circles
+    svg.selectAll("circle")
+      .data(data)
+      .enter()
+      .append("circle")
+      .attr("cx", d => xScale(d.age))
+      .attr("cy", d => yScale(d.IQ))
+      .attr("r", 5)
+      .attr("fill", "steelblue")
+      .attr("opacity", 0.7)
+      .on("mouseover", (event, d) => {
+        d3.select(event.target)
+          .attr("fill", "orange")
+          .attr("r", 7);
+
+        tooltip.style("visibility", "visible")
+          .html(`<strong>Name:</strong> ${d.name}<br><strong>Age:</strong> ${d.age}<br><strong>IQ:</strong> ${d.IQ}`)
+          .style("left", (event.pageX + 10) + "px")
+          .style("top", (event.pageY - 10) + "px");
+      })
+      .on("mouseout", (event, d) => {
+        d3.select(event.target)
+          .attr("fill", "steelblue")
+          .attr("r", 5);
+
+        tooltip.style("visibility", "hidden");
+      });
+
+    // Add tooltips
+    const tooltip = d3.select("body")
+      .append("div")
+      .attr("class", "tooltip")
+      .style("visibility", "hidden");
+
+    // Add axes
+    svg.append("g")
+      .attr("transform", "translate(0, 350)")
+      .call(d3.axisBottom(xScale));
+
+    svg.append("g")
+      .attr("transform", "translate(50, 0)")
+      .call(d3.axisLeft(yScale));
+  </script>
+</body>
+</html>
