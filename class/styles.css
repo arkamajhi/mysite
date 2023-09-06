@@ -90,7 +90,6 @@ body {
 .bigcontainer{
   position: relative;
   height: 100vh;
-  border:3px solid green;
 }
 
 .content{
