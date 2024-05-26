@@ -3,3 +3,38 @@ h1 {
   font-family: 'Poppins';
   font-weight: bold;
 }
+
+@media screen and (min-width: 576px) {
+.big-padding-top-bottom {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+  }
+}
+
+@media screen and (min-width: 576px) {
+.big-border-right {
+    border-right: 2px solid black;
+  }
+}
+
+@media screen and (max-width: 576px) {
+.xs-border-bottom {
+    padding-bottom: 1.5rem;
+    border-bottom: 2px solid black;
+  }
+}
+
+@media screen and (max-width: 576px) {
+.xs-padding-top {
+    padding-top: 1.5rem;
+  }
+}
+
+.right-placeholder{
+  text-align: right;
+}
+
+h6credits{
+  font-family: 'Poppins';
+  z-index: 999;
+}
