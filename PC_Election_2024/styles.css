@@ -14,8 +14,21 @@ h1{
 }
 
 @media screen and (min-width: 576px) {
+.big-bottom-line {
+    border-bottom: 3px solid black;
+  }
+}
+
+@media screen and (min-width: 576px) {
 .big-border-right {
     border-right: 2px solid black;
+  }
+}
+
+@media screen and (min-width: 576px) {
+.big-seperator {
+    border-bottom: 2px solid black;
+    padding-top: 1.5rem;
   }
 }
 
