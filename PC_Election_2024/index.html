@@ -15,99 +15,106 @@
 
     <title>India Parliamentary Constituency Election Results 2024</title>
 
-
   </head>
   <body>
-    <!--nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
       <div class="container">
-        <a class="navbar-brand" href="#">Navbar</a>
+
+        <a class="navbar-brand" href="#">
+
+        </a>
+
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
+
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <ul class="nav nav-pills nav-fill me-auto mb-2 mb-lg-0">
+
             <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="#">Home</a>
+              <a class="nav-link " aria-current="page" href="#schedule">Election Schedule</a>
             </li>
+
             <li class="nav-item">
-              <a class="nav-link" href="#">Link</a>
+              <a class="nav-link " aria-current="page" href="#turnout">Poll %</a>
             </li>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                Dropdown
+
+            <li class="nav-item dropdown disabled">
+              <a class="nav-link dropdown-toggle active" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Statewise Results
               </a>
-              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <li><a class="dropdown-item" href="#">Action</a></li>
-                <li><a class="dropdown-item" href="#">Another action</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="#">Something else here</a></li>
+              <ul id="State_Results_Menu" class="dropdown-menu" aria-labelledby="navbarDropdown">
+
               </ul>
             </li>
-            <li class="nav-item">
-              <a class="nav-link disabled">Disabled</a>
-            </li>
+
           </ul>
           <form class="d-flex" role="search">
-            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success" type="submit">Search</button>
+            <button class="btn shadow btn-dark" id="btnSwitchdark">🌙</button>
           </form>
         </div>
       </div>
-    </nav-->
+    </nav>
 
-    <!--div class="container my-5">
-      <h1>Hello, world!</h1>
-      <div class="col-lg-8 px-0">
-        <p class="fs-5">You've successfully loaded up the Bootstrap starter example. It includes <a href="https://getbootstrap.com/">Bootstrap 5</a> via the <a href="https://www.jsdelivr.com/package/npm/bootstrap">jsDelivr CDN</a> and includes an additional CSS and JS file for your own code.</p>
-        <p>Feel free to download or copy-and-paste any parts of this example.</p>
+    <div class="fixed-bottom shadow bg-body row" style="text-align:center;">
+      <!--button class="btn shadow btn-dark" id="btnSwitchdark" style="text-align:right;">🌙</button><br-->
+      <h6credits>Made with ❤️ by <a href="https://arkadesignstudio.in/" target="_blank">Arka Majhi</a> and <a href="https://www.satishagnihotri1955.in/" target="_blank">Prof. Satish B. Agnihotri</a></h6credits>
 
-        <hr class="col-1 my-4">
-
-        <a href="https://getbootstrap.com" class="btn btn-primary">Read the Bootstrap docs</a>
-        <a href="https://github.com/twbs/examples" class="btn btn-secondary">View on GitHub</a>
-      </div>
-    </div-->
-
-    <div class="fixed-top" style="text-align:right;">
-          <button class="btn shadow btn-dark" id="btnSwitchdark" style="text-align:right;">🌙</button>
+      <div class="wrapper">
+        <div class="stick"></div>
+        <div class="flag">
+            <div class="wave"></div>
+            <div class="top"></div>
+            <div class="middle">
+                <div class="wheel">
+                    <span class="line"></span>
+                    <span class="line"></span>
+                    <span class="line"></span>
+                    <span class="line"></span>
+                    <span class="line"></span>
+                    <span class="line"></span>
+                    <span class="line"></span>
+                    <span class="line"></span>
+                    <span class="line"></span>
+                    <span class="line"></span>
+                    <span class="line"></span>
+                    <span class="line"></span>
+                </div>
+            </div>
+            <div class="bottom"></div>
+        </div>
     </div>
 
-    <div class="fixed-bottom shadow bg-body" style="text-align:center;">
-          <!--button class="btn shadow btn-dark" id="btnSwitchdark" style="text-align:right;">🌙</button><br-->
-          <h6credits>Made with ❤️ by <a href="https://arkadesignstudio.in/" target="_blank">Arka Majhi</a> and <a href="https://www.satishagnihotri1955.in/" target="_blank">Prof. Satish B. Agnihotri</a></h6credits>
-
     </div>
 
 
-    <div class="container text-center shadow min-vh-100 py-2">
+    <div class="container shadow text-center py-2 mb-4">
+
+
+
+      <h1>India General Election 2024</h1>
       <div class="row justify-content-center">
-        <div class="col-lg-6 col-md-6 col-xs-12 big-border-right xs-border-bottom big-padding-top-bottom big-bottom-line" style="">
-
-          <h1>2024 Indian General Election Schedule</h1>
-
+        <div id="schedule" class="col-lg-6 col-md-6 col-xs-12 big-border-right xs-border-bottom anchor">
+          <h2>Election Schedule (Phase-wise)</h2>
           <iframe title="2024 Indian General Election Schedule" aria-label="Map" id="datawrapper-chart-B5YCu" src="https://datawrapper.dwcdn.net/B5YCu/7/" scrolling="no" frameborder="0" style="width: 0; min-width: 90% !important; border: none;" height="782" data-external="1">
           </iframe>
           <script type="text/javascript">!function(){"use strict";window.addEventListener("message",(function(a){if(void 0!==a.data["datawrapper-height"]){var e=document.querySelectorAll("iframe");for(var t in a.data["datawrapper-height"])for(var r=0;r<e.length;r++)if(e[r].contentWindow===a.source){var i=a.data["datawrapper-height"][t]+"px";e[r].style.height=i}}}))}();
           </script>
-
         </div>
-
-
-        <div class="col-lg-6 col-md-6 col-xs-12 xs-padding-top big-padding-top-bottom xs-border-bottom big-bottom-line">
-
-          <h1>2024 Indian General Election Turnout Ratio</h1>
-
+        <div id="turnout" class="col-lg-6 col-md-6 col-xs-12 xs-padding-top xs-border-bottom anchor">
+          <h2>Poll% or Voter Turnout Ratio</h2>
           <iframe title="new 2024 Indian General Election Turnout Ratio" aria-label="Map" id="datawrapper-chart-3PAVv" src="https://datawrapper.dwcdn.net/3PAVv/4/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="744" data-external="1">
           </iframe>
           <script type="text/javascript">!function(){"use strict";window.addEventListener("message",(function(a){if(void 0!==a.data["datawrapper-height"]){var e=document.querySelectorAll("iframe");for(var t in a.data["datawrapper-height"])for(var r=0;r<e.length;r++)if(e[r].contentWindow===a.source){var i=a.data["datawrapper-height"][t]+"px";e[r].style.height=i}}}))}();
           </script>
         </div>
-
-        <hr/>
-
       </div>
-
     </div>
+
+
+
+
+
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
     <script src="main.js"></script>
