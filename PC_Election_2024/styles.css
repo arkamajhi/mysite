@@ -12,6 +12,12 @@ h2{
   font-weight: bold;
 }
 
+h3-nav{
+  font-family: 'Poppins';
+  font-size: 18;
+  font-weight: bold;
+}
+
 @media screen and (min-width: 576px) {
 .big-border-right {
     border-right: 2px solid black;
@@ -58,30 +64,46 @@ h6credits{
     overflow-y: auto;
 }
 
-.wrapper {
+.darkbutton {
 	display: flex;
   position: absolute;
   justify-content: right;
-  margin-top: -60px;
-  margin-right: 20px;
+  margin-top: -10px;
+  margin-left: -5px;
 }
 
+.wrapper {
+	display: flex;
+  position: absolute;
+  justify-content: left;
+  margin-top: -40px;
+  margin-left: 5px;
+}
+
+.stick {
+    height: 300px;
+    width: 5px;
+    background: black;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
 
 .flag {
-	width: 100px;
-	height: 60px;
+	width: 70px;
+	height: 45px;
 	box-shadow: 0px 0px 90px 1px #989;
 	background-color: transparent;
 	position: relative;
 }
 
 .top {
-	height: 20px;
+	height: 15px;
 	background-color: #ff9933
 }
 
 .middle {
-	height: 20px;
+	height: 15px;
   background-color: white;
 	display: flex;
 	justify-content: center;
@@ -89,13 +111,13 @@ h6credits{
 }
 
 .bottom {
-	height: 20px;
+	height: 15px;
 	background-color: green
 }
 
 .wheel {
-	height: 18px;
-	width: 18px;
+	height: 14px;
+	width: 14px;
 	border: 1px solid darkblue;
 	border-radius: 45px;
 	position: relative;
@@ -180,7 +202,7 @@ h6credits{
 		rgba(250,245,245,0.8474025974025974)
 		46%, rgba(89,72,21,0) 53%);
 	animation-name: wavy;
-	animation-duration: 10s;
+	animation-duration: 50s;
 	animation-iteration-count: infinite;
 	animation-timing-function: linear;
 }
