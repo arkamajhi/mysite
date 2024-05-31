@@ -18,6 +18,16 @@ h3-nav{
   font-weight: bold;
 }
 
+p{
+  text-align: justify;
+  padding: 0 20px 0 20px;
+}
+
+p-center{
+  text-align: center;
+  padding: 0 20px 0 20px ;
+}
+
 @media screen and (min-width: 576px) {
 .big-border-right {
     border-right: 2px solid black;
