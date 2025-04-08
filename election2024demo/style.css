@@ -1,0 +1,88 @@
+@import url('https://fonts.googleapis.com/css?family=Josefin+Sans:300,400,500');
+*
+{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Josefin Sans',sans-serif;
+}
+
+/*body
+{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}*/
+
+body
+{
+  display: flex;
+}
+
+.main
+{
+  width: 60%;
+}
+
+.projects
+{
+  width: 40%;
+}
+
+.filters,.filters_project
+{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+  position: -webkit-sticky; /* Safari */
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background-color: white;
+}
+
+.filters li
+{
+  list-style: none;
+  background: #eee;
+  padding: 8px 20px;
+  margin: 5px;
+  left-spacing: 1px;
+  cursor: pointer;
+  border-radius: 10px;
+}
+
+.filters_project li
+{
+  list-style: none;
+  background: #eee;
+  padding: 5px 5px;
+  margin: 5px;
+  left-spacing: 1px;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+.filters li.active
+{
+  background: #03a9f4;
+  color: #fff;
+}
+
+.filters_project li.active
+{
+  background: #03a9f4;
+  color: #fff;
+}
+
+
+.container
+{
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
