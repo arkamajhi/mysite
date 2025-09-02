@@ -5,13 +5,13 @@
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta description="CrossVis: An exploratory visual analytics tool for multivariate data.">
+  <meta description="SIMA Vis: An exploratory visual analytics tool for multivariate data.">
 
   <link rel="stylesheet" type="text/css" href="./css/crossvis.css">
   <link rel="stylesheet" type="text/css" href="./css/tabulator.min.css">
   <link rel="stylesheet" type="text/css" href="./js/Semantic-UI/semantic.min.css">
 
-  <title>CrossVis</title>
+  <title>SIMA_Vis</title>
 
   <style>
     @font-face {
@@ -27,7 +27,7 @@
   <div class="ui inverted fixed borderless menu">
     <div class="ui medium header item" style="font-family: 'KoHo', sans-serif; font-size: 1.8rem;">
       <div class="content">
-        CrossVis
+        SIMA_Vis
       </div>
     </div>
     <div class="ui dropdown item dataMenuItem">
@@ -35,12 +35,13 @@
       <i class="dropdown icon"></i>
       <div class="menu">
         <a class="item loadCSVItem" title="Loads data from CSV file">Open CSV File...</a>
-        <a class="item loadJSONItem" title="Loads plot settings and data from CrossVis JSON file">Open CrossVis JSON File...</a>
+        <a class="item loadJSONItem" title="Loads plot settings and data from SIMA Vis JSON file">Open JSON File...</a>
         <div class="divider"></div>
         <a class="item saveCSVItem" title="Saves data to generic Comma Separated Value (CSV) file">Save As CSV File...</a>
-        <a class="item saveJSONItem" title="Saves plot settings and data to CrossVis JSON file">Save As CrossVis JSON File...</a>
+        <a class="item saveJSONItem" title="Saves plot settings and data to SIMA Vis JSON file">Save As JSON File...</a>
         <div class="divider"></div>
-        <a class="item loadCarsDataItem">Load Sample '83 ASA Cars Dataset</a>
+        <a class="item loadSIMAData">Load SIMA Dataset</a>
+        <!--a class="item loadCarsDataItem">Load Sample '83 ASA Cars Dataset</a-->
         <!-- <a class="item loadNYTCovidDataItem">Load NYTimes COVID Dataset</a> -->
       </div>
     </div>
@@ -111,7 +112,7 @@
                 <div class="ui fluid labeled input">
                   <div class="ui label">Maximum</div>
                   <input type="number" id="queryMaxNumericalValue" step="".1" placeholder="Maximum Query Value">
-                </div>    
+                </div>
               </div>
               <div class="column">
                 <div class="ui fluid labeled input">
@@ -176,7 +177,7 @@
             <div class="detail" id="selectedLinesStat">0 / 0 (0%)</div>
           </div>
         </div>
-      </div>      
+      </div>
       <div id="chart" style="position: relative; overflow-x: auto; overflow-y: hidden;"></div>
     </div>
 
@@ -193,7 +194,7 @@
       </div> -->
 
 
-      <!-- <h3 class="ui header">Data Table</h3> --> 
+      <!-- <h3 class="ui header">Data Table</h3> -->
       <div class="ui fluid grid">
         <div class="twelve wide column left aligned">
           <h3 class="ui header">Data Table</h3>
@@ -214,7 +215,7 @@
   <div class="ui basic center aligned footer segment">
     <span id="mavenVersionNumberText"></span><br/>
   </div>
-  
+
   <div class="ui modal columnTypeModal">
     <i class="close icon"></i>
     <div class="header">
@@ -305,7 +306,7 @@
           <div class="inline field">
             <div class="ui checked checkbox showAxisTicks">
               <input type="checkbox">
-              <label>Show Axis Ticks</label> 
+              <label>Show Axis Ticks</label>
             </div>
           </div>
           <div class="inline field">
@@ -319,7 +320,7 @@
           <div class="inline field">
             <div class="ui checked checkbox useProportionalCategoryRects">
               <input type="checkbox">
-              <label>Proportional Categorical Rectangles</label> 
+              <label>Proportional Categorical Rectangles</label>
             </div>
           </div>
           <div class="inline field">
@@ -451,7 +452,7 @@
       if (event.data.type === "hello") {
         channelListeners.add(event.data.src);
         sendMessage({
-          type: "hello", 
+          type: "hello",
           dst: event.data.src
         });
       } else if (event.data.type === "send data") {
@@ -520,7 +521,7 @@
         // consider making this a promise
         if (channelListeners.size > 0) {
           sendMessage({
-            type: "set selected data", 
+            type: "set selected data",
             selected: chart.selectedTuples().map(d => d[tupleIDProperty])
           });
         }
@@ -559,11 +560,11 @@
         }
       }
     };
-   
+
     const createChart = () => {
       d3.select("#chart").selectAll("*").remove();
 
-      if (chartData) {        
+      if (chartData) {
         const chartWidth = document.getElementById('chart').clientWidth;
         const chartHeight = getChartHeight();
         document.getElementById('chart').style.height = `${chartHeight}px`;
@@ -627,7 +628,7 @@
           });
       }
     };
-    
+
     // const guessColumnDataType = (data, columnName) => {
     //   var guessedType = "numerical";
     //   var madeGuess = false;
@@ -684,9 +685,9 @@
       jsonData.settings.showUnselectedLines ? $('.showUnselectedLines').checkbox('set checked') : $('.showUnselectedLines').checkbox('set unchecked');
       jsonData.settings.showDataTable ? $('.showDataTable').checkbox('set checked') : $('.showDataTable').checkbox('set unchecked');
       jsonData.settings.categoryHeightMode === "proportional" ?  $('.useProportionalCategoryRects').checkbox('set checked') : $('.useProportionalCategoryRects').checkbox('set unchecked');
-      
+
       document.getElementById('selectedLineOpacityRange').value = jsonData.settings.selectedLineOpacity * 100.;
-      document.getElementById('unselectedLineOpacityRange').value = jsonData.settings.unselectedLineOpacity * 100;      
+      document.getElementById('unselectedLineOpacityRange').value = jsonData.settings.unselectedLineOpacity * 100;
       document.getElementById('chartHeightRange').value = +jsonData.settings.chartHeight;
       document.getElementById('tablePageSizeSlider').value = +jsonData.settings.tablePageSize;
 
@@ -746,7 +747,7 @@
         return "numerical";
       } else if (!isNaN(+value)) {
         return "numerical";
-      } else if (value.match(/^([-+]\d{2})?\d{4}(-\d{2}(-\d{2})?)?(T\d{2}:\d{2}(:\d{2}(\.\d{3})?)?(Z|[-+]\d{2}:\d{2})?)?$/)) { 
+      } else if (value.match(/^([-+]\d{2})?\d{4}(-\d{2}(-\d{2})?)?(T\d{2}:\d{2}(:\d{2}(\.\d{3})?)?(Z|[-+]\d{2}:\d{2})?)?$/)) {
         return "temporal";
       } else {
         return "categorical";
@@ -803,7 +804,7 @@
               tuple[key] = new Date(value);
             } else {
               tuple[key] = value;
-            } 
+            }
           }
         });
         return tuple;
@@ -811,7 +812,7 @@
 
       // initialize fileData object
       fileData = {dimensions: dims, tuples};
-      
+
       csvData = null;
 
       const showAllColumns = $('.ui.checkbox.showAllColumnsCheckbox').checkbox('is checked');
@@ -860,6 +861,29 @@
           chartData.dimensions.unshift(chartData.dimensions.splice(idx, 1)[0]);
         }
       }
+    };
+
+    // load the cars sample dataset
+    const loadSIMAData = () => {
+      d3.csv("data/SIMA.csv")
+        .then(data => {
+          console.log(data);
+          fileData = {
+            dimensions: [
+              {name: "state", type: "categorical"},
+              {name: "date", type: "temporal"},
+              {name: "fips", type: "categorical"},
+              {name: "cases", type: "numerical"},
+              {name: "deaths", type: "numerical"}
+            ],
+            tuples: data.slice()
+          }
+          console.log(fileData);
+          loadNewFileData(true);
+        })
+        .catch(error => {
+          console.error(error);
+        });
     };
 
     // load the cars sample dataset
@@ -1070,7 +1094,7 @@
         });
       }
     });
-    
+
     // handle changes to unselectedLineOpacity option
     document.getElementById('unselectedLineOpacityRange').addEventListener('change', () => {
       // chart ? chart.unselectedLineOpacity(getUnselectedLineOpacity()) : null;
@@ -1096,7 +1120,7 @@
     document.getElementById('axisSpacingRange').addEventListener('change', () => {
       chart.axisSpacing(getAxisSpacing());
     });
-    
+
     $('.chartWidthFit.ui.dropdown')
       .dropdown({
         onChange: function(value, text, $selectedItem) {
@@ -1429,7 +1453,7 @@
 
           // chartData.tuples = chartTuplesHistory.pop();
           if (chartTuplesHistory.length === 0) {
-            $('.undoLastFilterItem').addClass('disabled');  
+            $('.undoLastFilterItem').addClass('disabled');
           }
           createChart();
           sendChartDataAsMessage();
@@ -1483,7 +1507,7 @@
         tablePageSize: getDataTablePageSize()
       };
     };
-    
+
     // handle save selected data as JSON
     $('.saveJSONItem')
       .on('click', function(e) {
@@ -1523,7 +1547,7 @@
         }
       });
 
-    // initialize dimension select 
+    // initialize dimension select
     $('#dimensionSelect')
       .dropdown({
         clearable: true
@@ -1566,7 +1590,7 @@
           const queryDimensionName = getQueryDimension();
           const queryDimension = chartData.dimensions.find(d => d.name === queryDimensionName);
           const selectedCategories = selectedCategoryIDs.map(d => queryDimension.categories.find(c => c.id === d).name);
-          
+
           ignoreQueryChange = true;
           chart.setDimensionSelection(queryDimensionName, selectedCategories);
           ignoreQueryChange = false;
@@ -1578,7 +1602,7 @@
           // consider making this a promise
           if (channelListeners.size > 0) {
             sendMessage({
-              type: "set selected data", 
+              type: "set selected data",
               selected: chart.selectedTuples().map(d => d[tupleIDProperty])
             });
           }
@@ -1613,7 +1637,7 @@
         }
 
         let queryDomain = [Math.min(minNumericalValue, maxNumericalValue), Math.max(minNumericalValue, maxNumericalValue)];
-        
+
         if (queryDomain[0] < dim.stats.min && queryDomain[1] < dim.stats.min) {
           queryDomain[0] = queryDomain[1] = dim.stats.min;
         } else if (queryDomain[0] > dim.stats.max && queryDomain[1] > dim.stats.max) {
@@ -1636,7 +1660,7 @@
         // consider making this a promise
         if (channelListeners.size > 0) {
           sendMessage({
-            type: "set selected data", 
+            type: "set selected data",
             selected: chart.selectedTuples().map(d => d[tupleIDProperty])
           });
         }
@@ -1730,7 +1754,7 @@
         document.getElementById('fileInput').setAttribute("accept", ".csv,.txt");
         $('#fileInput').click();
       });
-    
+
     $('.scatterplotItem')
       .on('click', function(e) {
         if (getOpenViewsInTabs()) {
@@ -1748,7 +1772,7 @@
           window.open(`./map.html?mvid=${maven_app_mvid}`, '_blank', "height=900,width=800");
         }
       });
-    
+
     $('.histogramViewItem')
       .on('click', function(e) {
         if (getOpenViewsInTabs()) {
@@ -1757,7 +1781,7 @@
           window.open(`./histogram.html?mvid=${maven_app_mvid}`, '_blank', "height=600,width=800");
         }
       });
-    
+
     // open csv file
     $('.loadJSONItem')
       .on('click', function(e) {
@@ -1765,7 +1789,7 @@
         document.getElementById('fileInput').setAttribute("accept", ".json");
         $('#fileInput').click();
       });
-    
+
     // handle csv file input change
     $('#fileInput')
       .on('change', function(e) {
@@ -1776,19 +1800,19 @@
             loadCSVFile(e.target.files[0]);
           }
         }
-      });    
+      });
 
     // handle load Cars Sample Dataset menu item
     $('.loadCarsDataItem')
       .on('click', () => {
         loadCarsData();
-      });  
-      
+      });
+
     // handle load Cars Sample Dataset menu item
     // $('.loadNYTCovidDataItem')
     //   .on('click', () => {
     //     loadNYTCOVIDData();
-    //   });  
+    //   });
 
     // ui checkbox showAllColumnsCheckbox
     $('.ui.checkbox.showAllColumnsCheckbox')
