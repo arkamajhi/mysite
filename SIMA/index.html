@@ -40,7 +40,7 @@
         <a class="item saveCSVItem" title="Saves data to generic Comma Separated Value (CSV) file">Save As CSV File...</a>
         <a class="item saveJSONItem" title="Saves plot settings and data to SIMA Vis JSON file">Save As JSON File...</a>
         <div class="divider"></div>
-        <a class="item loadSIMAData">Load SIMA Dataset</a>
+        <a class="item loadSIMADataItem">Load SIMA Dataset</a>
         <a class="item loadCarsDataItem">Load Cars Dataset</a>
         <!-- <a class="item loadNYTCovidDataItem">Load NYTimes COVID Dataset</a> -->
       </div>
@@ -865,7 +865,7 @@
 
     // load the cars sample dataset
     const loadSIMAData = () => {
-      d3.csv("data/SIMA.csv")
+      d3.csv("https://arkadesignstudio.in/SIMA/data/SIMA.csv")
         .then(data => {
           console.log(data);
           fileData = {
@@ -1815,6 +1815,12 @@
       .on('click', () => {
         loadCarsData();
       });
+
+      // handle load SIMA Dataset menu item
+      $('.loadSIMADataItem')
+        .on('click', () => {
+          loadSIMAData();
+        });
 
     // handle load Cars Sample Dataset menu item
     // $('.loadNYTCovidDataItem')
