@@ -870,11 +870,19 @@
           console.log(data);
           fileData = {
             dimensions: [
-              {name: "state", type: "categorical"},
-              {name: "date", type: "temporal"},
-              {name: "fips", type: "categorical"},
-              {name: "cases", type: "numerical"},
-              {name: "deaths", type: "numerical"}
+              {name: "Species", type: "categorical"},
+              {name: "Climate", type: "categorical"},
+              {name: "Time", type: "categorical"},
+              {name: "Treatment", type: "categorical"},
+              {name: "Change of Basal Area Targets", type: "categorical"},
+              {name: "Tree Biomass C", type: "numerical"},
+              {name: "Total Soil C", type: "numerical"},
+              {name: "Ecosystem C", type: "numerical"},
+              {name: "Wood products C", type: "numerical"},
+              {name: "Timber", type: "numerical"},
+              {name: "Deadwood", type: "numerical"},
+              {name: "Soil Water", type: "numerical"},
+              {name: "NPV", type: "numerical"}
             ],
             tuples: data.slice()
           }
