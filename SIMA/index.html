@@ -41,7 +41,7 @@
         <a class="item saveJSONItem" title="Saves plot settings and data to SIMA Vis JSON file">Save As JSON File...</a>
         <div class="divider"></div>
         <a class="item loadSIMADataItem">Load SIMA Dataset</a>
-        <a class="item loadCarsDataItem">Load Cars Dataset</a>
+        <!--a class="item loadCarsDataItem">Load Cars Dataset</a-->
         <!-- <a class="item loadNYTCovidDataItem">Load NYTimes COVID Dataset</a> -->
       </div>
     </div>
@@ -54,7 +54,7 @@
         <a class="item disabled undoLastFilterItem">Undo Last Filter Action</a>
       </div>
     </div>
-    <div class="ui dropdown item viewsMenuItem">
+    <!--div class="ui dropdown item viewsMenuItem">
       Views
       <i class="dropdown icon"></i>
       <div class="menu">
@@ -62,7 +62,7 @@
         <a class="item mapViewItem">Map...</a>
         <a class="item histogramViewItem">Histogram...</a>
       </div>
-    </div>
+    </div-->
     <a class="ui item dimensionsItem">
       Dimensions...
     </a>
@@ -865,7 +865,7 @@
 
     // load the cars sample dataset
     const loadSIMAData = () => {
-      d3.csv("https://arkadesignstudio.in/SIMA/data/SIMA.csv")
+      d3.csv("https://arkadesignstudio.in/SIMA/data/SIMA.csv", d3.autoType)
         .then(data => {
           console.log(data);
           fileData = {
