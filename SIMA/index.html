@@ -41,7 +41,7 @@
         <a class="item saveJSONItem" title="Saves plot settings and data to SIMA Vis JSON file">Save As JSON File...</a>
         <div class="divider"></div>
         <a class="item loadSIMAData">Load SIMA Dataset</a>
-        <!--a class="item loadCarsDataItem">Load Sample '83 ASA Cars Dataset</a-->
+        <a class="item loadCarsDataItem">Load Cars Dataset</a>
         <!-- <a class="item loadNYTCovidDataItem">Load NYTimes COVID Dataset</a> -->
       </div>
     </div>
@@ -1838,8 +1838,8 @@
     const readVersionInfo = () => {
       d3.json("data/appinfo.json")
         .then(d => {
-          $('#mavenVersionNumberText')
-            .text(`${d.name} Ver. ${d.version}`);
+          //$('#mavenVersionNumberText')
+          //  .text(`${d.name} Ver. ${d.version}`);
           // $('#mavenVersionNumberText')
           //   .text(`${d.name} Version ${d.version}`);
           // $('#mavenVersionDateText')
