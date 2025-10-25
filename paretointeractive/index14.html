@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Pareto Frontier Explorer</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* CSS Reset and Global Styles */
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 20px;
+    background: #f5f5f5;
+    color: #333;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+h2 {
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Containers */
+.container {
+    max-width: 950px;
+    margin: 0 auto;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* MODIFIED: Responsive grid for control cards */
+.controls-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    max-width: 950px;
+    margin: 0 auto 20px auto;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Card Styling (Panel) */
+.panel {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
+.panel h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-weight: 700;
+    font-size: 1.1em;
+}
+
+/* Form Elements */
+.form-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+select, button, input[type="file"], input[type="number"], input[type="range"] {
+    padding: 8px 10px;
+    font-size: 14px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+/* NEW: Weight Input Container for combined slider/number UI */
+.weight-input-container {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 0;
+    margin-top: 5px; /* Spacing below the text label */
+}
+.weight-label-text {
+    flex: 0 0 auto;
+    font-weight: 400;
+    font-size: 14px;
+}
+input[type="range"] {
+    flex: 1 1 150px;
+    padding: 0;
+    margin: 0;
+    height: 10px;
+    border: none;
+    /* Hide default number next to slider for datalist visualization */
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+}
+
+/* Customizing Range Slider Track and Thumb */
+input[type="range"]::-webkit-slider-runnable-track {
+    background: #ddd;
+    border-radius: 5px;
+    height: 8px;
+}
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 15px;
+    height: 15px;
+    background: #2196F3;
+    border-radius: 50%;
+    cursor: pointer;
+    margin-top: -3.5px;
+}
+/* Datatlist styling for labels below the slider */
+datalist {
+    display: flex;
+    justify-content: space-between;
+    width: calc(100% - 10px); /* Adjust to align with slider track */
+    font-size: 10px;
+    margin-top: -5px; /* Pull labels closer to the slider */
+    padding: 0 5px;
+}
+datalist option {
+    font-size: 0.8em;
+    padding: 0;
+}
+
+input[type="number"] {
+    flex: 0 0 50px;
+    text-align: center;
+    padding: 4px 6px;
+}
+
+/* Style for dropdowns to truncate long names */
+select {
+    flex: 1 1 100%;
+    max-width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+button {
+    background-color: #2196F3;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+    flex: 1 1 100%;
+}
+button:hover {
+    background-color: #1976D2;
+}
+
+/* File Input Styling */
+#fileInput {
+    padding: 10px;
+    background-color: #f9f9f9;
+    cursor: pointer;
+    border: 1px dashed #aaa;
+}
+
+/* Switch */
+.switch { position: relative; display: inline-block; width: 40px; height: 20px; }
+.switch input { display: none; }
+.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: 0.3s; border-radius: 34px; }
+.slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 2px; bottom: 2px; background-color: white; transition: 0.3s; border-radius: 50%; }
+input:checked + .slider { background-color: #2196F3; }
+input:checked + .slider:before { transform: translateX(20px); }
+
+/* SVG Chart: Dynamically calculated height */
+#chart {
+    width: 100%;
+    min-height: 400px;
+    height: calc(100vh - 200px - 140px);
+    border-radius: 12px;
+    background: white;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+/* Toggles and Weight Grid */
+.toggles {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top:5px;
+}
+.form-row label {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 100%;
+}
+.form-row label:has(.switch) {
+    flex-direction: row;
+    width: auto;
+}
+
+.info-panel { margin-top: 10px; font-weight: 700; }
+.tooltip { position: absolute; padding: 6px 10px; background: rgba(0,0,0,0.7); color: white; border-radius: 4px; font-size: 12px; pointer-events: none; }
+
+.pulse { fill: orange; animation: pulse 1.2s infinite; }
+@keyframes pulse {
+  0% { r: 6; opacity: 0.5; }
+  50% { r: 12; opacity: 0.2; }
+  100% { r: 6; opacity: 0.5; }
+}
+.weight-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+/* Media Query for smaller screens (e.g., mobile) */
+@media (max-width: 990px) {
+    body { padding: 10px; }
+    .controls-container {
+        gap: 10px;
+    }
+    .panel {
+        padding: 15px;
+    }
+    #chart {
+        min-height: 300px;
+        height: calc(100vh - 200px);
+    }
+}
+
+</style>
+</head>
+<body>
+
+<h2 id="page-header">Pareto Frontier Explorer</h2>
+
+<div class="container" id="upload-container" style="margin-bottom: 20px;">
+  <div class="panel">
+    <h3>Step 1: Upload CSV Data 📁</h3>
+    <input type="file" id="fileInput" accept=".csv" title="Browse for a CSV file">
+  </div>
+</div>
+
+<div class="controls-container" id="controls-container">
+
+  <div class="panel">
+    <h3>Step 2: Choose Variables</h3>
+    <div class="form-row" style="flex-direction: column;">
+      <label>X Variable: <select id="xVar"></select></label>
+      <label>Y Variable: <select id="yVar"></select></label>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3>Weighted Management</h3>
+    <label>Use Weighted Management: <label class="switch"><input type="checkbox" id="toggleWeighted"><span class="slider"></span></label></label>
+    <div id="weightInputs" style="display:none;" class="weight-grid">
+
+      <div class="form-row" style="flex-direction: column;">
+        <label>Mgmt 1: <select id="mgmt1"></select></label>
+
+        <label>Weight 1 (%):</label>
+        <div class="weight-input-container">
+            <input type="range" id="weight1" min="0" max="100" value="50" list="tickmarks1">
+            <input type="number" id="weightVal1" min="0" max="100" value="50">
+        </div>
+        <datalist id="tickmarks1">
+            <option value="0" label="0"></option>
+            <option value="25"></option>
+            <option value="50" label="50"></option>
+            <option value="75"></option>
+            <option value="100" label="100"></option>
+        </datalist>
+      </div>
+
+      <div class="form-row" style="flex-direction: column;">
+        <label>Mgmt 2: <select id="mgmt2"></select></label>
+
+        <label>Weight 2 (%):</label>
+        <div class="weight-input-container">
+            <input type="range" id="weight2" min="0" max="100" value="50" list="tickmarks2">
+            <input type="number" id="weightVal2" min="0" max="100" value="50">
+        </div>
+        <datalist id="tickmarks2">
+            <option value="0" label="0"></option>
+            <option value="25"></option>
+            <option value="50" label="50"></option>
+            <option value="75"></option>
+            <option value="100" label="100"></option>
+        </datalist>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3>Toggle Points and Lines</h3>
+    <div class="toggles">
+      <label style="color:red">55-year (Dots + Line) <label class="switch"><input type="checkbox" id="toggleR55" checked><span class="slider"></span></label></label>
+      <label style="color:green">65-year (Dots + Line) <label class="switch"><input type="checkbox" id="toggleR65" checked><span class="slider"></span></label></label>
+      <label style="color:blue">75-year (Dots + Line) <label class="switch"><input type="checkbox" id="toggleR75" checked><span class="slider"></span></label></label>
+      <label style="color:black">Overall Line <label class="switch"><input type="checkbox" id="toggleLineOverall" checked><span class="slider"></span></label></label>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="panel">
+    <svg id="chart"></svg>
+    <div class="info-panel" id="crossInfo">Weighted Cross: X=0, Y=0</div>
+  </div>
+</div>
+
+<div class="tooltip" id="tooltip" style="opacity:0;"></div>
+
+<script>
+const svg = d3.select("#chart");
+const tooltip = d3.select("#tooltip");
+const crossInfo = d3.select("#crossInfo");
+let data=[], xVar="", yVar="", cross, xScale, yScale;
+
+// Function to call the plot function when the window resizes
+function handleResize() {
+    if (xVar && yVar && data.length > 0) {
+        plotData();
+    }
+}
+window.addEventListener('resize', handleResize);
+
+// CSV upload
+d3.select("#fileInput").on("change", function() {
+  const file = this.files[0];
+  if(!file) return;
+  d3.csv(URL.createObjectURL(file)).then(csv => {
+    data = csv;
+    const vars = Object.keys(data[0]);
+    d3.select("#xVar").selectAll("option").data(vars).join("option").text(d=>d).attr("value",d=>d);
+    d3.select("#yVar").selectAll("option").data(vars).join("option").text(d=>d).attr("value",d=>d);
+    const mgmtCodes = Array.from(new Set(data.map(d=>d["Management regime"])));
+    d3.select("#mgmt1").selectAll("option").data(mgmtCodes).join("option").text(d=>d).attr("value",d=>d);
+    d3.select("#mgmt2").selectAll("option").data(mgmtCodes).join("option").text(d=>d).attr("value",d=>d);
+    alert("File loaded successfully! Select variables to plot.");
+    if (d3.select("#xVar").property("value") && d3.select("#yVar").property("value")) {
+        plotData();
+    }
+  }).catch(error => {
+    alert("Error loading file: " + error.message);
+  });
+});
+
+// Instant plotting when variables change
+d3.select("#xVar").on("change", function(){
+    if(data.length > 0 && d3.select("#yVar").property("value")) plotData();
+});
+d3.select("#yVar").on("change", function(){
+    if(data.length > 0 && d3.select("#xVar").property("value")) plotData();
+});
+d3.select("#mgmt1").on("change", updateWeightedCross);
+d3.select("#mgmt2").on("change", updateWeightedCross);
+
+
+// Weighted toggle
+d3.select("#toggleWeighted").on("change", function(){
+  document.getElementById("weightInputs").style.display = this.checked ? "flex":"none";
+  if(cross) cross.style("display", this.checked ? null:"none");
+  updateWeightedCross();
+});
+
+// Sync slider & number inputs
+["weight1","weight2"].forEach((id,i)=>{
+  const numId = "weightVal"+(i+1);
+  const slider = d3.select("#"+id);
+
+  slider.on("input", function(){
+    d3.select("#weightVal"+(i+1)).property("value", this.value);
+    updateWeightedCross();
+  });
+  d3.select("#weightVal"+(i+1)).on("input", function(){
+    let val = +this.value;
+    if (val < 0) val = 0;
+    if (val > 100) val = 100;
+    d3.select("#weight"+(i+1)).property("value", val);
+    updateWeightedCross();
+  });
+});
+
+// Weighted point calculation
+function getWeightedPoint(m1,m2,w1,w2){
+  const filtered = data.filter(d=>+d["Climate code"]===1);
+  const d1 = filtered.find(d=>d["Management regime"]===m1);
+  const d2 = filtered.find(d=>d["Management regime"]===m2);
+  if(!d1 || !d2) return null;
+
+  const x1 = parseFloat(d1[xVar]);
+  const y1 = parseFloat(d1[yVar]);
+  const x2 = parseFloat(d2[xVar]);
+  const y2 = parseFloat(d2[yVar]);
+
+  if(isNaN(x1) || isNaN(y1) || isNaN(x2) || isNaN(y2) || (w1+w2)===0) return null;
+
+  const x = (w1*x1 + w2*x2)/(w1+w2);
+  const y = (w1*y1 + w2*y2)/(w1+w2);
+
+  return {x,y};
+}
+
+// PPF/Pareto frontier (Upper-Right Maximization)
+function computePPF(points){
+  if(points.length===0) return [];
+
+  const sorted = points.sort((a,b)=>{
+    if(b.x !== a.x) return b.x - a.x;
+    return b.y - a.y;
+  });
+
+  const pareto = [];
+  let maxY = -Infinity;
+
+  for(const p of sorted){
+    if(p.y >= maxY){
+      pareto.push(p);
+      maxY = p.y;
+    }
+  }
+
+  const maxYY = d3.max(points, d => d.y);
+  const maxPointY = points.find(d => d.y === maxYY);
+
+  if (maxPointY && (pareto.length === 0 || pareto[pareto.length - 1].y < maxYY)) {
+    if (!pareto.some(p => p.x === maxPointY.x && p.y === maxPointY.y)) {
+        pareto.push(maxPointY);
+    }
+  }
+
+  return pareto;
+}
+
+// Core Plotting Function
+function plotData(){
+    xVar = d3.select("#xVar").property("value");
+    yVar = d3.select("#yVar").property("value");
+    if(!xVar || !yVar || data.length === 0) return;
+
+    // Data processing and filtering
+    const filtered = data.filter(d=>+d["Climate code"]===1);
+    const points = filtered.map(d=>{
+      const rotationMatch = d["Management regime"].match(/R(\d+)/);
+      const rot = rotationMatch ? +rotationMatch[1] : 0;
+      let color = rot===55?"red":rot===65?"green":rot===75?"blue":"gray";
+      const xVal = parseFloat(d[xVar]);
+      const yVal = parseFloat(d[yVar]);
+      if(isNaN(xVal) || isNaN(yVal)) return null;
+      return {x:xVal, y:yVal, color, rotation:rot, raw:d};
+    }).filter(d=>d!==null);
+
+    if(points.length===0) return;
+
+    const frontiers = [55,65,75].map(rot=>{
+      const pts = points.filter(p=>p.rotation===rot).map(p=>({x:p.x,y:p.y}));
+      return {rotation:rot, frontier:computePPF(pts)};
+    });
+    const overallFrontier = computePPF(points.map(p=>({x:p.x,y:p.y})));
+
+    // D3 setup and plotting
+    svg.selectAll("*").remove();
+    const width = parseInt(svg.style("width")), height = parseInt(svg.style("height"));
+    const margin = {top:30,right:30,bottom:50,left:70};
+    const innerWidth = width-margin.left-margin.right;
+    const innerHeight = height-margin.top-margin.bottom;
+    const g = svg.append("g").attr("transform",`translate(${margin.left},${margin.top})`);
+
+    xScale = d3.scaleLinear().domain([0,d3.max(points,d=>d.x)]).range([0,innerWidth]).nice();
+    yScale = d3.scaleLinear().domain(d3.extent(points,d=>d.y)).nice().range([innerHeight,0]);
+
+    // Axes
+    g.append("g").attr("transform",`translate(0,${innerHeight})`).call(d3.axisBottom(xScale));
+    g.append("text").attr("x",innerWidth/2).attr("y",innerHeight+40).text(xVar).style("font-weight","bold").style("text-anchor","middle");
+    g.append("g").call(d3.axisLeft(yScale));
+    g.append("text").attr("transform","rotate(-90)").attr("x",-innerHeight/2).attr("y",-50).text(yVar).style("font-weight","bold").style("text-anchor","middle");
+
+    // Dots and rotation lines combined
+    frontiers.forEach(f=>{
+      points.filter(p=>p.rotation===f.rotation).forEach(p=>{
+        g.append("circle")
+          .attr("cx",xScale(p.x)).attr("cy",yScale(p.y))
+          .attr("r",4).attr("fill",p.color)
+          .attr("class","dotR"+p.rotation)
+          .on("mouseover",(event,d)=>{ tooltip.transition().duration(200).style("opacity",1);
+            tooltip.html(`${xVar}: ${p.x.toFixed(2)}<br>${yVar}: ${p.y.toFixed(2)}`)
+              .style("left",(event.pageX+10)+"px").style("top",(event.pageY-28)+"px");})
+          .on("mouseout",()=>tooltip.transition().duration(200).style("opacity",0));
+      });
+      g.append("path").datum(f.frontier)
+        .attr("fill","none")
+        .attr("stroke",f.rotation===55?"red":f.rotation===65?"green":"blue")
+        .attr("stroke-width",2)
+        .attr("stroke-dasharray","5,5")
+        .attr("class","paretoR"+f.rotation)
+        .attr("d",d3.line().x(d=>xScale(d.x)).y(d=>yScale(d.y)).curve(d3.curveLinear));
+    });
+
+    // Overall line
+    g.append("path").datum(overallFrontier)
+      .attr("fill","none").attr("stroke","black")
+      .attr("stroke-width",2).attr("class","paretoLineOverall")
+      .attr("d",d3.line().x(d=>xScale(d.x)).y(d=>yScale(d.y)).curve(d3.curveLinear));
+
+    // Weighted pulsating point initialization/update
+    const m1Init=d3.select("#mgmt1").property("value");
+    const m2Init=d3.select("#mgmt2").property("value");
+    const w1Init=+d3.select("#weight1").property("value");
+    const w2Init=+d3.select("#weight2").property("value");
+    const weightedInit = getWeightedPoint(m1Init,m2Init,w1Init,w2Init);
+
+    cross = svg.select(".weighted-cross-group");
+    if (cross.empty()) {
+        cross = g.append("g").attr("class", "weighted-cross-group");
+        cross.append("circle").attr("class","pulse");
+        cross.append("circle").attr("r",3).attr("fill","black");
+    }
+
+    if(weightedInit){
+        cross.style("display", d3.select("#toggleWeighted").property("checked") ? null:"none");
+        cross.select(".pulse")
+            .attr("cx",xScale(weightedInit.x)).attr("cy",yScale(weightedInit.y)).attr("r",6)
+            .on("mouseover",(event,d)=>{ tooltip.transition().duration(200).style("opacity",1);
+                tooltip.html(`**Weighted Point**<br>${xVar}: ${weightedInit.x.toFixed(2)}<br>${yVar}: ${weightedInit.y.toFixed(2)}`)
+                .style("left",(event.pageX+10)+"px").style("top",(event.pageY-28)+"px");})
+            .on("mouseout",()=>tooltip.transition().duration(200).style("opacity",0));
+        cross.select("circle:not(.pulse)")
+            .attr("cx",xScale(weightedInit.x)).attr("cy",yScale(weightedInit.y));
+        crossInfo.text(`Weighted Cross: X=${weightedInit.x.toFixed(2)}, Y=${weightedInit.y.toFixed(2)}`);
+    } else {
+        cross.style("display", "none");
+        crossInfo.text(`Weighted Cross: X=N/A, Y=N/A (Check management regimes and data)`);
+    }
+
+    // Combined toggles state restore/setup
+    ["R55","R65","R75"].forEach(rot=>{
+      const isChecked = d3.select("#toggle"+rot).property("checked");
+      const display = isChecked?null:"none";
+      svg.selectAll(".dot"+rot).attr("display",display);
+      svg.selectAll(".pareto"+rot).attr("display",display);
+      d3.select("#toggle"+rot).on("change", function(){
+        const newDisplay = this.checked?null:"none";
+        svg.selectAll(".dot"+rot).attr("display",newDisplay);
+        svg.selectAll(".pareto"+rot).attr("display",newDisplay);
+      });
+    });
+    const isOverallChecked = d3.select("#toggleLineOverall").property("checked");
+    svg.selectAll(".paretoLineOverall").attr("display",isOverallChecked?null:"none");
+    d3.select("#toggleLineOverall").on("change", function(){ svg.selectAll(".paretoLineOverall").attr("display",this.checked?null:"none"); });
+}
+
+// Update weighted point dynamically (used for slider/number changes)
+function updateWeightedCross(){
+  if(!xScale || !yScale || !d3.select("#toggleWeighted").property("checked")) return;
+
+  const m1=d3.select("#mgmt1").property("value");
+  const m2=d3.select("#mgmt2").property("value");
+  const w1=+d3.select("#weight1").property("value");
+  const w2=+d3.select("#weight2").property("value");
+  const weighted=getWeightedPoint(m1,m2,w1,w2);
+
+  cross = svg.select(".weighted-cross-group");
+
+  if(weighted && !cross.empty()){
+    cross.selectAll("circle")
+      .attr("cx",xScale(weighted.x))
+      .attr("cy",yScale(weighted.y));
+    cross.style("display", null);
+    crossInfo.text(`Weighted Cross: X=${weighted.x.toFixed(2)}, Y=${weighted.y.toFixed(2)}`);
+  } else if (!cross.empty()) {
+    cross.style("display", "none");
+    crossInfo.text(`Weighted Cross: X=N/A, Y=N/A (Check management regimes and data)`);
+  }
+}
+</script>
+</body>
+</html>

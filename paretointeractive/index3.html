@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Pareto Frontier Explorer Fixed</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+  body { font-family: sans-serif; margin: 20px; }
+  svg { border: 1px solid #aaa; }
+</style>
+</head>
+<body>
+
+<h2>Pareto Frontier Explorer</h2>
+
+<input type="file" id="fileInput" accept=".csv"><br><br>
+
+<select id="xVar"></select>
+<select id="yVar"></select>
+<button id="plotBtn">Plot</button><br><br>
+
+<label><input type="checkbox" id="toggleR55" checked> Show 55-year (red)</label>
+<label><input type="checkbox" id="toggleR65" checked> Show 65-year (green)</label>
+<label><input type="checkbox" id="toggleR75" checked> Show 75-year (blue)</label>
+<label><input type="checkbox" id="toggleLines" checked> Show Pareto line</label><br><br>
+
+<svg id="chart" width="700" height="500"></svg>
+
+<script>
+const svg = d3.select("#chart");
+const width = +svg.attr("width"), height = +svg.attr("height");
+let data = [];
+
+d3.select("#fileInput").on("change", function() {
+  const file = this.files[0];
+  d3.csv(URL.createObjectURL(file)).then(csv => {
+    data = csv;
+    const vars = Object.keys(data[0]);
+    d3.select("#xVar").selectAll("option")
+      .data(vars).join("option").text(d=>d).attr("value",d=>d);
+    d3.select("#yVar").selectAll("option")
+      .data(vars).join("option").text(d=>d).attr("value",d=>d);
+  });
+});
+
+d3.select("#plotBtn").on("click", function() {
+  const xVar = d3.select("#xVar").property("value");
+  const yVar = d3.select("#yVar").property("value");
+
+  // Filter by Climate.code == 1
+  const filtered = data.filter(d => +d["Climate code"] === 1);
+
+  // Map Management regime to rotation colors
+  const points = filtered.map(d => {
+    let rotStr = d["Management regime"];
+    let rot = +rotStr.split("R")[1];
+    let color = "gray";
+    let rotation = null;
+    if (rot === 55) { color = "red"; rotation = 55; }
+    else if (rot === 65) { color = "green"; rotation = 65; }
+    else if (rot === 75) { color = "blue"; rotation = 75; }
+    return { x: +d[xVar], y: +d[yVar], color: color, rotation: rotation, origX: +d[xVar], origY: +d[yVar] };
+  });
+
+  // Compute Pareto frontier
+  const pareto = computeParetoFront(points.map(p => ({x: p.x, y: p.y})));
+
+  // Clear previous plot
+  svg.selectAll("*").remove();
+
+  // Scales with x offset (e.g., start at 5% of min)
+  const xExtent = d3.extent(points, d=>d.x);
+  const xOffset = (xExtent[1]-xExtent[0])*0.05; // 5% offset
+  const x = d3.scaleLinear()
+    .domain([xExtent[0]-xOffset, xExtent[1]]).nice()
+    .range([50, width-20]);
+  const y = d3.scaleLinear()
+    .domain(d3.extent(points, d=>d.y)).nice()
+    .range([height-30, 30]);
+
+  // Axes
+  svg.append("g").attr("transform", `translate(0,${height-30})`).call(d3.axisBottom(x));
+  svg.append("g").attr("transform", `translate(50,0)`).call(d3.axisLeft(y));
+
+  // Scatter points
+  svg.selectAll("circle")
+    .data(points)
+    .join("circle")
+    .attr("cx", d=>x(d.x))
+    .attr("cy", d=>y(d.y))
+    .attr("r", 4)
+    .attr("fill", d=>d.color)
+    .attr("class", d=> "dotR" + d.rotation);
+
+  // Pareto line: straight segments connecting points
+  const paretoLine = svg.append("path")
+    .datum(pareto)
+    .attr("fill","none")
+    .attr("stroke","black")
+    .attr("stroke-width",2)
+    .attr("class","paretoLine")
+    .attr("d", d3.line()
+      .x(d=>x(d.x))
+      .y(d=>y(d.y))
+      .curve(d3.curveLinear) // straight segments
+    );
+
+  // Cross: compute as in R code (rough example: midpoint of first two rotations)
+  const crossPoint = computeCross(points);
+  const cross = svg.append("g")
+    .attr("transform", `translate(${x(crossPoint.x)},${y(crossPoint.y)})`)
+    .call(d3.drag().on("drag", function(event){
+      d3.select(this).attr("transform", `translate(${event.x},${event.y})`);
+    }));
+  cross.append("line").attr("x1",-8).attr("x2",8).attr("stroke","black").attr("stroke-width",2);
+  cross.append("line").attr("y1",-8).attr("y2",8).attr("stroke","black").attr("stroke-width",2);
+
+  // Toggle handlers
+  d3.select("#toggleR55").on("change", function() {
+    svg.selectAll(".dotR55").attr("display", this.checked ? null : "none");
+  });
+  d3.select("#toggleR65").on("change", function() {
+    svg.selectAll(".dotR65").attr("display", this.checked ? null : "none");
+  });
+  d3.select("#toggleR75").on("change", function() {
+    svg.selectAll(".dotR75").attr("display", this.checked ? null : "none");
+  });
+  d3.select("#toggleLines").on("change", function() {
+    svg.selectAll(".paretoLine").attr("display", this.checked ? null : "none");
+  });
+
+});
+
+// Straight 2D Pareto frontier computation
+function computeParetoFront(points){
+  const sorted = points.sort((a,b)=>b.x - a.x);
+  const pareto = [sorted[0]];
+  for (const p of sorted){
+    if (p.y >= pareto[pareto.length - 1].y)
+      pareto.push(p);
+  }
+  return pareto;
+}
+
+// Example: compute cross like R code (adjust as needed)
+function computeCross(points){
+  // Find mid-point between first two largest x points
+  const sortedX = points.sort((a,b)=>b.x - a.x);
+  const p1 = sortedX[0];
+  const p2 = sortedX[1];
+  return {x: (p1.x + p2.x)/2, y: (p1.y + p2.y)/2};
+}
+</script>
+
+</body>
+</html>
