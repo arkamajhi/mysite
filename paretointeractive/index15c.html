@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Pareto Frontier Explorer</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+  body {
+    font-family: "Segoe UI", Roboto, sans-serif;
+    background: #f8f9fa;
+    margin: 0;
+    padding: 20px;
+    color: #333;
+  }
+  h2 {
+    text-align: center;
+  }
+  .container {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+  }
+  .card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    padding: 16px;
+    flex: 1;
+  }
+  .toggles {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  input[type="checkbox"] {
+    transform: scale(1.2);
+  }
+  .slider {
+    width: 100%;
+  }
+  svg {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+</style>
+</head>
+<body>
+<h2>Pareto Frontier Explorer</h2>
+
+<div class="container">
+  <div class="card" id="weighted-card">
+    <h3>Weighted Management</h3>
+    <p>Adjust weights for objectives:</p>
+    <label>Weight 1: <input type="range" id="w1" class="slider" min="0" max="1" step="0.01" value="0.5"></label>
+    <label>Weight 2: <input type="range" id="w2" class="slider" min="0" max="1" step="0.01" value="0.5"></label>
+    <p><strong>Weighted Point</strong> updates dynamically.</p>
+  </div>
+
+  <div class="card" id="toggle-card">
+    <h3>Toggle Data</h3>
+    <div id="toggleGrid" class="toggles"></div>
+  </div>
+</div>
+
+<div id="chart"></div>
+
+<script>
+// === Sample Data ===
+const datasets = {
+  A: d3.range(0, 10).map(i => ({ x: i, y: 10 - i + Math.random() })),
+  B: d3.range(0, 10).map(i => ({ x: i, y: 5 + Math.sin(i) * 2 + Math.random() })),
+  C: d3.range(0, 10).map(i => ({ x: i, y: Math.random() * 10 }))
+};
+
+const colors = { A: "#1f77b4", B: "#2ca02c", C: "#d62728" };
+
+// === SVG Setup ===
+const margin = { top: 30, right: 30, bottom: 50, left: 50 };
+const width = 700 - margin.left - margin.right;
+const height = 500 - margin.top - margin.bottom;
+
+const svg = d3.select("#chart").append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom)
+.append("g")
+  .attr("transform", `translate(${margin.left},${margin.top})`);
+
+// === Scales ===
+const allPoints = Object.values(datasets).flat();
+const xScale = d3.scaleLinear().domain(d3.extent(allPoints, d => d.x)).range([0, width]);
+const yScale = d3.scaleLinear().domain(d3.extent(allPoints, d => d.y)).range([height, 0]);
+
+// === Axes ===
+svg.append("g")
+  .attr("transform", `translate(0,${height})`)
+  .call(d3.axisBottom(xScale));
+svg.append("g").call(d3.axisLeft(yScale));
+
+// === Pareto Frontier Computation ===
+function computePPF(points) {
+  if (points.length === 0) return [];
+  const sorted = [...points].sort((a,b) => a.x - b.x);
+  const pareto = [];
+  let maxY = -Infinity;
+  for (const p of sorted) {
+    if (p.y >= maxY) {
+      pareto.push(p);
+      maxY = p.y;
+    }
+  }
+  return pareto;
+}
+
+// === Draw Data ===
+const lineGen = d3.line()
+  .x(d => xScale(d.x))
+  .y(d => yScale(d.y))
+  .curve(d3.curveLinear);
+
+for (const [key, data] of Object.entries(datasets)) {
+  const ppf = computePPF(data);
+
+  // Pareto line
+  svg.append("path")
+    .datum(ppf)
+    .attr("class", `pareto pareto-${key}`)
+    .attr("fill", "none")
+    .attr("stroke", colors[key])
+    .attr("stroke-width", 2)
+    .attr("d", lineGen);
+
+  // Pareto points
+  svg.selectAll(`.dot-${key}`)
+    .data(ppf)
+    .enter()
+    .append("circle")
+    .attr("class", `dot dot-${key}`)
+    .attr("r", 4)
+    .attr("fill", colors[key])
+    .attr("cx", d => xScale(d.x))
+    .attr("cy", d => yScale(d.y));
+}
+
+// === Toggles ===
+const toggleGrid = d3.select("#toggleGrid");
+for (const key of Object.keys(datasets)) {
+  const row = toggleGrid.append("label");
+  row.append("input")
+    .attr("type", "checkbox")
+    .attr("checked", true)
+    .on("change", function() {
+      const visible = this.checked ? "visible" : "hidden";
+      svg.selectAll(`.pareto-${key}`).attr("visibility", visible);
+      svg.selectAll(`.dot-${key}`).attr("visibility", visible);
+    });
+  row.append("span")
+    .text(`Dataset ${key}`)
+    .style("color", colors[key]);
+}
+
+// === Weighted Point ===
+const w1 = document.getElementById("w1");
+const w2 = document.getElementById("w2");
+
+const weightedDot = svg.append("circle")
+  .attr("r", 6)
+  .attr("fill", "black")
+  .attr("stroke", "white")
+  .attr("stroke-width", 1.5);
+
+function updateWeighted() {
+  const w1v = +w1.value;
+  const w2v = +w2.value;
+
+  // Weighted average of all data points
+  const combined = allPoints.map(d => ({
+    x: d.x * w1v + d.y * (1 - w1v),
+    y: d.y * w2v + d.x * (1 - w2v)
+  }));
+
+  const meanX = d3.mean(combined, d => d.x);
+  const meanY = d3.mean(combined, d => d.y);
+
+  weightedDot
+    .attr("cx", xScale(meanX))
+    .attr("cy", yScale(meanY));
+}
+
+w1.addEventListener("input", updateWeighted);
+w2.addEventListener("input", updateWeighted);
+updateWeighted();
+</script>
+</body>
+</html>

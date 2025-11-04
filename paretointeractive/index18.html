@@ -1,0 +1,1177 @@
+<!DOCTYPE TML>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Pareto Frontier Explorer</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* CSS Reset and Global Styles */
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #f5f5f5;
+    color: #333;
+    height: 100vh;
+    overflow: hidden;
+    box-sizing: border-box;
+
+    /* Grid layout for Desktop: Fixed 250px for controls, rest for chart */
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    grid-template-rows: 100vh;
+}
+h2 {
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 1.1em;
+}
+
+/* LEFT PANEL (Controls) 📦 */
+.controls-panel {
+    grid-column: 1 / 2;
+    background: #e0e0e0;
+    padding: 10px;
+    overflow-y: auto;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.controls-panel h2 {
+    margin-top: 5px;
+    margin-bottom: 8px;
+    font-size: 1em;
+}
+
+/* RIGHT PANEL (Chart) 📊 */
+.chart-panel {
+    grid-column: 2 / 3;
+    background: #f5f5f5;
+    padding: 15px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
+
+/* NEW: Chart Grid Container */
+#chartGrid {
+    flex: 1;
+    display: grid;
+    gap: 15px; /* Spacing between charts/cards */
+    padding: 5px;
+    overflow-y: auto; /* Allow scrolling within the chart area if many charts are generated */
+
+    /* Default to 1 column on smaller screens, 2, 3, or 4 on larger */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.chart-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    min-height: 350px; /* Minimum height for chart */
+}
+.chart-card h4 {
+    margin: 0 0 5px 0;
+    font-size: 1em;
+    font-weight: bold;
+    text-align: center;
+}
+.chart-svg {
+    flex-grow: 1;
+    width: 100%;
+    min-height: 0; /* Important for flex children */
+}
+
+
+/* Card Styling (Panel) - for controls */
+.panel {
+    background: white;
+    border-radius: 8px;
+    padding: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
+
+/* GLOBAL: Center Panel Headers */
+.panel h3 {
+    margin: 0;
+    font-weight: 700;
+    font-size: 0.9em;
+    text-align: center;
+}
+
+/* Collapsible Header Styling */
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    margin-bottom: 0;
+    padding-bottom: 5px;
+    border-bottom: 1px solid transparent;
+}
+.panel-header h3 {
+    text-align: left;
+}
+.panel-header:hover {
+    color: #2196F3;
+}
+.toggle-icon {
+    font-size: 0.8em;
+    transition: transform 0.2s;
+}
+/* Rotate icon when content is shown */
+.panel:not(.collapsed) .toggle-icon {
+    transform: rotate(180deg);
+}
+
+/* Content Area for Collapsible Cards */
+.panel-content {
+    overflow: hidden;
+    max-height: 500px;
+    transition: max-height 0.3s ease-in-out;
+}
+/* Collapse state */
+.panel.collapsed .panel-content {
+    max-height: 0;
+    padding-top: 0;
+}
+/* Separator for better collapsed look */
+.panel:not(.collapsed) .panel-content {
+    padding-top: 8px;
+    border-top: 1px solid #eee;
+}
+
+/* Form Elements Styling (Base for select and file input) */
+select, input[type="file"] {
+    padding: 4px 6px;
+    font-size: 11px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+/* Centering the File Input Element */
+#fileInput {
+    padding: 5px;
+    background-color: #f9f9f9;
+    cursor: pointer;
+    border: 1px dashed #aaa;
+    margin: 5px auto;
+    display: block;
+    width: 95%;
+    max-width: 100%;
+}
+
+/* --- X/Y VARIABLE SELECTION ALIGNMENT FIX --- */
+#varsPanel .form-row {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-top: 5px;
+    padding: 0 5px;
+}
+
+/* --- DYNAMIC VARIABLE SELECT STYLES (TRUNCATION FIX HERE) --- */
+.var-select-row {
+    margin-bottom: 10px;
+    width: 100%;
+}
+.var-select-row label {
+    font-size: 0.9em;
+    font-weight: bold;
+    display: block;
+    margin-bottom: 3px;
+    width: 100%;
+    margin: 0;
+    text-align: left;
+}
+.input-group {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    width: 100%;
+    margin: 0;
+}
+
+/* CRITICAL FIX FOR TRUNCATION IN FLEXBOX */
+.var-dropdown {
+    flex-grow: 1;
+    min-width: 0; /* Forces the flex item to shrink and respect container limits */
+
+    /* Required for text-overflow: ellipsis */
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+/* END CRITICAL FIX */
+
+.add-var-btn {
+    padding: 2px 8px;
+    border: 1px solid #2196F3;
+    background-color: #2196F3;
+    color: white;
+    font-size: 14px;
+    line-height: 1;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    flex-shrink: 0;
+}
+.add-var-btn:hover {
+    background-color: #0b7dda;
+}
+/* --- END DYNAMIC VARIABLE SELECT STYLES --- */
+
+
+/* --- CUSTOM DRAGGABLE SLIDER STYLES --- */
+
+/* Wrapper for the track and handle */
+.weight-control-wrapper {
+    position: relative;
+    height: 32px;
+    margin-top: 5px;
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* The visual track line */
+.slider-track {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 100%;
+    height: 4px;
+    background-color: #aaa;
+    border-radius: 2px;
+}
+
+/* The Draggable Number Box / Handle */
+.weight-draggable-handle {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+
+    width: 38px;
+    height: 24px;
+    padding: 0;
+    text-align: center;
+    font-weight: bold;
+    font-size: 11px;
+
+    border-radius: 4px;
+    border: 1px solid #333;
+    box-sizing: border-box;
+
+    cursor: grab;
+    z-index: 10;
+
+    -moz-appearance: textfield;
+    transition: box-shadow 0.1s;
+}
+.weight-draggable-handle::-webkit-outer-spin-button,
+.weight-draggable-handle::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+.weight-draggable-handle:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.5);
+}
+.dragging {
+    cursor: grabbing !important;
+    box-shadow: 0 0 5px rgba(33, 150, 243, 0.7);
+    background-color: #e3f2fd;
+}
+
+/* --- END CUSTOM DRAGGABLE SLIDER STYLES --- */
+
+/* Switch */
+.switch { position: relative; display: inline-block; width: 30px; height: 16px; }
+.switch input { display: none; }
+.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: 0.3s; border-radius: 34px; }
+.slider:before { position: absolute; content: ""; height: 12px; width: 12px; left: 2px; bottom: 2px; background-color: white; transition: 0.3s; border-radius: 50%; }
+input:checked + .slider:before { transform: translateX(14px); }
+
+/* Custom Switch Colors */
+.switch input.red-switch:checked + .slider { background-color: #F44336; }
+.switch input.green-switch:checked + .slider { background-color: #4CAF50; }
+.switch input.blue-switch:checked + .slider { background-color: #2196F3; }
+.switch input.black-switch:checked + .slider { background-color: #333; }
+
+/* Toggles and Weight Grid */
+.toggles {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.toggle-group {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    margin-bottom: 5px;
+}
+.toggle-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    font-size: 0.9em;
+    font-weight: bold;
+    transition: color 0.3s;
+    cursor: pointer;
+}
+.form-row label {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    width: 100%;
+}
+.weight-grid {
+    display: flex !important;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.info-panel { margin-top: 10px; font-weight: 700; font-size: 0.9em; text-align: center; }
+.tooltip { position: absolute; padding: 6px 10px; background: rgba(0,0,0,0.7); color: white; border-radius: 4px; font-size: 12px; pointer-events: none; z-index: 1000; }
+
+.pulse { fill: orange; animation: pulse 1.2s infinite; }
+@keyframes pulse {
+    0% { r: 6; opacity: 0.5; }
+    50% { r: 12; opacity: 0.2; }
+    100% { r: 6; opacity: 0.5; }
+}
+
+
+/* Mobile/Small Screen Fallback: Stack vertically */
+@media (max-width: 768px) {
+    body {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr;
+        height: auto;
+        overflow-y: auto;
+    }
+    .controls-panel {
+        grid-column: 1 / 2;
+        grid-row: 1 / 2;
+        width: 100%;
+        height: auto;
+        max-height: 90vh;
+        padding: 10px;
+        gap: 10px;
+    }
+    .chart-panel {
+        grid-column: 1 / 2;
+        grid-row: 2 / 3;
+        padding: 10px;
+        min-height: 60vh;
+    }
+}
+</style>
+</head>
+<body>
+
+<!-- LEFT CONTROL PANEL (250px on desktop) -->
+<div class="controls-panel">
+    <h2 id="page-header">Pareto Explorer</h2>
+
+    <!-- 1. File Upload -->
+    <div class="panel">
+        <h3>Upload Data 📁</h3>
+        <input type="file" id="fileInput" accept=".csv" title="Browse for a CSV file">
+    </div>
+
+    <!-- 2. X/Y Selection (Panel 2) -->
+    <div class="panel" id="varsPanel">
+        <h3>Choose Variables</h3>
+        <div class="form-row" style="flex-direction: column; margin-top: 5px;">
+            <div id="xVarContainer">
+                <!-- X variable dropdowns will be dynamically inserted here -->
+            </div>
+            <div id="yVarContainer">
+                <!-- Y variable dropdowns will be dynamically inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. Weighted Management (Panel 3) -->
+    <div class="panel collapsed" id="weightedPanel">
+        <div class="panel-header">
+            <h3>Weighted Management (Primary Chart Only)</h3>
+            <span class="toggle-icon">▼</span>
+        </div>
+        <div class="panel-content">
+            <div id="weightInputs" class="weight-grid">
+
+                <!-- Management 1 Weight UI -->
+                <div class="form-row" style="flex-direction: column; align-items: center;">
+                    <label>Management 1: <select id="mgmt1"></select></label>
+                    <!-- Custom Draggable Slider Wrapper -->
+                    <div class="weight-control-wrapper" data-id="1">
+                        <div class="slider-track"></div>
+                        <input type="number" class="weight-draggable-handle" id="weightVal1" min="0" max="100" value="50" readonly>
+                    </div>
+                </div>
+
+                <!-- Management 2 Weight UI -->
+                <div class="form-row" style="flex-direction: column; align-items: center;">
+                    <label>Management 2: <select id="mgmt2"></select></label>
+                    <!-- Custom Draggable Slider Wrapper -->
+                    <div class="weight-control-wrapper" data-id="2">
+                        <div class="slider-track"></div>
+                        <input type="number" class="weight-draggable-handle" id="weightVal2" min="0" max="100" value="50" readonly>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. Toggles (Panel 4) -->
+    <div class="panel collapsed" id="togglesPanel">
+        <div class="panel-header">
+            <h3>Toggle Pareto Fronts</h3>
+            <span class="toggle-icon">▼</span>
+        </div>
+        <div class="panel-content">
+            <div class="toggles">
+
+                <!-- R55 Toggle Group -->
+                <div class="toggle-group" id="groupR55">
+                    <label class="toggle-row" data-color="#F44336" data-id="R55">
+                        <span>55 years</span>
+                        <label class="switch">
+                            <input type="checkbox" id="toggleR55" class="red-switch" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </label>
+                </div>
+
+                <!-- R65 Toggle Group -->
+                <div class="toggle-group" id="groupR65">
+                    <label class="toggle-row" data-color="#4CAF50" data-id="R65">
+                        <span>65 years</span>
+                        <label class="switch">
+                            <input type="checkbox" id="toggleR65" class="green-switch" checked>
+                            <span class="slider"></span>
+                            </label>
+                    </label>
+                </div>
+
+                <!-- R75 Toggle Group -->
+                <div class="toggle-group" id="groupR75">
+                    <label class="toggle-row" data-color="#2196F3" data-id="R75">
+                        <span>75 years</span>
+                        <label class="switch">
+                            <input type="checkbox" id="toggleR75" class="blue-switch" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </label>
+                </div>
+
+                <!-- Overall Toggle Group -->
+                <div class="toggle-group" id="groupLineOverall">
+                    <label class="toggle-row" data-color="black" data-id="LineOverall">
+                        <span>Pareto Optimal</span>
+                        <label class="switch">
+                            <input type="checkbox" id="toggleLineOverall" class="black-switch" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- RIGHT CHART PANEL (90vw / 1fr) -->
+<div class="chart-panel">
+    <div class="panel" style="flex: 1; min-height: 0;">
+        <div id="chartGrid">
+            <!-- Charts will be dynamically inserted here -->
+            <p style="text-align: center; color: #888; padding: 20px;">Upload data and select X/Y variables to generate charts.</p>
+        </div>
+        <div class="info-panel" id="crossInfo">Weighted Cross: X=0, Y=0 (Appears on $X_1$ vs $Y_1$ Chart)</div>
+    </div>
+</div>
+
+<div class="tooltip" id="tooltip" style="opacity:0;"></div>
+
+<script>
+const tooltip = d3.select("#tooltip");
+const crossInfo = d3.select("#crossInfo");
+const TOGGLE_IDS = ["R55", "R65", "R75", "LineOverall"];
+const INACTIVE_COLOR = '#999';
+
+let data=[], xVar="", yVar=""; // xVar and yVar now only store the primary (X1, Y1) names for the weighted cross calculation
+let xCount = 0; // Tracks number of X dimension dropdowns
+let yCount = 0; // Tracks number of Y dimension dropdowns
+
+// --- Custom Draggable Handle Logic (Slider Implementation) ---
+let isDragging = false;
+let currentInput = null;
+let containerRect = null;
+
+/**
+ * Updates the CSS left property of the handle based on its current value.
+ */
+function updateHandlePosition(inputEl) {
+    if (!inputEl) return;
+    const value = +inputEl.value;
+    const min = +inputEl.min;
+    const max = +inputEl.max;
+    const wrapper = inputEl.closest('.weight-control-wrapper');
+    if (!wrapper) return;
+
+    const wrapperWidth = wrapper.clientWidth;
+
+    // Calculate position as a percentage of the track width
+    const normalizedValue = (value - min) / (max - min);
+
+    // Calculate pixel position. This positions the center of the handle.
+    const pixelPosition = normalizedValue * wrapperWidth;
+
+    // Apply position, and the CSS transform(-50%, -50%) centers the handle
+    inputEl.style.left = `${pixelPosition}px`;
+}
+
+/**
+ * Starts the drag operation on mousedown or touchstart.
+ */
+function startDrag(event) {
+    const target = event.target;
+    if (target.classList.contains('weight-draggable-handle')) {
+        event.preventDefault();
+
+        isDragging = true;
+        currentInput = target;
+        currentInput.classList.add('dragging');
+
+        const wrapper = currentInput.closest('.weight-control-wrapper');
+        containerRect = wrapper.getBoundingClientRect();
+
+        document.addEventListener('mousemove', onDrag);
+        document.addEventListener('mouseup', endDrag);
+        document.addEventListener('touchmove', onDrag, { passive: false });
+        document.addEventListener('touchend', endDrag);
+    }
+}
+
+/**
+ * Handles the drag movement.
+ */
+function onDrag(event) {
+    if (!isDragging || !currentInput) return;
+
+    event.preventDefault();
+    const clientX = event.touches ? event.touches[0].clientX : event.clientX;
+
+    let relativeX = clientX - containerRect.left;
+
+    // Constrain relativeX to the bounds of the wrapper (0 to wrapper width)
+    relativeX = Math.max(0, Math.min(containerRect.width, relativeX));
+
+    const min = +currentInput.min;
+    const max = +currentInput.max;
+
+    // Calculate the new value based on the relative position
+    const normalizedValue = relativeX / containerRect.width;
+    let newValue = Math.round(normalizedValue * (max - min));
+
+    newValue = Math.max(min, Math.min(max, newValue));
+
+    // Update the input field value and CSS position
+    currentInput.value = newValue;
+    updateHandlePosition(currentInput);
+
+    // Update the chart visualization
+    updateWeightedCross();
+}
+
+/**
+ * Ends the drag operation.
+ */
+function endDrag() {
+    if (!isDragging) return;
+
+    isDragging = false;
+    if (currentInput) {
+        currentInput.classList.remove('dragging');
+    }
+    currentInput = null;
+
+    document.removeEventListener('mousemove', onDrag);
+    document.removeEventListener('mouseup', endDrag);
+    document.removeEventListener('touchmove', onDrag, { passive: false });
+    document.removeEventListener('touchend', endDrag);
+}
+
+// Attach mousedown and touchstart listeners to the document
+document.addEventListener('mousedown', startDrag);
+document.addEventListener('touchstart', startDrag, { passive: false });
+// --- End Custom Draggable Handle Logic ---
+
+
+function updateToggleStyle(id, checked) {
+    const row = document.querySelector(`#group${id} .toggle-row`);
+    const color = row.getAttribute('data-color');
+    if (row) row.style.color = checked ? color : INACTIVE_COLOR;
+}
+
+/**
+ * Redraws all charts based on their current container size.
+ * This is now the main resize handler.
+ */
+function handleResize() {
+    // FIX: Using requestAnimationFrame to wait for the browser's layout cycle
+    window.requestAnimationFrame(() => {
+        if (data.length > 0) {
+            // Re-orchestrate to redraw all charts and force re-measurement
+            // orchestrateCharts now uses setTimeout(10) internally for reliable sizing
+            orchestrateCharts();
+        }
+        // Reposition handles on resize
+        document.querySelectorAll('.weight-draggable-handle').forEach(updateHandlePosition);
+    });
+}
+window.addEventListener('resize', handleResize);
+
+// Collapsible Panel Logic
+document.querySelectorAll('.panel-header').forEach(header => {
+    header.addEventListener('click', function() {
+        const panel = this.closest('.panel');
+        panel.classList.toggle('collapsed');
+
+        const isEnabled = !panel.classList.contains('collapsed');
+        if (panel.id === 'weightedPanel' && isEnabled) {
+            // Set initial positions when opening
+            document.querySelectorAll('.weight-draggable-handle').forEach(updateHandlePosition);
+        }
+        updateWeightedCross(isEnabled);
+    });
+});
+
+
+/**
+ * Populates a given select element with variable names.
+ * @param {HTMLElement} dropdownElement - The <select> element to populate.
+ * @param {string[]} data - Array of column/variable names.
+ */
+function populateDropdown(dropdownElement, data) {
+    d3.select(dropdownElement).selectAll("option").data(data).join("option").text(d => d).attr("value", d => d);
+}
+
+/**
+ * Creates the HTML structure for a new variable selection dropdown (including the button).
+ * @param {string} axis - 'x' or 'y'.
+ * @param {number} index - The dimension index (1 for primary, 2, 3, etc.).
+ * @param {string} label - The text label for the dropdown.
+ * @returns {HTMLElement} The newly created <select> element.
+ */
+function createDropdownHTML(axis, index, label) {
+    const containerId = axis === 'x' ? 'xVarContainer' : 'yVarContainer';
+    const container = document.getElementById(containerId);
+
+    // Remove the previous '+' button before appending the new row
+    container.querySelectorAll('.add-var-btn').forEach(btn => btn.remove());
+
+    const newRow = document.createElement('div');
+    newRow.classList.add('var-select-row');
+    newRow.innerHTML = `
+        <label>${label}:</label>
+        <div class="input-group">
+            <select class="var-dropdown" id="${axis}Var${index}" data-axis="${axis}" data-index="${index}"></select>
+            <button class="add-var-btn" data-axis="${axis}">+</button>
+        </div>
+    `;
+    container.appendChild(newRow);
+
+    const addButton = newRow.querySelector('.add-var-btn');
+    const selectElement = newRow.querySelector('.var-dropdown');
+
+    // Attach new event listener to the dynamically created '+' button
+    addButton.addEventListener('click', () => {
+        addVariableDropdown(axis);
+    });
+
+    // Attach change listener to the new select element (ANY change triggers chart update)
+    selectElement.addEventListener('change', function() {
+        orchestrateCharts();
+    });
+
+    return selectElement;
+}
+
+/**
+ * Adds a new variable selection dropdown for the given axis.
+ * @param {string} axis - 'x' or 'y'.
+ */
+function addVariableDropdown(axis) {
+    // Get variables only if data is present
+    const vars = data.length > 0 ? Object.keys(data[0]) : [];
+
+    let index;
+    if (axis === 'x') {
+        xCount++;
+        index = xCount;
+    } else if (axis === 'y') {
+        yCount++;
+        index = yCount;
+    } else {
+        return;
+    }
+
+    let labelText;
+    if (index === 1) {
+        labelText = `${axis.toUpperCase()} Variable`;
+    } else {
+        labelText = `${axis.toUpperCase()} Variable (${index})`;
+    }
+
+
+    const dropdown = createDropdownHTML(axis, index, labelText);
+
+    // Populate dropdown with actual vars if available, otherwise it remains empty
+    populateDropdown(dropdown, vars);
+
+    // FIX: If no data is loaded, disable the dropdown and the add button.
+    const hasData = data.length > 0;
+    dropdown.disabled = !hasData;
+
+    // The button is the sibling of the select element's parent container
+    const addButton = dropdown.parentElement.querySelector('.add-var-btn');
+    if (addButton) {
+        addButton.disabled = !hasData;
+    }
+}
+
+
+/**
+ * Gets all currently selected variable names for a given axis.
+ * @param {string} axis - 'x' or 'y'.
+ * @returns {string[]} Array of selected variable names.
+ */
+function getSelectedVars(axis) {
+    const selector = `#${axis}VarContainer select`;
+    return Array.from(document.querySelectorAll(selector))
+        .map(s => s.value)
+        .filter(v => v !== "" && v !== undefined);
+}
+
+// CSV upload
+d3.select("#fileInput").on("change", function() {
+  const file = this.files[0];
+  if(!file) return;
+  d3.csv(URL.createObjectURL(file)).then(csv => {
+    data = csv;
+    const vars = Object.keys(data[0]);
+
+    // Reset variable counters and containers
+    xCount = 0; // Will be incremented to 1 in the function call
+    yCount = 0; // Will be incremented to 1 in the function call
+    document.getElementById('xVarContainer').innerHTML = '';
+    document.getElementById('yVarContainer').innerHTML = '';
+
+    // Initialize primary X/Y variable dropdowns
+    addVariableDropdown('x');
+    addVariableDropdown('y');
+
+    // Populate Management regime dropdowns
+    const mgmtCodes = Array.from(new Set(data.map(d=>d["Management regime"])));
+    populateDropdown(d3.select("#mgmt1").node(), mgmtCodes);
+    populateDropdown(d3.select("#mgmt2").node(), mgmtCodes);
+
+    // Orchestrate chart generation
+    orchestrateCharts();
+
+  }).catch(error => {
+    console.error("Error loading file: ", error.message);
+  });
+});
+
+
+d3.select("#mgmt1").on("change", () => updateWeightedCross());
+d3.select("#mgmt2").on("change", () => updateWeightedCross());
+
+
+// Manually typing in the number box (for fine tuning)
+document.querySelectorAll('.weight-draggable-handle').forEach(inputEl => {
+  inputEl.addEventListener("change", function(){
+    let val = +this.value;
+    if (val < 0) val = 0;
+    if (val > 100) val = 100;
+    this.value = val; // Force value back into bounds
+    updateHandlePosition(this); // Reposition the handle based on the manually typed value
+    updateWeightedCross();
+  });
+});
+
+
+// Weighted point calculation
+function getWeightedPoint(m1,m2,w1,w2, currentXVar, currentYVar){
+  const filtered = data.filter(d=>+d["Climate code"]===1);
+  const d1 = filtered.find(d=>d["Management regime"]===m1);
+  const d2 = filtered.find(d=>d["Management regime"]===m2);
+  if(!d1 || !d2) return null;
+
+  const x1 = parseFloat(d1[currentXVar]);
+  const y1 = parseFloat(d1[currentYVar]);
+  const x2 = parseFloat(d2[currentXVar]);
+  const y2 = parseFloat(d2[currentYVar]);
+
+  if(isNaN(x1) || isNaN(y1) || isNaN(x2) || isNaN(y2) || (w1+w2)===0) return null;
+
+  const x = (w1*x1 + w2*x2)/(w1+w2);
+  const y = (w1*y1 + w2*y2)/(w1+w2);
+
+  return {x,y};
+}
+
+// PPF/Pareto frontier (Upper-Right Maximization)
+function computePPF(points){
+  if(points.length===0) return [];
+
+  const sorted = points.sort((a,b)=>{
+    if(b.x !== a.x) return b.x - a.x;
+    return b.y - a.y;
+  });
+
+  const pareto = [];
+  let maxY = -Infinity;
+
+  for(const p of sorted){
+    if(p.y >= maxY){
+      pareto.push(p);
+      maxY = p.y;
+    }
+  }
+
+  // Ensure the max Y point is included (it might have been missed if it had a lower X than a previous point with the same Y)
+  const maxYY = d3.max(points, d => d.y);
+  const maxPointY = points.find(d => d.y === maxYY);
+
+  if (maxPointY && (pareto.length === 0 || pareto[pareto.length - 1].y < maxYY)) {
+    if (!pareto.some(p => p.x === maxPointY.x && p.y === maxPointY.y)) {
+        pareto.push(maxPointY);
+    }
+  }
+
+  return pareto;
+}
+
+
+/**
+ * Draws a single scatter plot with Pareto frontiers.
+ * @param {HTMLElement} svgElement - The SVG element to draw into.
+ * @param {Object[]} chartPoints - Data points for this specific chart (with calculated X and Y values).
+ * @param {string} xVarName - The name of the X variable.
+ * @param {string} yVarName - The name of the Y variable.
+ * @param {Object[]} frontiers - Pareto frontiers for rotation groups.
+ * @param {Object[]} overallFrontier - Overall Pareto frontier.
+ */
+function drawSingleChart(svgElement, chartPoints, xVarName, yVarName, frontiers, overallFrontier) {
+    const svg = d3.select(svgElement);
+    svg.selectAll("*").remove(); // Clear SVG before drawing
+
+    // Get actual dimensions (MUST be inside the drawing function)
+    const width = svgElement.clientWidth;
+    const height = svgElement.clientHeight;
+
+    const margin = { top: 10, right: 10, bottom: 40, left: 50 }; // Reduced margins for smaller charts
+    const innerWidth = width - margin.left - margin.right;
+    const innerHeight = height - margin.top - margin.bottom;
+
+    if (innerWidth <= 0 || innerHeight <= 0) return; // Guard against zero dimensions
+
+    const g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
+
+    // SCALES: Calculate domain based on the data specific to this X/Y pair
+    const allX = chartPoints.map(p => p.x);
+    const allY = chartPoints.map(p => p.y);
+
+    const xScale = d3.scaleLinear().domain(d3.extent(allX)).range([0, innerWidth]).nice();
+    const yScale = d3.scaleLinear().domain(d3.extent(allY)).nice().range([innerHeight, 0]);
+
+    // AXES
+    g.append("g").attr("transform", `translate(0,${innerHeight})`).call(d3.axisBottom(xScale).ticks(5)); // Fewer ticks
+    g.append("text").attr("x", innerWidth / 2).attr("y", innerHeight + 35).text(xVarName).style("font-weight", "bold").style("text-anchor", "middle").style("font-size", "0.8em");
+
+    g.append("g").call(d3.axisLeft(yScale).ticks(5)); // Fewer ticks
+    g.append("text").attr("transform", "rotate(-90)").attr("x", -innerHeight / 2).attr("y", -40).text(yVarName).style("font-weight", "bold").style("text-anchor", "middle").style("font-size", "0.8em");
+
+    // DATA POINTS
+    chartPoints.forEach(p => {
+        g.append("circle")
+            .attr("cx", xScale(p.x)).attr("cy", yScale(p.y))
+            .attr("r", 3).attr("fill", p.color).attr("opacity", 0.7) // Smaller and more transparent dots
+            .attr("class", `dotR${p.rotation} ${svgElement.id}`)
+            .on("mouseover", (event) => {
+                tooltip.transition().duration(100).style("opacity", 1);
+                tooltip.html(`${xVarName}: ${p.x.toFixed(2)}<br>${yVarName}: ${p.y.toFixed(2)}`)
+                    .style("left", (event.pageX + 10) + "px").style("top", (event.pageY - 28) + "px");
+            })
+            .on("mouseout", () => tooltip.transition().duration(200).style("opacity", 0));
+    });
+
+    // ROTATION FRONTIER LINES
+    frontiers.forEach(f => {
+        g.append("path").datum(f.frontier)
+            .attr("fill", "none")
+            .attr("stroke", f.rotation === 55 ? "#F44336" : f.rotation === 65 ? "#4CAF50" : "#2196F3")
+            .attr("stroke-width", 1.5) // Thinner line
+            .attr("stroke-dasharray", "4,4") // Smaller dashes
+            .attr("class", `paretoR${f.rotation} ${svgElement.id}`)
+            .attr("d", d3.line().x(d => xScale(d.x)).y(d => yScale(d.y)).curve(d3.curveLinear));
+    });
+
+    // OVERALL PARETO LINE
+    g.append("path").datum(overallFrontier)
+        .attr("fill", "none").attr("stroke", "black")
+        .attr("stroke-width", 1.5)
+        .attr("class", `paretoLineOverall ${svgElement.id}`)
+        .attr("d", d3.line().x(d => xScale(d.x)).y(d => yScale(d.y)).curve(d3.curveLinear));
+
+    // Store scales on the SVG element itself for the weighted cross calculation
+    svgElement.__xScale = xScale;
+    svgElement.__yScale = yScale;
+}
+
+
+// Core Plotting Orchestration Function (replaces plotData)
+function orchestrateCharts(){
+    if(data.length === 0) return;
+
+    const xVars = getSelectedVars('x');
+    const yVars = getSelectedVars('y');
+
+    const chartGrid = d3.select("#chartGrid");
+    chartGrid.html(''); // Clear previous charts
+
+    if (xVars.length === 0 || yVars.length === 0) {
+        chartGrid.html('<p style="text-align: center; color: #888; padding: 20px;">Select at least one X and one Y variable to generate charts.</p>');
+        return;
+    }
+
+    // --- Pre-process data once ---
+    const filtered = data.filter(d => +d["Climate code"] === 1);
+    const points = filtered.map(d => {
+        const rotationMatch = d["Management regime"].match(/R(\d+)/);
+        const rot = rotationMatch ? +rotationMatch[1] : 0;
+        let color = rot === 55 ? "red" : rot === 65 ? "green" : rot === 75 ? "blue" : "gray";
+        return { rotation: rot, color, raw: d }; // Store raw data for later variable extraction
+    }).filter(d => d !== null);
+
+    // --- Determine Layout ---
+    const totalCharts = xVars.length * yVars.length;
+    let gridColumns = 1;
+    if (totalCharts >= 9) gridColumns = 4;
+    else if (totalCharts >= 4) gridColumns = 3;
+    else if (totalCharts >= 2) gridColumns = 2;
+
+    // 1. Set the new grid template immediately to force layout calculation
+    chartGrid.style("grid-template-columns", `repeat(auto-fit, minmax(calc(95% / ${gridColumns}), 1fr))`);
+
+    // Array to store drawing tasks
+    const drawingTasks = [];
+
+    // --- Iterate and Create All Combinations' DOM Structure ---
+    let chartIndex = 0;
+    for (const xVarName of xVars) {
+        for (const yVarName of yVars) {
+            // Create a unique ID for the SVG
+            const safeX = xVarName.replace(/[^a-zA-Z0-9]/g, '_');
+            const safeY = yVarName.replace(/[^a-zA-Z0-9]/g, '_');
+            const chartId = `chart_${safeX}_${safeY}_${chartIndex}`;
+
+            // A. Create Container Card
+            const card = chartGrid.append("div").attr("class", "chart-card");
+            card.append("h4").text(`${xVarName} vs. ${yVarName}`);
+            const svgEl = card.append("svg").attr("class", "chart-svg").attr("id", chartId).node();
+
+            // B. Extract specific X/Y data for this chart
+            const chartPoints = points.map(p => {
+                const xVal = parseFloat(p.raw[xVarName]);
+                const yVal = parseFloat(p.raw[yVarName]);
+                if (isNaN(xVal) || isNaN(yVal)) return null;
+                return { x: xVal, y: yVal, color: p.color, rotation: p.rotation, raw: p.raw };
+            }).filter(p => p !== null);
+
+            // C. Compute Frontiers for this specific combination
+            const frontiers = [55, 65, 75].map(rot => {
+                const pts = chartPoints.filter(p => p.rotation === rot).map(p => ({ x: p.x, y: p.y }));
+                return { rotation: rot, frontier: computePPF(pts) };
+            });
+            const overallFrontier = computePPF(chartPoints.map(p => ({ x: p.x, y: p.y })));
+
+            // Store the task details
+            drawingTasks.push({ svgEl, chartPoints, xVarName, yVarName, frontiers, overallFrontier });
+
+            chartIndex++;
+        }
+    }
+
+    // 2. Use a short setTimeout delay to wait for the browser to finish layout and painting,
+    // before attempting to measure the new, smaller container dimensions.
+    setTimeout(() => {
+        for(const task of drawingTasks) {
+            // D. Draw the chart (clientWidth/clientHeight should now be accurate)
+            drawSingleChart(task.svgEl, task.chartPoints, task.xVarName, task.yVarName, task.frontiers, task.overallFrontier);
+        }
+
+        // --- Update Weighted Cross (Targets only the first chart: X1 vs Y1) ---
+        if (xVars.length > 0 && yVars.length > 0) {
+            // Find the ID of the primary chart (which is always the first one created)
+            const primaryX = xVars[0];
+            const primaryY = yVars[0];
+            const primaryChartId = `chart_${primaryX.replace(/[^a-zA-Z0-9]/g, '_')}_${primaryY.replace(/[^a-zA-Z0-9]/g, '_')}_0`;
+
+            // Update global variables for the weighted cross calculation
+            xVar = primaryX;
+            yVar = primaryY;
+
+            updateWeightedCross(null, primaryChartId);
+        } else {
+            d3.select(".weighted-cross-group").style("display", "none");
+            crossInfo.text(`Weighted Cross: X=N/A, Y=N/A (Plot data first or primary chart not found)`);
+        }
+
+        // Initial position setup for handles
+        const isWeightedPanelOpen = !d3.select("#weightedPanel").classed('collapsed');
+        if (isWeightedPanelOpen) {
+            document.querySelectorAll('.weight-draggable-handle').forEach(updateHandlePosition);
+        }
+    }, 10); // 10ms delay for layout stability
+}
+
+
+/**
+ * Update weighted point dynamically (used for number input changes/drag).
+ * @param {boolean|null} forceDisplay - Force show/hide state.
+ * @param {string} [primaryChartId=''] - ID of the target SVG element (should be X1 vs Y1 chart).
+ */
+function updateWeightedCross(forceDisplay = null, primaryChartId = ''){
+    // Need to have primary vars set for calculation
+    if(!xVar || !yVar) {
+        crossInfo.text(`Weighted Cross: X=N/A, Y=N/A (Plot data first or primary chart not found)`);
+        return;
+    }
+
+    const m1=d3.select("#mgmt1").property("value");
+    const m2=d3.select("#mgmt2").property("value");
+    const w1=+d3.select("#weightVal1").property("value");
+    const w2=+d3.select("#weightVal2").property("value");
+
+    const weightedPoint = getWeightedPoint(m1,m2,w1,w2, xVar, yVar);
+    const isWeightedPanelOpen = !d3.select("#weightedPanel").classed('collapsed');
+
+    // Locate the primary chart container and its scales
+    const primarySvgElement = document.getElementById(primaryChartId);
+    let xScale, yScale;
+    if (primarySvgElement) {
+        xScale = primarySvgElement.__xScale;
+        yScale = primarySvgElement.__yScale;
+    }
+
+    // Determine display state
+    let displayStyle;
+    if (forceDisplay !== null) {
+        displayStyle = forceDisplay ? null : "none";
+    } else {
+        displayStyle = isWeightedPanelOpen && weightedPoint && xScale && yScale ? null : "none";
+    }
+
+    // Select the cross group globally or within the primary chart if it exists
+    let cross;
+    if (primarySvgElement) {
+        const svg = d3.select(primarySvgElement);
+        cross = svg.select(".weighted-cross-group");
+    } else {
+        // If primary chart doesn't exist yet, we can't draw the cross
+        d3.selectAll(".weighted-cross-group").style("display", "none");
+        crossInfo.text(`Weighted Cross: X=N/A, Y=N/A (Primary chart not yet plotted)`);
+        return;
+    }
+
+    // If cross is empty, initialize it on the primary SVG
+    if (cross.empty()) {
+        const g = d3.select(primarySvgElement).select("g");
+        if (!g.empty()) {
+            cross = g.append("g").attr("class", "weighted-cross-group");
+            cross.append("circle").attr("class","pulse");
+            cross.append("circle").attr("r",3).attr("fill","black");
+        } else {
+            crossInfo.text(`Weighted Cross: X=N/A, Y=N/A (Primary chart failed to initialize)`);
+            return;
+        }
+    }
+
+    if (weightedPoint && xScale && yScale) {
+        // Update position
+        cross.select(".pulse")
+            .attr("cx",xScale(weightedPoint.x)).attr("cy",yScale(weightedPoint.y));
+        cross.select("circle:not(.pulse)")
+            .attr("cx",xScale(weightedPoint.x)).attr("cy",yScale(weightedPoint.y));
+
+        // Update info text
+        crossInfo.text(`Weighted Cross: X=${weightedPoint.x.toFixed(2)}, Y=${weightedPoint.y.toFixed(2)} (on ${xVar} vs ${yVar})`);
+
+        // Re-attach tooltip logic
+        cross.selectAll("circle")
+            .on("mouseover",(event)=>{ tooltip.transition().duration(200).style("opacity",1);
+                tooltip.html(`**Weighted Point**<br>${xVar}: ${weightedPoint.x.toFixed(2)}<br>${yVar}: ${weightedPoint.y.toFixed(2)}`)
+                .style("left",(event.pageX+10)+"px").style("top",(event.pageY-28)+"px");})
+            .on("mouseout",()=>tooltip.transition().duration(200).style("opacity",0));
+
+        // Set display style
+        cross.style("display", displayStyle);
+
+    } else {
+        // Hide if weighted point cannot be calculated
+        cross.style("display", "none");
+        crossInfo.text(`Weighted Cross: X=N/A, Y=N/A (Check management regimes and data)`);
+    }
+}
+
+// Update the toggle handlers to hide/show elements *for all charts*
+TOGGLE_IDS.forEach(id=>{
+  const toggleElement = d3.select(`#toggle${id}`);
+  const isChecked = toggleElement.property("checked");
+
+  updateToggleStyle(id, isChecked);
+
+  toggleElement.on("change", function(){
+    const newChecked = this.checked;
+    const newDisplay = newChecked?null:"none";
+
+    // Select ALL dots and Pareto lines for the rotation group across ALL charts
+    const selector = id.startsWith('R') ? `.dot${id}, .pareto${id}` : ".paretoLineOverall";
+
+    d3.selectAll(selector).style("display", newDisplay);
+
+    updateToggleStyle(id, newChecked);
+  });
+});
+
+
+// Initial setup: Add default X and Y dimension dropdowns if not yet added
+if (document.getElementById('xVar1') === null) {
+    addVariableDropdown('x');
+}
+if (document.getElementById('yVar1') === null) {
+    addVariableDropdown('y');
+}
+</script>
+</body>
+</html>

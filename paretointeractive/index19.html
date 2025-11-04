@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Pareto Frontier Explorer</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<style>
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #f5f5f5;
+    color: #333;
+    height: 100vh;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    grid-template-rows: 100vh;
+}
+h2 { font-weight: 700; text-align: center; margin-bottom: 10px; font-size: 1.1em; }
+.controls-panel {
+    grid-column: 1 / 2;
+    background: #e0e0e0;
+    padding: 10px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.chart-panel {
+    grid-column: 2 / 3;
+    background: #f5f5f5;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+}
+#chartGrid {
+    flex: 1;
+    display: grid;
+    gap: 15px;
+    padding: 5px;
+    overflow-y: auto;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+.chart-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    min-height: 350px;
+}
+.chart-card h4 {
+    margin: 0 0 5px 0;
+    font-size: 1em;
+    font-weight: bold;
+    text-align: center;
+}
+.chart-svg { flex-grow: 1; width: 100%; min-height: 0; }
+.panel {
+    background: white;
+    border-radius: 8px;
+    padding: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+}
+.panel h3 { margin: 0; font-weight: 700; font-size: 0.9em; text-align: center; }
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    margin-bottom: 0;
+    padding-bottom: 5px;
+}
+.toggle-icon { font-size: 0.8em; transition: transform 0.2s; }
+.panel:not(.collapsed) .toggle-icon { transform: rotate(180deg); }
+.panel-content { overflow: hidden; max-height: 500px; transition: max-height 0.3s ease-in-out; padding-top: 8px; border-top: 1px solid #eee; }
+.panel.collapsed .panel-content { max-height: 0; padding-top: 0; border-top: none; }
+select, input[type="file"] { padding: 4px 6px; font-size: 11px; border-radius: 4px; border: 1px solid #ccc; box-sizing: border-box; width: 100%; }
+#fileInput { padding: 5px; background-color: #f9f9f9; cursor: pointer; border: 1px dashed #aaa; margin: 5px auto; display: block; width: 95%; }
+.var-select-row { margin-bottom: 10px; width: 100%; }
+.var-select-row label { font-size: 0.9em; font-weight: bold; display: block; margin: 0; text-align: left; }
+.input-group { display: flex; gap: 5px; align-items: center; width: 100%; }
+.var-dropdown { flex-grow: 1; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.info-panel { margin-top: 10px; font-weight: 700; font-size: 0.9em; text-align: center; }
+.tooltip { position: absolute; padding: 6px 10px; background: rgba(0,0,0,0.7); color: white; border-radius: 4px; font-size: 12px; pointer-events: none; z-index: 1000; }
+.pulse { fill: orange; animation: pulse 1.2s infinite; }
+@keyframes pulse { 0% { r: 6; opacity: 0.5; } 50% { r: 12; opacity: 0.2; } 100% { r: 6; opacity: 0.5; } }
+@media (max-width: 768px) {
+    body { grid-template-columns: 1fr; grid-template-rows: auto 1fr; height: auto; overflow-y: auto; }
+    .controls-panel { grid-column: 1 / 2; grid-row: 1 / 2; width: 100%; height: auto; max-height: 90vh; }
+    .chart-panel { grid-column: 1 / 2; grid-row: 2 / 3; padding: 10px; min-height: 60vh; }
+}
+</style>
+</head>
+<body>
+
+<div class="controls-panel">
+<h2>Pareto Explorer</h2>
+<div class="panel"><h3>Upload Data 📁</h3><input type="file" id="fileInput" accept=".csv"></div>
+
+<div class="panel" id="varsPanel">
+<h3>Choose Variables</h3>
+<div class="var-select-row">
+    <label for="xVarSelect">X Variable:</label>
+    <select id="xVarSelect" class="var-dropdown"></select>
+</div>
+<div class="var-select-row">
+    <label for="yVarSelect">Y Variable:</label>
+    <select id="yVarSelect" class="var-dropdown"></select>
+</div>
+</div>
+</div>
+
+<div class="chart-panel">
+<div class="panel" style="flex: 1; min-height: 0;">
+<div id="chartGrid"><p style="text-align: center; color: #888; padding: 20px;">Upload data and select X/Y variables to generate charts.</p></div>
+<div class="info-panel" id="crossInfo">Weighted Cross: X=0, Y=0 (Appears on primary chart)</div>
+</div>
+</div>
+
+<div class="tooltip" id="tooltip" style="opacity:0;"></div>
+
+<script>
+let data=[], xVar="", yVar="";
+const tooltip = d3.select("#tooltip");
+const crossInfo = d3.select("#crossInfo");
+
+document.getElementById('fileInput').addEventListener('change', async e=>{
+    const file = e.target.files[0];
+    if(!file) return;
+    const text = await file.text();
+    parseCSV(text);
+});
+
+function parseCSV(text){
+    const rows = text.trim().split(/\r?\n/).map(r=>r.split(','));
+    const headers = rows[0];
+    data = rows.slice(1).map(r=>{
+        const obj={};
+        headers.forEach((h,i)=> obj[h]=parseFloat(r[i]) || r[i]);
+        return obj;
+    });
+    populateVariableSelectors(headers);
+}
+
+function populateVariableSelectors(headers){
+    const xSelect = d3.select("#xVarSelect");
+    const ySelect = d3.select("#yVarSelect");
+    xSelect.html("");
+    ySelect.html("");
+    headers.forEach(h=>{
+        xSelect.append("option").attr("value",h).text(h);
+        ySelect.append("option").attr("value",h).text(h);
+    });
+    xVar = headers[0];
+    yVar = headers[1] || headers[0];
+    xSelect.property("value", xVar);
+    ySelect.property("value", yVar);
+    xSelect.on("change", function(){ xVar=this.value; redrawCharts(); });
+    ySelect.on("change", function(){ yVar=this.value; redrawCharts(); });
+    redrawCharts();
+}
+
+// Pareto frontier: maximize X & Y
+function computePareto(points){
+    if(!points.length) return [];
+    const sorted = points.slice().sort((a,b)=>b.x-a.x || b.y-b.y);
+    const pareto=[];
+    let maxY=-Infinity;
+    sorted.forEach(p=>{
+        if(p.y >= maxY){
+            pareto.push(p);
+            maxY = p.y;
+        }
+    });
+    const uniqueX = Array.from(new Set(pareto.map(p=>p.x))).sort((a,b)=>a-b);
+    return uniqueX.map(xVal=>{
+        const candidates = pareto.filter(p=>p.x===xVal);
+        const maxYVal = d3.max(candidates.map(p=>p.y));
+        return {x:xVal, y:maxYVal};
+    });
+}
+
+function redrawCharts(){
+    if(!xVar || !yVar || !data.length) return;
+    const chartGrid = d3.select("#chartGrid");
+    chartGrid.html("");
+    const rotations = [55,65,75];
+    rotations.forEach(rot=>{
+        const pts = data.map(d=>({x:d[xVar], y:d[yVar], rotation: rot}));
+        const card = chartGrid.append("div").attr("class","chart-card");
+        card.append("h4").text(`Rotation ${rot}`);
+        const svg = card.append("svg").attr("class","chart-svg");
+        drawChart(svg.node(), pts);
+    });
+}
+
+function drawChart(svgEl, points){
+    const margin={top:20,right:20,bottom:40,left:40};
+    const width=svgEl.clientWidth-margin.left-margin.right;
+    const height=svgEl.clientHeight-margin.top-margin.bottom;
+    const svg=d3.select(svgEl).attr("width",width+margin.left+margin.right).attr("height",height+margin.top+margin.bottom);
+    svg.selectAll("*").remove();
+    const g=svg.append("g").attr("transform",`translate(${margin.left},${margin.top})`);
+    const xExtent=d3.extent(points,d=>d.x);
+    const yExtent=d3.extent(points,d=>d.y);
+    const xScale=d3.scaleLinear().domain(xExtent).range([0,width]).nice();
+    const yScale=d3.scaleLinear().domain(yExtent).range([height,0]).nice();
+    g.append("g").attr("transform",`translate(0,${height})`).call(d3.axisBottom(xScale));
+    g.append("g").call(d3.axisLeft(yScale));
+
+    g.selectAll("circle").data(points).join("circle")
+        .attr("cx",d=>xScale(d.x)).attr("cy",d=>yScale(d.y)).attr("r",4)
+        .attr("fill","steelblue")
+        .on("mouseover", (e,d)=>{
+            tooltip.style("opacity",1)
+                   .html(`x: ${d.x}<br>y: ${d.y}`)
+                   .style("left",(e.pageX+10)+"px")
+                   .style("top",(e.pageY+10)+"px");
+        })
+        .on("mouseout",()=>{tooltip.style("opacity",0);});
+
+    const frontier = computePareto(points);
+    const line = d3.line().x(d=>xScale(d.x)).y(d=>yScale(d.y)).curve(d3.curveMonotoneX);
+    g.append("path").datum(frontier).attr("fill","none").attr("stroke","orange").attr("stroke-width",2).attr("d",line);
+}
+</script>
+</body>
+</html>

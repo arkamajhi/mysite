@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Objective Optimization Visualizer (R API)</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        #apiInfo {
+            text-align: center;
+            padding: 10px;
+            background-color: #e8f8f5;
+            border: 1px solid #1abc9c;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+            color: #1abc9c;
+        }
+
+        #controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .control-group {
+            flex: 1 1 300px;
+            min-width: 250px;
+        }
+
+        .var-select-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .var-select-row label {
+            width: 120px;
+            font-weight: bold;
+        }
+
+        .input-group {
+            display: flex;
+            flex-grow: 1;
+        }
+
+        .var-dropdown {
+            flex-grow: 1;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px 0 0 4px;
+        }
+
+        .add-var-btn {
+            padding: 8px 12px;
+            background-color: #2980b9;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 0 4px 4px 0;
+            font-weight: bold;
+            font-size: 1em;
+        }
+
+        .add-var-btn:hover {
+            background-color: #3498db;
+        }
+
+        /* --- Panel Styles --- */
+        .panel {
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .panel.collapsed .panel-content {
+            max-height: 0;
+            padding: 0 15px;
+            border-top: none;
+        }
+
+        .panel-header {
+            background-color: #f7f7f7;
+            padding: 10px 15px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+        }
+
+        .panel-header::after {
+            content: '+';
+            font-size: 1.2em;
+            transition: transform 0.3s;
+        }
+
+        .panel:not(.collapsed) .panel-header::after {
+            content: '-';
+        }
+
+        .panel-content {
+            padding: 15px;
+            border-top: 1px solid #ddd;
+            max-height: 500px; /* Arbitrary large value */
+            transition: max-height 0.3s ease-in-out, padding 0.3s ease-in-out;
+        }
+
+        /* --- Toggle Controls --- */
+        .toggle-row {
+            display: flex;
+            align-items: center;
+            padding: 5px 0;
+        }
+
+        .toggle-row label {
+            cursor: pointer;
+            font-weight: normal;
+            margin-left: 5px;
+        }
+
+        .toggle-row.rotationR55 { color: #F44336; }
+        .toggle-row.rotationR65 { color: #4CAF50; }
+        .toggle-row.rotationR75 { color: #2196F3; }
+        .toggle-row.rotationLineOverall { color: black; }
+
+
+        /* --- Weighted Cross Controls --- */
+        #weightedPanel .panel-content {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .weight-setting {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9em;
+        }
+
+        .weight-setting label {
+            font-weight: bold;
+            width: 80px;
+        }
+
+        .weight-control-wrapper {
+            flex-grow: 1;
+            height: 10px;
+            background: linear-gradient(to right, #2980b9 0%, #2980b9 100%);
+            border-radius: 5px;
+            position: relative;
+            margin: 0 15px;
+        }
+
+        .weight-draggable-handle {
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            background-color: #e74c3c;
+            border: 3px solid #fff;
+            border-radius: 50%;
+            cursor: grab;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            appearance: none;
+            -webkit-appearance: none;
+            text-align: center;
+            font-weight: bold;
+            color: white;
+            font-size: 0.8em;
+            line-height: 18px;
+            padding: 0;
+            touch-action: none; /* Prevents default browser actions on touch */
+        }
+
+        .weight-draggable-handle:active, .weight-draggable-handle.dragging {
+            cursor: grabbing;
+            box-shadow: 0 0 0 5px rgba(231, 76, 60, 0.5);
+        }
+
+        .weight-val {
+            width: 50px;
+            text-align: center;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        #crossInfo {
+            text-align: center;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-top: 10px;
+        }
+
+        /* --- Chart Grid --- */
+        #chartGrid {
+            display: grid;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .chart-card {
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .chart-card h4 {
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 5px;
+            font-size: 1em;
+            color: #2c3e50;
+        }
+
+        .chart-svg {
+            width: 100%;
+            height: 40vh; /* Set a relative height for responsiveness */
+        }
+
+        /* --- Tooltip --- */
+        #tooltip {
+            position: absolute;
+            text-align: center;
+            width: auto;
+            height: auto;
+            padding: 8px;
+            font: 12px sans-serif;
+            background: lightsteelblue;
+            border: 0px;
+            border-radius: 8px;
+            pointer-events: none;
+            opacity: 0;
+        }
+
+        /* --- Weighted Cross Pulse --- */
+        .weighted-cross-group .pulse {
+            fill: #e74c3c;
+            opacity: 0.5;
+            animation: pulse-animation 1.5s infinite;
+        }
+
+        @keyframes pulse-animation {
+            0% { r: 5; opacity: 0.5; }
+            50% { r: 10; opacity: 0; }
+            100% { r: 5; opacity: 0.5; }
+        }
+
+        /* --- Loading State --- */
+        #chartGrid.loading > * {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+        #chartGrid::before {
+            content: "Calculating frontiers with R LP Solver...";
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #2980b9;
+        }
+        #chartGrid.loading::before {
+            display: block;
+        }
+
+    </style>
+</head>
+<body>
+
+    <h1>Pareto Frontier Visualizer (R API Backend)</h1>
+    <div id="apiInfo">
+        Data will be sent to the R Plumber API at <strong>http://127.0.0.1:11065/calculate_ppf</strong> for LP processing.
+        Ensure your R script is running.
+    </div>
+
+    <div id="controls">
+        <div class="control-group">
+            <div class="panel">
+                <div class="panel-header">
+                    <span>Data & Variables</span>
+                </div>
+                <div class="panel-content">
+                    <label for="fileInput" style="font-weight: bold;">Upload CSV:</label>
+                    <input type="file" id="fileInput" accept=".csv" style="margin-bottom: 10px;">
+
+                    <div id="xVarContainer">
+                        <!-- X variable dropdowns populated by JS -->
+                    </div>
+
+                    <div id="yVarContainer">
+                        <!-- Y variable dropdowns populated by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <span>Toggle Frontiers & Points</span>
+                </div>
+                <div class="panel-content">
+                    <div class="toggle-row rotationLineOverall" data-color="black" id="groupLineOverall">
+                        <input type="checkbox" id="toggleLineOverall" checked>
+                        <label for="toggleLineOverall">Overall Frontier (Black)</label>
+                    </div>
+                    <div class="toggle-row rotationR55" data-color="#F44336" id="groupR55">
+                        <input type="checkbox" id="toggleR55" checked>
+                        <label for="toggleR55">R55 Group (Red)</label>
+                    </div>
+                    <div class="toggle-row rotationR65" data-color="#4CAF50" id="groupR65">
+                        <input type="checkbox" id="toggleR65" checked>
+                        <label for="toggleR65">R65 Group (Green)</label>
+                    </div>
+                    <div class="toggle-row rotationR75" data-color="#2196F3" data-color="#2196F3" id="groupR75">
+                        <input type="checkbox" id="toggleR75" checked>
+                        <label for="toggleR75">R75 Group (Blue)</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <div class="panel collapsed" id="weightedPanel">
+                <div class="panel-header">
+                    <span>Weighted Management Preference (X1 vs Y1)</span>
+                </div>
+                <div class="panel-content">
+                    <div class="weight-setting">
+                        <label for="mgmt1">Management 1:</label>
+                        <select id="mgmt1" class="weight-val" style="width: 150px;"></select>
+                    </div>
+                    <div class="weight-setting">
+                        <label for="mgmt2">Management 2:</label>
+                        <select id="mgmt2" class="weight-val" style="width: 150px;"></select>
+                    </div>
+
+                    <hr style="border: 0; border-top: 1px dashed #ccc; margin: 10px 0;">
+
+                    <div class="weight-setting">
+                        <label>Weight (1/2):</label>
+                        <input type="number" id="weightVal1" value="50" min="0" max="100" class="weight-val">
+                        <div class="weight-control-wrapper">
+                            <input type="range" id="handle1" class="weight-draggable-handle" value="50" min="0" max="100">
+                        </div>
+                        <input type="number" id="weightVal2" value="50" min="0" max="100" class="weight-val">
+                    </div>
+                    <p style="text-align: center; font-size: 0.8em; margin: 5px 0 0;">
+                        Use the red circle to drag the management proportion.
+                    </p>
+                    <div id="crossInfo">Weighted Cross: N/A</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="chartGrid">
+        <p style="text-align: center; color: #888; padding: 20px;">Upload a CSV file to begin.</p>
+    </div>
+
+    <div id="tooltip"></div>
+
+<script>
+const API_URL = 'http://127.0.0.1:11065/calculate_ppf';
+
+const tooltip = d3.select("#tooltip");
+const crossInfo = d3.select("#crossInfo");
+const chartGrid = d3.select("#chartGrid");
+const TOGGLE_IDS = ["R55", "R65", "R75", "LineOverall"];
+const INACTIVE_COLOR = '#999';
+
+let data=[], xVar="", yVar="";
+let xCount = 0;
+let yCount = 0;
+
+// --- Custom Draggable Handle Logic (Slider Implementation) ---
+let isDragging = false;
+let currentInput = null;
+let containerRect = null;
+
+function updateHandlePosition(inputEl) {
+    if (!inputEl) return;
+    const value = +inputEl.value;
+    const min = +inputEl.min;
+    const max = +inputEl.max;
+    const wrapper = inputEl.closest('.weight-control-wrapper');
+    if (!wrapper) return;
+
+    const wrapperWidth = wrapper.clientWidth;
+    const normalizedValue = (value - min) / (max - min);
+    const pixelPosition = normalizedValue * wrapperWidth;
+
+    inputEl.style.left = `${pixelPosition}px`;
+}
+
+function startDrag(event) {
+    const target = event.target;
+    if (target.classList.contains('weight-draggable-handle')) {
+        event.preventDefault();
+
+        isDragging = true;
+        currentInput = target;
+        currentInput.classList.add('dragging');
+
+        const wrapper = currentInput.closest('.weight-control-wrapper');
+        containerRect = wrapper.getBoundingClientRect();
+
+        document.addEventListener('mousemove', onDrag);
+        document.addEventListener('mouseup', endDrag);
+        document.addEventListener('touchmove', onDrag, { passive: false });
+        document.addEventListener('touchend', endDrag);
+    }
+}
+
+function onDrag(event) {
+    if (!isDragging || !currentInput) return;
+
+    event.preventDefault();
+    const clientX = event.touches ? event.touches[0].clientX : event.clientX;
+
+    let relativeX = clientX - containerRect.left;
+    relativeX = Math.max(0, Math.min(containerRect.width, relativeX));
+
+    const min = +currentInput.min;
+    const max = +currentInput.max;
+    const normalizedValue = relativeX / containerRect.width;
+    let newValue = Math.round(normalizedValue * (max - min));
+
+    newValue = Math.max(min, Math.min(max, newValue));
+
+    currentInput.value = newValue;
+    updateHandlePosition(currentInput);
+
+    const weightVal1 = document.getElementById('weightVal1');
+    const weightVal2 = document.getElementById('weightVal2');
+
+    if (weightVal1) weightVal1.value = newValue;
+    if (weightVal2) weightVal2.value = max - newValue;
+
+    updateWeightedCross();
+}
+
+function endDrag() {
+    if (!isDragging) return;
+
+    isDragging = false;
+    if (currentInput) {
+        currentInput.classList.remove('dragging');
+    }
+    currentInput = null;
+
+    document.removeEventListener('mousemove', onDrag);
+    document.removeEventListener('mouseup', endDrag);
+    document.removeEventListener('touchmove', onDrag, { passive: false });
+    document.removeEventListener('touchend', endDrag);
+}
+
+document.addEventListener('mousedown', startDrag);
+document.addEventListener('touchstart', startDrag, { passive: false });
+// --- End Custom Draggable Handle Logic ---
+
+
+// FIX: Corrected selector to just use the ID, as the previous selector was returning null
+function updateToggleStyle(id, checked) {
+    const row = document.getElementById(`group${id}`);
+    if (!row) return; // Prevent error if element isn't found
+
+    const color = row.getAttribute('data-color');
+    row.style.color = checked ? color : INACTIVE_COLOR;
+}
+
+function handleResize() {
+    window.requestAnimationFrame(() => {
+        if (data.length > 0) {
+            orchestrateCharts();
+        }
+        document.querySelectorAll('.weight-draggable-handle').forEach(updateHandlePosition);
+    });
+}
+window.addEventListener('resize', handleResize);
+
+// Collapsible Panel Logic
+document.querySelectorAll('.panel-header').forEach(header => {
+    header.addEventListener('click', function() {
+        const panel = this.closest('.panel');
+        panel.classList.toggle('collapsed');
+
+        const isEnabled = !panel.classList.contains('collapsed');
+        if (panel.id === 'weightedPanel' && isEnabled) {
+            document.querySelectorAll('.weight-draggable-handle').forEach(updateHandlePosition);
+        }
+        updateWeightedCross(isEnabled);
+    });
+});
+
+
+function populateDropdown(dropdownElement, data) {
+    d3.select(dropdownElement).selectAll("option").data(data).join("option").text(d => d).attr("value", d => d);
+}
+
+function createDropdownHTML(axis, index, label) {
+    const containerId = axis === 'x' ? 'xVarContainer' : 'yVarContainer';
+    const container = document.getElementById(containerId);
+
+    container.querySelectorAll('.add-var-btn').forEach(btn => btn.remove());
+
+    const newRow = document.createElement('div');
+    newRow.classList.add('var-select-row');
+    newRow.innerHTML = `
+        <label>${label}:</label>
+        <div class="input-group">
+            <select class="var-dropdown" id="${axis}Var${index}" data-axis="${axis}" data-index="${index}"></select>
+            <button class="add-var-btn" data-axis="${axis}">+</button>
+        </div>
+    `;
+    container.appendChild(newRow);
+
+    const addButton = newRow.querySelector('.add-var-btn');
+    const selectElement = newRow.querySelector('.var-dropdown');
+
+    addButton.addEventListener('click', () => {
+        addVariableDropdown(axis);
+    });
+
+    selectElement.addEventListener('change', function() {
+        orchestrateCharts();
+    });
+
+    return selectElement;
+}
+
+function addVariableDropdown(axis) {
+    const vars = data.length > 0 ? Object.keys(data[0]) : [];
+
+    let index;
+    if (axis === 'x') {
+        xCount++;
+        index = xCount;
+    } else if (axis === 'y') {
+        yCount++;
+        index = yCount;
+    } else {
+        return;
+    }
+
+    let labelText = index === 1 ? `${axis.toUpperCase()} Variable` : `${axis.toUpperCase()} Variable (${index})`;
+
+    const dropdown = createDropdownHTML(axis, index, labelText);
+
+    populateDropdown(dropdown, vars);
+
+    const hasData = data.length > 0;
+    dropdown.disabled = !hasData;
+
+    const addButton = dropdown.parentElement.querySelector('.add-var-btn');
+    if (addButton) {
+        addButton.disabled = !hasData;
+    }
+}
+
+
+function getSelectedVars(axis) {
+    const selector = `#${axis}VarContainer select`;
+    return Array.from(document.querySelectorAll(selector))
+        .map(s => s.value)
+        .filter(v => v !== "" && v !== undefined);
+}
+
+// CSV upload
+d3.select("#fileInput").on("change", function() {
+    const file = this.files[0];
+    if(!file) return;
+    d3.csv(URL.createObjectURL(file)).then(csv => {
+        data = csv.map(d => {
+            const newD = {};
+            for (const key in d) {
+                const numVal = parseFloat(d[key]);
+                newD[key] = isNaN(numVal) ? d[key] : numVal;
+            }
+            return newD;
+        });
+
+        const vars = Object.keys(data[0]).filter(key => typeof data[0][key] === 'number' || key === "Management regime" || key === "Climate code");
+
+        xCount = 0;
+        yCount = 0;
+        document.getElementById('xVarContainer').innerHTML = '';
+        document.getElementById('yVarContainer').innerHTML = '';
+
+        addVariableDropdown('x');
+        addVariableDropdown('y');
+
+        const mgmtCodes = Array.from(new Set(data.map(d=>d["Management regime"])));
+        populateDropdown(d3.select("#mgmt1").node(), mgmtCodes);
+        populateDropdown(d3.select("#mgmt2").node(), mgmtCodes);
+
+        document.querySelectorAll('.weight-draggable-handle').forEach(updateHandlePosition);
+
+        orchestrateCharts();
+
+    }).catch(error => {
+        console.error("Error loading file: ", error.message);
+    });
+});
+
+d3.select("#weightVal1").on("change", function() {
+    const val = Math.max(0, Math.min(100, +this.value));
+    this.value = val;
+    d3.select("#weightVal2").property("value", 100 - val);
+    d3.select("#handle1").property("value", val);
+    updateHandlePosition(d3.select("#handle1").node());
+    updateWeightedCross();
+});
+d3.select("#weightVal2").on("change", function() {
+    const val = Math.max(0, Math.min(100, +this.value));
+    this.value = val;
+    d3.select("#weightVal1").property("value", 100 - val);
+    d3.select("#handle1").property("value", 100 - val);
+    updateHandlePosition(d3.select("#handle1").node());
+    updateWeightedCross();
+});
+
+d3.select("#mgmt1").on("change", () => updateWeightedCross());
+d3.select("#mgmt2").on("change", () => updateWeightedCross());
+
+
+function getWeightedPoint(m1,m2,w1,w2, currentXVar, currentYVar){
+    const filtered = data.filter(d=>+d["Climate code"]===1);
+    const d1 = filtered.find(d=>d["Management regime"]===m1);
+    const d2 = filtered.find(d=>d["Management regime"]===m2);
+    if(!d1 || !d2) return null;
+
+    const x1 = d1[currentXVar];
+    const y1 = d1[currentYVar];
+    const x2 = d2[currentXVar];
+    const y2 = d2[currentYVar];
+
+    if(typeof x1 !== 'number' || typeof y1 !== 'number' || typeof x2 !== 'number' || typeof y2 !== 'number' || (w1+w2)===0) return null;
+
+    const x = (w1*x1 + w2*x2)/(w1+w2);
+    const y = (w1*y1 + w2*y2)/(w1+w2);
+
+    return {x,y};
+}
+
+/**
+ * Calls the R Plumber API to calculate the Production Possibility Frontier (PPF).
+ * @param {Array<Object>} points - Array of {x: number, y: number} objects.
+ * @returns {Promise<Array<Object>>} - The frontier vertices {x, y} from the R solver.
+ */
+async function getPPFFromR(points) {
+    // 1. Prepare data in the format the R function expects: two columns.
+    const requestData = {
+        V1: points.map(p => p.x), // Column 1: Objective to Maximize (e.g., NPV)
+        V2: points.map(p => p.y)  // Column 2: Constraint (e.g., Ecosystem Service)
+    };
+
+    // Simple Exponential Backoff Retry Logic
+    for (let attempt = 0; attempt < 3; attempt++) {
+        try {
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(requestData)
+            });
+
+            if (!response.ok) {
+                // If the error is network-related or temporary, retry
+                if (response.status >= 500 && response.status !== 501 && attempt < 2) {
+                    await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 1000));
+                    continue;
+                }
+                const errorText = await response.text();
+                throw new Error(`R API HTTP Error ${response.status}: ${errorText.substring(0, 100)}...`);
+            }
+
+            const ppfPoints = await response.json();
+
+            // The R result should be angular and is usually already sorted by the Epsilon constraint logic.
+            // We ensure it is sorted by X for D3.js plotting consistency.
+            ppfPoints.sort((a, b) => a.x - b.x);
+
+            return ppfPoints;
+
+        } catch (error) {
+            if (attempt === 2) {
+                console.error("Failed to fetch PPF from R API after multiple retries:", error.message);
+                return []; // Return empty on final failure
+            }
+            // Wait before retrying (exponential backoff)
+            await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 1000));
+        }
+    }
+    return [];
+}
+
+
+/**
+ * Draws a single scatter plot with Pareto frontiers.
+ */
+function drawSingleChart(svgElement, chartPoints, xVarName, yVarName, frontiers, overallFrontier) {
+    const svg = d3.select(svgElement);
+    svg.selectAll("*").remove();
+
+    const width = svgElement.clientWidth;
+    const height = svgElement.clientHeight;
+
+    const margin = { top: 10, right: 10, bottom: 40, left: 50 };
+    const innerWidth = width - margin.left - margin.right;
+    const innerHeight = height - margin.top - margin.bottom;
+
+    if (innerWidth <= 0 || innerHeight <= 0) return;
+
+    const g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
+
+    // SCALES
+    const allX = chartPoints.map(p => p.x);
+    const allY = chartPoints.map(p => p.y);
+
+    const xScale = d3.scaleLinear().domain(d3.extent(allX)).range([0, innerWidth]).nice();
+    const yScale = d3.scaleLinear().domain(d3.extent(allY)).nice().range([innerHeight, 0]);
+
+    // AXES
+    g.append("g").attr("transform", `translate(0,${innerHeight})`).call(d3.axisBottom(xScale).ticks(5));
+    g.append("text").attr("x", innerWidth / 2).attr("y", innerHeight + 35).text(xVarName).style("font-weight", "bold").style("text-anchor", "middle").style("font-size", "0.8em");
+
+    g.append("g").call(d3.axisLeft(yScale).ticks(5));
+    g.append("text").attr("transform", "rotate(-90)").attr("x", -innerHeight / 2).attr("y", -40).text(yVarName).style("font-weight", "bold").style("text-anchor", "middle").style("font-size", "0.8em");
+
+    // DATA POINTS
+    chartPoints.forEach(p => {
+        g.append("circle")
+            .attr("cx", xScale(p.x)).attr("cy", yScale(p.y))
+            .attr("r", 3).attr("fill", p.color).attr("opacity", 0.7)
+            .attr("class", `dotR${p.rotation} ${svgElement.id}`)
+            .on("mouseover", (event) => {
+                tooltip.transition().duration(100).style("opacity", 1);
+                tooltip.html(`${xVarName}: ${p.x.toFixed(2)}<br>${yVarName}: ${p.y.toFixed(2)}`)
+                    .style("left", (event.pageX + 10) + "px").style("top", (event.pageY - 28) + "px");
+            })
+            .on("mouseout", () => tooltip.transition().duration(200).style("opacity", 0));
+    });
+
+    // ROTATION FRONTIER LINES (DASHED) - Angular/Linear segments (R-code style)
+    frontiers.forEach(f => {
+        if (f.frontier.length > 0) {
+            g.append("path").datum(f.frontier)
+                .attr("fill", "none")
+                .attr("stroke", f.rotation === 55 ? "#F44336" : f.rotation === 65 ? "#4CAF50" : "#2196F3")
+                .attr("stroke-width", 1.5)
+                .attr("stroke-dasharray", "4,4")
+                .attr("class", `paretoR${f.rotation} ${svgElement.id}`)
+                .attr("d", d3.line().x(d => xScale(d.x)).y(d => yScale(d.y)).curve(d3.curveLinear)); // Angular
+        }
+    });
+
+    // OVERALL PARETO LINE (BLACK) - Angular (d3.curveLinear) to match the LP result
+    if (overallFrontier.length > 0) {
+        g.append("path").datum(overallFrontier)
+            .attr("fill", "none").attr("stroke", "black")
+            .attr("stroke-width", 1.5)
+            .attr("class", `paretoLineOverall ${svgElement.id}`)
+            .attr("d", d3.line()
+                .x(d => xScale(d.x))
+                .y(d => yScale(d.y))
+                .curve(d3.curveLinear)); // Angular (No smoothing)
+    }
+
+    svgElement.__xScale = xScale;
+    svgElement.__yScale = yScale;
+}
+
+
+// Core Plotting Orchestration Function
+async function orchestrateCharts(){
+    if(data.length === 0) return;
+
+    const xVars = getSelectedVars('x');
+    const yVars = getSelectedVars('y');
+
+    chartGrid.html('');
+
+    if (xVars.length === 0 || yVars.length === 0) {
+        chartGrid.html('<p style="text-align: center; color: #888; padding: 20px;">Select at least one X and one Y variable to generate charts.</p>');
+        return;
+    }
+
+    // Set loading state
+    chartGrid.classed('loading', true);
+    chartGrid.html('<p style="text-align: center; font-size: 1.2em; color: #2980b9;">Calculating frontiers with R LP Solver...</p>');
+
+    // --- Pre-process data once ---
+    const filtered = data.filter(d => +d["Climate code"] === 1);
+    const points = filtered.map(d => {
+        const rotationMatch = d["Management regime"] ? d["Management regime"].toString().match(/R(\d+)/) : null;
+        const rot = rotationMatch ? +rotationMatch[1] : 0;
+        let color = rot === 55 ? "red" : rot === 65 ? "green" : rot === 75 ? "blue" : "gray";
+        return { rotation: rot, color, raw: d };
+    }).filter(d => d.rotation !== 0);
+
+    // --- Determine Layout ---
+    const totalCharts = xVars.length * yVars.length;
+    let gridColumns = Math.min(4, Math.max(1, Math.ceil(Math.sqrt(totalCharts))));
+
+    chartGrid.style("grid-template-columns", `repeat(auto-fit, minmax(calc(95% / ${gridColumns}), 1fr))`);
+
+    const drawingTasks = [];
+    let chartIndex = 0;
+
+    for (const xVarName of xVars) {
+        for (const yVarName of yVars) {
+            const safeX = xVarName.toString().replace(/[^a-zA-Z0-9]/g, '_');
+            const safeY = yVarName.toString().replace(/[^a-zA-Z0-9]/g, '_');
+            const chartId = `chart_${safeX}_${safeY}_${chartIndex}`;
+
+            const chartPoints = points.map(p => {
+                const xVal = p.raw[xVarName];
+                const yVal = p.raw[yVarName];
+                if (typeof xVal !== 'number' || typeof yVal !== 'number') return null;
+                return { x: xVal, y: yVal, color: p.color, rotation: p.rotation, raw: p.raw };
+            }).filter(p => p !== null);
+
+            // 1. Prepare promises for fetching all PPF data from the R API
+            const frontierPromises = [55, 65, 75].map(rot => {
+                const pts = chartPoints.filter(p => p.rotation === rot).map(p => ({ x: p.x, y: p.y }));
+                return getPPFFromR(pts).then(frontier => ({ rotation: rot, frontier }));
+            });
+
+            const overallPoints = chartPoints.map(p => ({ x: p.x, y: p.y }));
+            const overallPromise = getPPFFromR(overallPoints);
+
+            // 2. Wait for all API calls to resolve
+            const [frontiers, overallFrontier] = await Promise.all([
+                Promise.all(frontierPromises),
+                overallPromise
+            ]);
+
+            drawingTasks.push({ svgEl: { id: chartId }, chartPoints, xVarName, yVarName, frontiers, overallFrontier });
+
+            chartIndex++;
+        }
+    }
+
+    // Clear loading state and re-render the grid
+    chartGrid.classed('loading', false);
+    chartGrid.html('');
+
+    // Draw all charts once all data is available
+    drawingTasks.forEach(task => {
+        const card = chartGrid.append("div").attr("class", "chart-card");
+        card.append("h4").text(`${task.xVarName} vs. ${task.yVarName}`);
+
+        // Handle API failure visualization here
+        const allFrontiersFailed = task.overallFrontier.length === 0 && task.frontiers.every(f => f.frontier.length === 0);
+
+        if (allFrontiersFailed) {
+            card.append("p")
+                .style("text-align", "center").style("color", "red").style("font-size", "0.9em").style("padding", "10px")
+                .text("R API FAILED: Ensure Plumber is running at http://127.0.0.1:11065/.");
+            return;
+        }
+
+        const svgEl = card.append("svg").attr("class", "chart-svg").attr("id", task.svgEl.id).node();
+
+        drawSingleChart(svgEl, task.chartPoints, task.xVarName, task.yVarName, task.frontiers, task.overallFrontier);
+    });
+
+    // Final setup for the weighted cross on the primary chart
+    if (xVars.length > 0 && yVars.length > 0) {
+        const primaryX = xVars[0];
+        const primaryY = yVars[0];
+        const primaryChartId = `chart_${primaryX.toString().replace(/[^a-zA-Z0-9]/g, '_')}_${primaryY.toString().replace(/[^a-zA-Z0-9]/g, '_')}_0`;
+
+        xVar = primaryX;
+        yVar = primaryY;
+
+        updateWeightedCross(null, primaryChartId);
+    } else {
+        d3.selectAll(".weighted-cross-group").style("display", "none");
+        crossInfo.text(`Weighted Cross: N/A`);
+    }
+
+    const isWeightedPanelOpen = !d3.select("#weightedPanel").classed('collapsed');
+    if (isWeightedPanelOpen) {
+        document.querySelectorAll('.weight-draggable-handle').forEach(updateHandlePosition);
+    }
+}
+
+
+function updateWeightedCross(forceDisplay = null, primaryChartId = ''){
+    if(!xVar || !yVar) {
+        crossInfo.text(`Weighted Cross: X=N/A, Y=N/A (Plot data first or primary chart not found)`);
+        return;
+    }
+
+    const m1=d3.select("#mgmt1").property("value");
+    const m2=d3.select("#mgmt2").property("value");
+    const w1=+d3.select("#weightVal1").property("value");
+    const w2=+d3.select("#weightVal2").property("value");
+
+    const weightedPoint = getWeightedPoint(m1,m2,w1,w2, xVar, yVar);
+    const isWeightedPanelOpen = !d3.select("#weightedPanel").classed('collapsed');
+
+    const primarySvgElement = document.getElementById(primaryChartId || `chart_${xVar.toString().replace(/[^a-zA-Z0-9]/g, '_')}_${yVar.toString().replace(/[^a-zA-Z0-9]/g, '_')}_0`);
+    let xScale, yScale;
+    if (primarySvgElement) {
+        xScale = primarySvgElement.__xScale;
+        yScale = primarySvgElement.__yScale;
+    }
+
+    let displayStyle;
+    if (forceDisplay !== null) {
+        displayStyle = forceDisplay ? null : "none";
+    } else {
+        displayStyle = isWeightedPanelOpen && weightedPoint && xScale && yScale ? null : "none";
+    }
+
+    let cross;
+    if (primarySvgElement) {
+        const svg = d3.select(primarySvgElement);
+        cross = svg.select("g").select(".weighted-cross-group");
+    } else {
+        d3.selectAll(".weighted-cross-group").style("display", "none");
+        crossInfo.text(`Weighted Cross: X=N/A, Y=N/A (Primary chart not yet plotted)`);
+        return;
+    }
+
+    if (cross.empty()) {
+        const g = d3.select(primarySvgElement).select("g");
+        if (!g.empty()) {
+            cross = g.append("g").attr("class", "weighted-cross-group");
+            cross.append("circle").attr("class","pulse");
+            cross.append("circle").attr("r",3).attr("fill","black");
+        } else {
+            crossInfo.text(`Weighted Cross: X=N/A, Y=N/A (Primary chart failed to initialize)`);
+            return;
+        }
+    }
+
+    if (weightedPoint && xScale && yScale) {
+        cross.select(".pulse")
+            .attr("cx",xScale(weightedPoint.x)).attr("cy",yScale(weightedPoint.y));
+        cross.select("circle:not(.pulse)")
+            .attr("cx",xScale(weightedPoint.x)).attr("cy",yScale(weightedPoint.y));
+
+        crossInfo.text(`Weighted Cross: X=${weightedPoint.x.toFixed(2)}, Y=${weightedPoint.y.toFixed(2)} (on ${xVar} vs ${yVar})`);
+
+        cross.selectAll("circle")
+            .on("mouseover",(event)=>{ tooltip.transition().duration(200).style("opacity",1);
+                tooltip.html(`**Weighted Point**<br>${xVar}: ${weightedPoint.x.toFixed(2)}<br>${yVar}: ${weightedPoint.y.toFixed(2)}`)
+                .style("left",(event.pageX+10)+"px").style("top",(event.pageY-28)+"px");})
+            .on("mouseout",()=>tooltip.transition().duration(200).style("opacity",0));
+
+        cross.style("display", displayStyle);
+
+    } else {
+        cross.style("display", "none");
+        crossInfo.text(`Weighted Cross: X=N/A, Y=N/A (Check management regimes and data)`);
+    }
+}
+
+// Update the toggle handlers to hide/show elements *for all charts*
+TOGGLE_IDS.forEach(id=>{
+    const toggleElement = d3.select(`#toggle${id}`);
+    const isChecked = toggleElement.property("checked");
+
+    updateToggleStyle(id, isChecked);
+
+    toggleElement.on("change", function(){
+        const newChecked = this.checked;
+        const newDisplay = newChecked?null:"none";
+
+        const selector = id.startsWith('R') ? `.dot${id}, .pareto${id}` : ".paretoLineOverall";
+
+        d3.selectAll(selector).style("display", newDisplay);
+
+        updateToggleStyle(id, newChecked);
+    });
+});
+
+
+// Initial setup: Add default X and Y dimension dropdowns
+if (document.getElementById('xVar1') === null) {
+    addVariableDropdown('x');
+}
+if (document.getElementById('yVar1') === null) {
+    addVariableDropdown('y');
+}
+</script>
+</body>
+</html>
