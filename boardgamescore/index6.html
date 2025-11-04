@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌲 Ecosystem Performance Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  :root {
+    --green: #16a34a;
+    --blue: #2563eb;
+    --pink: #db2777;
+    --orange: #f59e0b;
+    --light-bg: #f7faf7;
+    --dark-text: #102418;
+    --card-bg: #ffffff;
+    --shadow: 0 10px 25px rgba(0,0,0,0.1);
+  }
+
+  body {
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+    background: linear-gradient(180deg, var(--light-bg), #e2f3e3);
+    color: var(--dark-text);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 40px 0;
+  }
+
+  .card {
+    width: 80%;
+    max-width: 1100px;
+    background: var(--card-bg);
+    border-radius: 22px;
+    box-shadow: var(--shadow);
+    padding: 28px 30px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s ease;
+  }
+
+  h1 {
+    text-align: center;
+    font-size: 30px;
+    font-weight: 800;
+    margin-bottom: 6px;
+  }
+
+  h2 {
+    text-align: center;
+    font-size: 16px;
+    font-weight: 500;
+    color: #4b5563;
+    margin-bottom: 25px;
+  }
+
+  .dashboard {
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    gap: 24px;
+    position: relative;
+    transition: all 0.5s ease-in-out;
+  }
+
+  .chart-section {
+    flex: 1;
+    min-height: 520px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.6s ease-in-out;
+  }
+
+  canvas {
+    width: 100% !important;
+    height: 100% !important;
+    max-height: 520px;
+  }
+
+  .table-section {
+    flex: 1;
+    background: rgba(255,255,255,0.98);
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+    padding: 18px 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    opacity: 0;
+    transform: translateX(100%);
+    transition: all 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+  }
+
+  .table-section.active {
+    opacity: 1;
+    transform: translateX(0);
+    position: relative;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+    font-size: 15px;
+    flex-grow: 1;
+  }
+
+  th {
+    padding: 12px 10px;
+    background: #e8f5e9;
+  }
+
+  td {
+    padding: 8px;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.25s, transform 0.2s;
+  }
+
+  tbody tr:hover td {
+    background: rgba(34,197,94,0.12);
+    transform: scale(1.01);
+  }
+
+  .toggle-btn {
+    position: absolute;
+    top: 24px;
+    right: 26px;
+    background: linear-gradient(90deg, #22c55e, #15803d);
+    border: none;
+    border-radius: 20px;
+    padding: 8px 18px;
+    color: #fff;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    transition: all 0.3s;
+  }
+
+  .toggle-btn:hover {
+    transform: scale(1.05);
+    filter: brightness(1.15);
+  }
+
+  .player-btn {
+    padding: 6px 16px;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    color: white;
+    transition: all 0.3s;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+  }
+
+  .player-btn:hover {
+    transform: scale(1.08);
+  }
+
+  .p1 { background: var(--orange); }
+  .p2 { background: var(--green); }
+  .p3 { background: var(--pink); }
+  .p4 { background: var(--blue); }
+
+  @media (max-width: 768px) {
+    .card {
+      width: 95%;
+    }
+
+    .dashboard {
+      flex-direction: column;
+    }
+
+    .table-section {
+      position: fixed;
+      bottom: -100%;
+      left: 0;
+      right: 0;
+      top: auto;
+      border-radius: 22px 22px 0 0;
+      transform: translateY(100%);
+      opacity: 0;
+      box-shadow: 0 -8px 30px rgba(0,0,0,0.25);
+    }
+
+    .table-section.active {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .chart-section {
+      min-height: 400px;
+    }
+  }
+</style>
+</head>
+<body>
+  <div class="card">
+    <h1>🌲 Ecosystem Performance Dashboard</h1>
+    <h2>Forest Management Strategy Game</h2>
+
+    <button class="toggle-btn" id="toggleTableBtn">Show Scores</button>
+
+    <div class="dashboard">
+      <div class="chart-section">
+        <canvas id="forestRadar"></canvas>
+      </div>
+      <div class="table-section" id="tableSection">
+        <table id="scoreTable">
+          <thead>
+            <tr>
+              <th>Factor</th>
+              <th><button class="player-btn p1" data-player="0">Player 1</button></th>
+              <th><button class="player-btn p2" data-player="1">Player 2</button></th>
+              <th><button class="player-btn p3" data-player="2">Player 3</button></th>
+              <th><button class="player-btn p4" data-player="3">Player 4</button></th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const ctx = document.getElementById("forestRadar").getContext("2d");
+    const tbody = document.querySelector("#scoreTable tbody");
+
+    const factors = [
+      "Tree\nBiomass\nCarbon",
+      "Total\nSoil\nCarbon",
+      "Ecosystem\nCarbon",
+      "Wood\nProducts\nCarbon",
+      "Timber",
+      "Deadwood",
+      "Soil\nWater",
+      "Net\nPresent\nValue"
+    ];
+
+    function randomData() {
+      return Array.from({length: factors.length}, () => Math.floor(Math.random() * (80 - 25 + 1)) + 25);
+    }
+
+    let baseData = {
+      player1: randomData(),
+      player2: randomData(),
+      player3: randomData(),
+      player4: randomData(),
+    };
+
+    const palette = ["#f59e0b", "#16a34a", "#db2777", "#2563eb"];
+
+    function buildDatasets() {
+      return Object.values(baseData).map((data, i) => ({
+        label: `Player ${i+1}`,
+        data,
+        borderColor: palette[i],
+        backgroundColor: palette[i] + "22",
+        pointBackgroundColor: palette[i],
+        borderWidth: 2.5,
+        pointRadius: 3,
+        pointHoverRadius: 5,
+        fill: false,
+      }));
+    }
+
+    const radarChart = new Chart(ctx, {
+      type: "radar",
+      data: { labels: factors, datasets: buildDatasets() },
+      options: {
+        responsive: true,
+        scales: {
+          r: {
+            min: 0,
+            max: 100,
+            ticks: { stepSize: 20, color: "#0f2918", font: { size: 13, weight: "700" } },
+            pointLabels: { color: "#0f2918", font: { size: 13, weight: "700" } },
+            grid: { color: "rgba(0,0,0,0.1)" },
+            angleLines: { color: "rgba(0,0,0,0.25)" },
+          }
+        },
+        plugins: { legend: { display: false } },
+        animation: { duration: 600, easing: "easeOutCubic" },
+      }
+    });
+
+    function updateTable() {
+      tbody.innerHTML = "";
+      factors.forEach((factor, idx) => {
+        const row = document.createElement("tr");
+        row.dataset.index = idx;
+        const cells = [`<td>${factor.replace(/\n/g, " ")}</td>`];
+        Object.values(baseData).forEach(player => cells.push(`<td>${player[idx]}</td>`));
+        row.innerHTML = cells.join("");
+        tbody.appendChild(row);
+      });
+    }
+    updateTable();
+
+    document.querySelectorAll(".player-btn").forEach((btn, index) => {
+      btn.addEventListener("mouseenter", () => {
+        radarChart.data.datasets.forEach((ds, i) => {
+          ds.borderWidth = i === index ? 3.5 : 1.5;
+          ds.pointRadius = i === index ? 5 : 2.5;
+          ds.fill = i === index;
+        });
+        radarChart.update();
+      });
+      btn.addEventListener("mouseleave", () => {
+        radarChart.data.datasets.forEach(ds => {
+          ds.borderWidth = 2.5;
+          ds.pointRadius = 3.5;
+          ds.fill = false;
+        });
+        radarChart.update();
+      });
+    });
+
+    tbody.addEventListener("mouseenter", e => {
+      const row = e.target.closest("tr");
+      if (!row) return;
+      const index = parseInt(row.dataset.index);
+      highlightFactor(index);
+    }, true);
+
+    tbody.addEventListener("mouseleave", resetHighlight);
+
+    function highlightFactor(idx) {
+      radarChart.options.scales.r.angleLines.color = (ctx) =>
+        ctx.index === idx ? "rgba(34,197,94,0.9)" : "rgba(0,0,0,0.25)";
+      radarChart.data.datasets.forEach(ds => {
+        ds.pointRadius = ds.data.map((_, i) => i === idx ? 6 : 3.5);
+      });
+      radarChart.update();
+    }
+
+    function resetHighlight() {
+      radarChart.options.scales.r.angleLines.color = "rgba(0,0,0,0.25)";
+      radarChart.data.datasets.forEach(ds => ds.pointRadius = 3.5);
+      radarChart.update();
+    }
+
+    // Toggle table with smooth animation
+    const toggleBtn = document.getElementById("toggleTableBtn");
+    const tableSection = document.getElementById("tableSection");
+
+    toggleBtn.addEventListener("click", () => {
+      tableSection.classList.toggle("active");
+      toggleBtn.textContent = tableSection.classList.contains("active") ? "Hide Scores" : "Show Scores";
+    });
+  </script>
+</body>
+</html>

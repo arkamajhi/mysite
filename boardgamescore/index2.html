@@ -111,6 +111,7 @@
     justify-content: center;
     gap: 24px;
     margin-top: 25px;
+    flex-wrap: wrap;
   }
 
   .toggle-container {
@@ -160,18 +161,22 @@
     transform: translateX(24px);
   }
 
-  #musicBtn {
+  #musicBtn, #regenBtn {
     background: linear-gradient(90deg, #86efac, #4ade80);
     border: none;
     border-radius: 20px;
-    padding: 10px 20px;
+    padding: 10px 22px;
     color: #08371d;
     font-weight: 600;
     cursor: pointer;
     transition: 0.3s;
   }
-  #musicBtn:hover {
+  #musicBtn:hover, #regenBtn:hover {
     filter: brightness(1.1);
+  }
+
+  #regenBtn {
+    margin-top: 25px;
   }
 </style>
 </head>
@@ -192,19 +197,14 @@
   </div>
 </div>
 
+<!-- New Regenerate Scores Button -->
+<button id="regenBtn">🎲 Regenerate Scores</button>
+
 <div class="bottom-controls">
   <div class="toggle-container">
     <label>Dark Mode</label>
     <label class="slider">
       <input type="checkbox" id="darkToggle">
-      <span></span>
-    </label>
-  </div>
-
-  <div class="toggle-container">
-    <label>Fill</label>
-    <label class="slider">
-      <input type="checkbox" id="fillToggle" checked>
       <span></span>
     </label>
   </div>
@@ -219,137 +219,163 @@
 <script>
 const ctx = document.getElementById("forestRadar").getContext("2d");
 
+// === Factors ===
 const factors = [
   "Tree Biomass Carbon","Total Soil Carbon","Ecosystem Carbon","Wood Products Carbon",
   "Timber","Deadwood","Soil Water","Net Present Value"
 ];
 
-const baseData = {
-  player1: [0.7,0.65,0.68,0.4,0.55,0.2,0.5,0.45],
-  player2: [0.4,0.3,0.35,0.75,0.8,-0.2,-0.1,0.7],
-  player3: [0.6,0.7,0.72,0.3,0.35,0.6,0.65,0.3],
-  player4: [0.2,0.1,0.15,0.65,0.55,0.3,-0.3,0.6],
+// === Random Data Generator (25–80) ===
+function randomData() {
+  return Array.from({length: factors.length}, () => Math.floor(Math.random() * (80 - 25 + 1)) + 25);
+}
+
+let baseData = {
+  player1: randomData(),
+  player2: randomData(),
+  player3: randomData(),
+  player4: randomData(),
 };
 
-function normalize(v){return (v-0.5)*1.6;}
-
-const palette=[
+// === Color palette ===
+const palette = [
   {color:"#fde68a",border:"rgba(234,179,8,0.9)"},
   {color:"#bbf7d0",border:"rgba(34,197,94,0.9)"},
   {color:"#fbcfe8",border:"rgba(244,63,94,0.9)"},
   {color:"#bae6fd",border:"rgba(14,165,233,0.9)"}
 ];
 
-const datasets=Object.values(baseData).map((data,i)=>({
-  label:`Player ${i+1}`,
-  data:data.map(normalize),
-  backgroundColor:palette[i].color+"88",
-  borderColor:palette[i].border,
-  borderWidth:3,
-  pointBackgroundColor:palette[i].border,
-  fill:true
-}));
+// === Build Datasets (no fill initially) ===
+function buildDatasets() {
+  return Object.values(baseData).map((data,i)=>({
+    label:`Player ${i+1}`,
+    data,
+    backgroundColor:palette[i].color+"00", // no fill
+    borderColor:palette[i].border,
+    borderWidth:3,
+    pointBackgroundColor:palette[i].border,
+    fill:false
+  }));
+}
 
-const radarChart=new Chart(ctx,{
+// === Radar Chart ===
+const radarChart = new Chart(ctx, {
   type:"radar",
-  data:{labels:factors,datasets},
+  data:{labels:factors, datasets:buildDatasets()},
   options:{
     responsive:true,
     maintainAspectRatio:false,
     scales:{
       r:{
-        min:-1,max:1,
-        ticks:{stepSize:0.5,color:"#1b3a25",backdropColor:"transparent",font:{size:13,weight:"bold"}},
+        min:0, max:100,
+        ticks:{stepSize:20,color:"#1b3a25",backdropColor:"transparent",font:{size:13,weight:"bold"}},
         pointLabels:{color:"#173d24",font:{size:18,weight:"bold"}},
         grid:{color:"rgba(56,83,50,0.3)",lineWidth:1.8},
         angleLines:{color:"rgba(56,83,50,0.35)",lineWidth:1.8}
       }
     },
-    plugins:{legend:{display:false}},
+    plugins:{
+      legend:{display:false},
+      tooltip:{
+        enabled:true,
+        callbacks:{
+          label: ctx => `${ctx.dataset.label}: ${ctx.formattedValue}`
+        }
+      }
+    },
     animation:{duration:1000,easing:"easeOutCubic"}
   }
 });
 
 // === DARK MODE ===
-document.getElementById("darkToggle").addEventListener("change",e=>{
-  document.body.classList.toggle("dark",e.target.checked);
-  const dark=e.target.checked;
-  radarChart.options.scales.r.ticks.color=dark?"#eaf5ea":"#1b3a25";
-  radarChart.options.scales.r.pointLabels.color=dark?"#eaf5ea":"#173d24";
-  radarChart.options.scales.r.grid.color=dark?"rgba(255,255,255,0.2)":"rgba(56,83,50,0.3)";
-  radarChart.options.scales.r.angleLines.color=dark?"rgba(255,255,255,0.25)":"rgba(56,83,50,0.35)";
+document.getElementById("darkToggle").addEventListener("change", e => {
+  document.body.classList.toggle("dark", e.target.checked);
+  const dark = e.target.checked;
+  radarChart.options.scales.r.ticks.color = dark ? "#eaf5ea" : "#1b3a25";
+  radarChart.options.scales.r.pointLabels.color = dark ? "#eaf5ea" : "#173d24";
+  radarChart.options.scales.r.grid.color = dark ? "rgba(255,255,255,0.2)" : "rgba(56,83,50,0.3)";
+  radarChart.options.scales.r.angleLines.color = dark ? "rgba(255,255,255,0.25)" : "rgba(56,83,50,0.35)";
   radarChart.update();
 });
 
-// === FILL TOGGLE ===
-document.getElementById("fillToggle").addEventListener("change",e=>{
-  radarChart.data.datasets.forEach(ds=>ds.fill=e.target.checked);
-  radarChart.update();
-});
+// === MUSIC CONTROL (fade in/out) ===
+const audio = document.getElementById("forestAudio");
+const musicBtn = document.getElementById("musicBtn");
+let playing = false;
+audio.volume = 0;
 
-// === MUSIC CONTROL (autoplay-safe with fade in/out) ===
-const audio=document.getElementById("forestAudio");
-const musicBtn=document.getElementById("musicBtn");
-let playing=false;
-audio.volume=0;
-
-function fadeVolume(target,step=0.02,interval=50){
+function fadeVolume(target, step = 0.02, interval = 50){
   clearInterval(audio.fadeInterval);
-  audio.fadeInterval=setInterval(()=>{
-    if((step>0 && audio.volume>=target)||(step<0 && audio.volume<=target)){
-      audio.volume=target;
+  audio.fadeInterval = setInterval(()=>{
+    if((step > 0 && audio.volume >= target) || (step < 0 && audio.volume <= target)){
+      audio.volume = target;
       clearInterval(audio.fadeInterval);
       return;
     }
-    audio.volume=Math.min(1,Math.max(0,audio.volume+step));
-  },interval);
+    audio.volume = Math.min(1, Math.max(0, audio.volume + step));
+  }, interval);
 }
 
-musicBtn.addEventListener("click",async()=>{
-  try{
+musicBtn.addEventListener("click", async ()=>{
+  try {
     if(!playing){
       await audio.play();
-      fadeVolume(0.5,0.02); // fade in
-      musicBtn.textContent="🔇 Pause Forest Ambience";
-    }else{
-      fadeVolume(0,-0.03); // fade out
+      fadeVolume(0.5, 0.02);
+      musicBtn.textContent = "🔇 Pause Forest Ambience";
+    } else {
+      fadeVolume(0, -0.03);
       setTimeout(()=>audio.pause(),800);
-      musicBtn.textContent="🔊 Play Forest Ambience";
+      musicBtn.textContent = "🔊 Play Forest Ambience";
     }
-    playing=!playing;
-  }catch(err){
-    console.warn("Autoplay blocked:",err);
+    playing = !playing;
+  } catch (err) {
+    console.warn("Autoplay blocked:", err);
     alert("🔈 Please click again to enable forest sounds — your browser initially blocked it.");
   }
 });
 
-// === PLAYER HOVER HIGHLIGHT ===
-document.querySelectorAll(".player-item").forEach((item)=>{
-  const index=parseInt(item.dataset.player);
-  item.addEventListener("mouseenter",()=>{
+// === PLAYER HOVER HIGHLIGHT WITH VALUE DISPLAY ===
+document.querySelectorAll(".player-item").forEach(item => {
+  const index = parseInt(item.dataset.player);
+  item.addEventListener("mouseenter", () => {
     radarChart.data.datasets.forEach((ds,i)=>{
-      if(i===index){
-        ds.borderWidth=6;
-        ds.borderColor=palette[i].border.replace("0.9","1");
-        ds.backgroundColor=palette[i].color+"dd";
+      if(i === index){
+        ds.borderWidth = 6;
+        ds.borderColor = palette[i].border.replace("0.9","1");
+        ds.backgroundColor = palette[i].color+"55";
+        ds.fill = true;
       } else {
-        ds.borderWidth=1.5;
-        ds.borderColor=palette[i].border.replace("0.9","0.3");
-        ds.backgroundColor=palette[i].color+"33";
+        ds.borderWidth = 1.5;
+        ds.borderColor = palette[i].border.replace("0.9","0.2");
+        ds.backgroundColor = palette[i].color+"00";
+        ds.fill = false;
       }
     });
-    radarChart.canvas.style.opacity="0.9";
+    radarChart.options.plugins.tooltip.enabled = true;
     radarChart.update();
   });
-  item.addEventListener("mouseleave",()=>{
+  item.addEventListener("mouseleave", () => {
     radarChart.data.datasets.forEach((ds,i)=>{
-      ds.borderWidth=3;
-      ds.borderColor=palette[i].border;
-      ds.backgroundColor=palette[i].color+"88";
+      ds.borderWidth = 3;
+      ds.borderColor = palette[i].border;
+      ds.backgroundColor = palette[i].color+"00";
+      ds.fill = false;
     });
-    radarChart.canvas.style.opacity="1";
+    radarChart.options.plugins.tooltip.enabled = false;
     radarChart.update();
   });
+});
+
+// === REGENERATE BUTTON ===
+document.getElementById("regenBtn").addEventListener("click", () => {
+  baseData = {
+    player1: randomData(),
+    player2: randomData(),
+    player3: randomData(),
+    player4: randomData(),
+  };
+  radarChart.data.datasets = buildDatasets();
+  radarChart.update();
 });
 </script>
 </body>
