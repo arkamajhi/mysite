@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Junta Party: Bureaucracy Overload</title>
+    <style>
+        body { margin: 0; background: #1a1a1a; overflow: hidden; touch-action: none; font-family: 'Courier New', monospace; color: white; }
+        canvas { display: block; cursor: none; }
+        #ui { position: absolute; top: 20px; left: 20px; width: 300px; pointer-events: none; }
+        h1 { font-size: 18px; margin: 0; color: #ffeb3b; }
+        #stats { font-size: 16px; margin: 5px 0; }
+        #p-container { width: 100%; height: 20px; background: #333; border: 2px solid #fff; }
+        #p-bar { width: 100%; height: 100%; background: #4caf50; transition: width 0.1s; }
+        #audio-btn { position: absolute; top: 20px; right: 20px; font-size: 30px; cursor: pointer; pointer-events: auto; }
+    </style>
+</head>
+<body>
+    <div id="ui">
+        <h1>PATIENCE METER</h1>
+        <div id="stats">LEVEL: <span id="lvl">1</span> | SCORE: <span id="scr">0</span></div>
+        <div id="p-container"><div id="p-bar"></div></div>
+    </div>
+    <div id="audio-btn">🔊</div>
+    <canvas id="game"></canvas>
+
+    <script>
+        const canvas = document.getElementById('game');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+
+        const CONFIG = {
+            hazards: [
+                { src: "assets/fallingobjects/pendingfiles.png", dmg: 15, scale: 1.6 },
+                { src: "assets/fallingobjects/stamp.png", dmg: 30, scale: 1.2 },
+                { src: "assets/fallingobjects/chaibreak.png", dmg: 10, scale: 1.0 }
+            ]
+        };
+
+        let state = { level: 1, score: 0, patience: 100, running: true, time: 0 };
+        let roach = { x: canvas.width/2, y: canvas.height * 0.8, angle: 0 };
+        let objects = [], popups = [];
+        const roachImg = new Image(); roachImg.src = 'assets/cockroachjuntaparty.png';
+
+        function addObj() {
+            let h = CONFIG.hazards[Math.floor(Math.random() * CONFIG.hazards.length)];
+            let img = new Image(); img.src = h.src;
+            objects.push({ x: Math.random() * canvas.width, y: -200, vx: (Math.random()-0.5)*state.level, vy: (Math.random()*2+2)*(state.level*0.4+0.6), data: h, img: img });
+        }
+
+        function loop() {
+            if (!state.running) {
+                ctx.fillStyle = "rgba(0,0,0,0.5)"; ctx.fillRect(0,0,canvas.width,canvas.height);
+                ctx.fillStyle = "white"; ctx.textAlign = "center"; ctx.font = "20px Courier New";
+                ctx.fillText("APPLICATION REJECTED. TAP TO RE-APPLY", canvas.width/2, canvas.height/2);
+                return;
+            }
+            state.time++;
+            state.level = Math.min(8, Math.floor(state.time / 500) + 1);
+            document.getElementById('lvl').innerText = state.level;
+
+            if (objects.length < state.level + 2) addObj();
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            objects.forEach((o, i) => {
+                if(state.level >= 4) o.x += Math.sin(state.time / 20) * 5;
+                o.y += o.vy; o.x += o.vx;
+                if(o.x < 0 || o.x > canvas.width) o.vx *= -1;
+                if(o.y > canvas.height) { o.y = -200; state.score += 10; document.getElementById('scr').innerText = state.score; }
+
+                // Doubled size rendering
+                ctx.drawImage(o.img, o.x-80, o.y-80, 160*o.data.scale, 160*o.data.scale);
+
+                if(Math.hypot(o.x - roach.x, o.y - roach.y) < 60) {
+                    state.patience -= o.data.dmg;
+                    popups.push({x: roach.x, y: roach.y, txt: "-"+o.data.dmg, life: 30});
+                    o.y = -200;
+                    document.getElementById('p-bar').style.width = Math.max(0, state.patience) + "%";
+                    if(state.patience <= 0) state.running = false;
+                }
+            });
+
+            // Rotation logic: Calculate angle based on movement direction
+            const dx = (roach.targetX || roach.x) - roach.x;
+            roach.angle = Math.atan2(roach.y - (roach.targetY || roach.y), roach.x - (roach.targetX || roach.x));
+
+            ctx.save();
+            ctx.translate(roach.x, roach.y);
+            ctx.rotate(roach.angle + Math.PI);
+            ctx.drawImage(roachImg, -40, -40, 80, 80);
+            ctx.restore();
+
+            popups.forEach((p, i) => {
+                ctx.fillStyle = "red"; ctx.font = "bold 25px Courier";
+                ctx.fillText(p.txt, p.x, p.y -= 2);
+                if(--p.life <= 0) popups.splice(i, 1);
+            });
+
+            requestAnimationFrame(loop);
+        }
+
+        const move = (e) => {
+            roach.targetX = e.clientX || e.touches[0].clientX;
+            roach.targetY = e.clientY || e.touches[0].clientY;
+            roach.x += (roach.targetX - roach.x) * 0.2;
+            roach.y += (roach.targetY - roach.y) * 0.2;
+        };
+        window.addEventListener('mousemove', move);
+        window.addEventListener('touchmove', move, {passive: false});
+        window.addEventListener('mousedown', () => { if(!state.running) location.reload(); });
+
+        loop();
+    </script>
+</body>
+</html>

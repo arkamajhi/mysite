@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Cockroach Junta Party</title>
+    <style>
+        body { margin: 0; background: #1a1a1a; overflow: hidden; touch-action: none; font-family: 'Arial Black', sans-serif; }
+        canvas { display: block; width: 100vw; height: 100vh; cursor: none; }
+        #ui { position: absolute; top: 20px; width: 100%; text-align: center; color: #ffeb3b; pointer-events: none; text-shadow: 2px 2px #000; }
+    </style>
+</head>
+<body>
+    <div id="ui"><h1 style="margin:0;">JUNTA PARTY</h1><p>TIME: <span id="timer">0.0</span>s</p></div>
+    <canvas id="game"></canvas>
+
+    <script>
+        const canvas = document.getElementById('game');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+
+        const roachImg = new Image();
+        roachImg.src = 'assets/cockroachjuntaparty.png';
+
+        let player = { x: canvas.width/2, y: canvas.height/2, vx: 0, vy: 0 };
+        let mouse = { x: canvas.width/2, y: canvas.height/2 };
+        let shadow = { x: Math.random() * canvas.width, y: -200, size: 120, speed: 5 };
+        let startTime = Date.now();
+        let running = true;
+        let shake = 0;
+
+        window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+        window.addEventListener('touchmove', e => { mouse.x = e.touches[0].clientX; mouse.y = e.touches[0].clientY; }, {passive: false});
+        window.addEventListener('mousedown', () => { if (!running) location.reload(); });
+        window.addEventListener('touchstart', () => { if (!running) location.reload(); });
+
+        function update() {
+            if (!running) return;
+
+            // Slippery movement logic
+            player.vx += (mouse.x - player.x) * 0.08;
+            player.vy += (mouse.y - player.y) * 0.08;
+            player.x += (player.vx *= 0.75);
+            player.y += (player.vy *= 0.75);
+
+            // Shadow falling
+            shadow.y += shadow.speed;
+            shadow.speed += 0.002;
+            if (shadow.y > canvas.height + 100) {
+                shadow.y = -150;
+                shadow.x = Math.random() * (canvas.width - 100) + 50;
+            }
+
+            // Hit detection
+            if (Math.hypot(player.x - shadow.x, player.y - shadow.y) < shadow.size/2) running = false;
+            document.getElementById('timer').innerText = ((Date.now() - startTime) / 1000).toFixed(1);
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Screen shake intensifies as the shadow gets closer
+            let dist = Math.hypot(player.x - shadow.x, player.y - shadow.y);
+            shake = dist < 250 ? (Math.random() - 0.5) * (250 - dist) / 10 : 0;
+
+            ctx.save();
+            ctx.translate(shake, shake);
+
+            // Draw Shadow
+            ctx.fillStyle = 'rgba(0,0,0,0.5)';
+            ctx.beginPath();
+            ctx.arc(shadow.x, shadow.y, shadow.size/2, 0, Math.PI*2);
+            ctx.fill();
+
+            // Draw Player
+            ctx.translate(player.x, player.y);
+            ctx.rotate(-Math.PI/2);
+            ctx.drawImage(roachImg, -40, -40, 80, 80);
+            ctx.restore();
+
+            if (running) {
+                update();
+                requestAnimationFrame(draw);
+            } else {
+                ctx.fillStyle = "red";
+                ctx.font = "8vw Impact";
+                ctx.textAlign = "center";
+                ctx.fillText("SQUASHED!", canvas.width/2, canvas.height/2);
+                ctx.font = "4vw Arial";
+                ctx.fillText("TAP TO RESTART", canvas.width/2, canvas.height/2 + 60);
+            }
+        }
+        roachImg.onload = draw;
+    </script>
+</body>
+</html>
