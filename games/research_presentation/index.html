@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { margin: 0; overflow: hidden; background: #5c94fc; font-family: sans-serif; }
+        canvas { display: block; }
+        .nav-btn {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            padding: 20px; font-size: 24px; cursor: pointer;
+            background: rgba(255, 255, 255, 0.9); border: none; border-radius: 10px; z-index: 10;
+        }
+        #prevBtn { left: 10px; }
+        #nextBtn { right: 10px; }
+    </style>
+</head>
+<body>
+
+<button id="prevBtn" class="nav-btn" onclick="changeSlide(-1)">◀</button>
+<button id="nextBtn" class="nav-btn" onclick="changeSlide(1)">▶</button>
+
+<canvas id="gameCanvas"></canvas>
+
+<script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let currentSlide = 0;
+    let cameraOffset = 0;
+    let targetOffset = 0;
+    const player = { x: 100, y: canvas.height - 200, width: 50, height: 50 };
+
+    const slideData = Array.from({length: 10}, (_, i) => ({
+        header: `Research Section ${i + 1}`,
+        title: `Core Analysis Point ${String.fromCharCode(65 + i)}`,
+        bullets: [
+            "Lorem ipsum dolor sit amet, consectetur.",
+            "Sed do eiusmod tempor incididunt ut labore.",
+            "Ut enim ad minim veniam, quis nostrud.",
+            "Duis aute irure dolor in reprehenderit.",
+            "Excepteur sint occaecat cupidatat non.",
+            "Sunt in culpa qui officia deserunt."
+        ]
+    }));
+
+    function changeSlide(direction) {
+        if (currentSlide + direction >= 0 && currentSlide + direction < slideData.length) {
+            currentSlide += direction;
+            targetOffset = -currentSlide * canvas.width;
+        }
+    }
+
+    window.addEventListener('wheel', (e) => changeSlide(e.deltaY > 0 ? 1 : -1));
+    window.addEventListener('keydown', (e) => {
+        if (e.code === 'ArrowRight') changeSlide(1);
+        if (e.code === 'ArrowLeft') changeSlide(-1);
+    });
+
+    function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        cameraOffset += (targetOffset - cameraOffset) * 0.1;
+
+        for (let i = 0; i < slideData.length; i++) {
+            let xPos = (i * canvas.width) + cameraOffset;
+
+            // Draw Ground
+            ctx.fillStyle = "#5d4037";
+            ctx.fillRect(xPos, canvas.height - 100, canvas.width, 100);
+
+            // Draw Text Environment
+            ctx.fillStyle = "white";
+
+            // Header
+            ctx.font = "bold 60px Arial";
+            ctx.fillText(slideData[i].header, xPos + 100, 100);
+
+            // Title
+            ctx.font = "40px Arial";
+            ctx.fillText(slideData[i].title, xPos + 100, 160);
+
+            // Bullet Points
+            ctx.font = "24px Arial";
+            slideData[i].bullets.forEach((bullet, bIdx) => {
+                ctx.fillText("• " + bullet, xPos + 120, 220 + (bIdx * 40));
+            });
+        }
+
+        // Draw Player
+        ctx.fillStyle = "#ffeb3b"; // Mario-yellow
+        ctx.strokeStyle = "black";
+        ctx.lineWidth = 3;
+        ctx.fillRect(player.x, player.y, player.width, player.height);
+        ctx.strokeRect(player.x, player.y, player.width, player.height);
+
+        requestAnimationFrame(draw);
+    }
+
+    draw();
+</script>
+</body>
+</html>
